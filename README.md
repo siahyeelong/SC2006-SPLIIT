@@ -1,5 +1,9 @@
 # SC2006
 
+## Links
+- [Onedrive with all the word documents](https://entuedu-my.sharepoint.com/:f:/g/personal/ysiah001_e_ntu_edu_sg/EhYYZigvRMFCjdRCizEtVsEBVjjL0vR3JJ0qu2Pd6AJ42Q?e=oCdohb)
+- [Google docs for planning](https://docs.google.com/document/d/1iNcftZQv_HfIh-U0ocpX3YaemDWuS4bCx4HKb9DF6Mw/edit?usp=sharing)
+
 (description of our project)
 
 ## Set up instructions
