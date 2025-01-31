@@ -1,3 +1,7 @@
+# others
+*test*
+*.DS_Store*
+
 # Logs
 logs
 *.log
