@@ -1,4 +1,4 @@
-# SC2006
+# SC2006: SPLIIT
 
 ## Links
 - [Onedrive with all the word documents](https://entuedu-my.sharepoint.com/:f:/g/personal/ysiah001_e_ntu_edu_sg/EhYYZigvRMFCjdRCizEtVsEBVjjL0vR3JJ0qu2Pd6AJ42Q?e=oCdohb)
