@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chip, Box } from '@mui/material';
-import { Person, People } from '../../settings/People';
+import { Person, People } from '../../classes/People';
 
 export default function RecipientsCell({ recipients }) {
     if (!recipients.length) return <></>;

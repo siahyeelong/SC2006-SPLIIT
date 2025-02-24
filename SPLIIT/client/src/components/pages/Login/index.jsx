@@ -1,17 +1,16 @@
 import React from 'react'
 import { Box } from '@mui/material';
 import Header from '../MainUI/Header';
-import TransactionsTable from './TransactionsTable';
 
-function Transactions() {
+function Login() {
     return (
         <Box m='20px'>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Header title={'Transactions'} subtitle={'View all transactions here'} />
+                <Header title={'Login'} subtitle={'work in progress'} />
             </Box>
-            <TransactionsTable />
+            <div>(work in progress)</div>
         </Box>
     )
 }
 
-export default Transactions
+export default Login

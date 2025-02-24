@@ -5,7 +5,7 @@
 
 import { React, useState } from 'react';
 import { Link } from 'react-router-dom'
-import { tokens } from '../theme'
+import { tokens } from '../../../theme'
 import { useTheme, useMediaQuery } from '@mui/material';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';

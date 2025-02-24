@@ -5,7 +5,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CarouselCard from './CarouselCard';
-import { People } from '../../settings/People';
+import { People } from '../../classes/People';
 
 function Carousel() {
     const theme = useTheme();

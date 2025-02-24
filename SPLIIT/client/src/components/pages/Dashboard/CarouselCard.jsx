@@ -5,10 +5,8 @@ import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import { TransactionsContext } from '.';
 import { Box, Divider, Table, TableBody, TableCell, TableRow } from '@mui/material';
-import { People, Person } from '../../settings/People';
-import { data, MyResponsivePie } from './MyResponsivePie';
-import { Categories } from '../../settings/Categories';
-import AnalyticsDialog from './AnalyticsDialog';
+import { People, Person } from '../../classes/People';
+import { Categories } from '../../classes/Categories';
 
 function CarouselCard({ ower, matrix }) {
     const transactions = useContext(TransactionsContext);

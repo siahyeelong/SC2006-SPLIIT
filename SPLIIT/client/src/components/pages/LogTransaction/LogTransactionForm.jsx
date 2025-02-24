@@ -1,10 +1,10 @@
 import { React, useState } from 'react'
-import { People, Person } from '../../settings/People';
-import { Categories } from '../../settings/Categories';
+import { People, Person } from '../../classes/People';
+import { Categories } from '../../classes/Categories';
 import Chip from '@mui/material/Chip';
 import { useTheme, ToggleButton, ToggleButtonGroup, InputBase } from '@mui/material';
 import { tokens } from '../../../theme'
-import { ExchangeRates } from '../../settings/ExchangeRates';
+import { ExchangeRates } from '../../classes/ExchangeRates';
 
 function LogTransactionForm() {
     const theme = useTheme();

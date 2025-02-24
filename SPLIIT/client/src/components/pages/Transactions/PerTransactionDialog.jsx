@@ -1,8 +1,8 @@
 import { Dialog, DialogActions, DialogContent, Box, Typography, Button, Chip } from '@mui/material'
 import React from 'react'
-import { Categories } from '../../settings/Categories';
-import { ExchangeRates } from '../../settings/ExchangeRates';
-import { Person, People } from '../../settings/People';
+import { Categories } from '../../classes/Categories';
+import { ExchangeRates } from '../../classes/ExchangeRates';
+import { Person, People } from '../../classes/People';
 
 function TransactionCard({ transaction }) {
 

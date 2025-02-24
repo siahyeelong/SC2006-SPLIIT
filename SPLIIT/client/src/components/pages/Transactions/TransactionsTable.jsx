@@ -3,7 +3,7 @@ import { Box, Typography, useTheme, Stack } from '@mui/material';
 import { tokens } from '../../../theme';
 import { DataGrid } from '@mui/x-data-grid';
 import ToCSVButton from './ToCSVButton';
-import { Person, People } from '../../settings/People';
+import { Person, People } from '../../classes/People';
 import RecipientsCell from './RecipientsCell';
 import CurrencySwitch from './CurrencySwitch';
 import PerTransactionDialog from './PerTransactionDialog';
