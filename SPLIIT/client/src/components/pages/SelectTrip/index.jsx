@@ -1,16 +1,16 @@
 import React from 'react'
 import { Box } from '@mui/material';
-import Header from '../../Header';
+import Header from '../MainUI/Header';
 
-function Settings() {
+function SelectTrip() {
     return (
         <Box m='20px'>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Header title={'Settings'} subtitle={'Configure app settings'} />
+                <Header title={'SelectTrip'} subtitle={'work in progress'} />
             </Box>
             <div>(work in progress)</div>
         </Box>
     )
 }
 
-export default Settings
+export default SelectTrip

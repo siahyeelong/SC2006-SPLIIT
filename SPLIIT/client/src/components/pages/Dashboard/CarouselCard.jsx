@@ -5,10 +5,8 @@ import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import { TransactionsContext } from '.';
 import { Box, Divider, Table, TableBody, TableCell, TableRow } from '@mui/material';
-import { People, Person } from '../../settings/People';
-import { data, MyResponsivePie } from './MyResponsivePie';
-import { Categories } from '../../settings/Categories';
-import AnalyticsDialog from './AnalyticsDialog';
+import { People } from '../../classes/People';
+import { Categories } from '../../classes/Categories';
 
 function CarouselCard({ ower, matrix }) {
     const transactions = useContext(TransactionsContext);
@@ -17,7 +15,7 @@ function CarouselCard({ ower, matrix }) {
     const [showAnalyticsDialog, setShowAnalyticsDialog] = useState(false);
 
     const spentPerCategory = {}
-    Object.keys(Categories.category).forEach((cat) => {
+    Object.keys(Categories).forEach((cat) => {
         spentPerCategory[cat] = 0;
     })
 
@@ -33,13 +31,13 @@ function CarouselCard({ ower, matrix }) {
     })
 
     let pieChartData = []
-    Object.keys(Categories.category).forEach((cat) => {
+    Object.keys(Categories).forEach((cat) => {
         pieChartData = [...pieChartData,
         {
             "id": cat,
             "label": cat,
             "value": spentPerCategory[cat],
-            "color": Categories.getCategoryColour(cat)
+            "color": Categories[cat].colour
         }
         ]
     })
@@ -94,7 +92,7 @@ function CarouselCard({ ower, matrix }) {
                                             <TableRow key={`${ower.identifier}owes${owed}who`} sx={{ maxHeight: '10px' }}>
                                                 <TableCell align='right' width='50%' sx={{ padding: 0, border: 0, color: 'black' }}>
                                                     <Typography variant="body2" maxWidth={150} paddingRight={1}>
-                                                        {`${Person.findDisplayName(owed, People)}`}
+                                                        {`${People[owed].displayName}`}
                                                     </Typography>
                                                 </TableCell>
                                                 <TableCell align='left' sx={{ padding: 1, border: 0, color: 'black' }}>

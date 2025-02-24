@@ -1,8 +1,8 @@
 import { Dialog, DialogActions, DialogContent, Box, Typography, Button, Chip } from '@mui/material'
 import React from 'react'
-import { Categories } from '../../settings/Categories';
-import { ExchangeRates } from '../../settings/ExchangeRates';
-import { Person, People } from '../../settings/People';
+import { Categories } from '../../classes/Categories';
+import { ExchangeRates } from '../../classes/ExchangeRates';
+import { People } from '../../classes/People';
 
 function TransactionCard({ transaction }) {
 
@@ -18,7 +18,7 @@ function TransactionCard({ transaction }) {
                 <Box display={'flex'} alignItems={'center'}>
                     <Box p={'10px'}>
                         {/* Display category icon in the same line */}
-                        {Categories.getCategoryIcon(transaction.category)}
+                        {Categories[transaction.category].icon}
                     </Box>
                     <Box p={'10px'}>
                         {/* Display price large */}
@@ -32,9 +32,9 @@ function TransactionCard({ transaction }) {
                     {/* display payer */}
                     <Chip
                         key={transaction.payer}
-                        label={Person.findDisplayName(transaction.payer, People)}
+                        label={People[transaction.payer].displayName}
                         sx={{
-                            backgroundColor: Person.findFavColour(transaction.payer, People) || '#CCCCCC',
+                            backgroundColor: People[transaction.payer].favColour || '#CCCCCC',
                             color: '#000',
                             fontWeight: 'bold',
                         }} />
@@ -92,9 +92,9 @@ function TransactionCard({ transaction }) {
                     {transaction.recipients.map((recipient) => (
                         <Chip
                             key={recipient}
-                            label={Person.findDisplayName(recipient, People)}
+                            label={People[recipient].displayName}
                             sx={{
-                                backgroundColor: Person.findFavColour(recipient, People) || '#CCCCCC',
+                                backgroundColor: People[recipient].favColour || '#CCCCCC',
                                 color: '#000',
                                 fontWeight: 'bold',
                             }}

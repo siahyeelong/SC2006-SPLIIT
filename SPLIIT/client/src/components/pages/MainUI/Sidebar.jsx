@@ -3,12 +3,9 @@ import { Link } from 'react-router-dom'
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { Box, IconButton, Typography, useTheme, useMediaQuery } from '@mui/material';
-import { tokens } from '../theme'
+import { tokens } from '../../../theme'
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
-import TocOutlinedIcon from '@mui/icons-material/TocOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import MenuItems from '../../classes/MenuItems';
 
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -70,7 +67,7 @@ function Sidebar() {
                             {!isCollapsed && (
                                 <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} ml={'15px'}>
                                     <Typography variant='h3' color={colours.grey[100]}>
-                                        SOMETHING
+                                        SPLIIT
                                     </Typography>
                                     <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                                         <MenuOutlinedIcon />
@@ -79,34 +76,18 @@ function Sidebar() {
                             )}
                         </MenuItem>
                         <Box paddingLeft={isCollapsed ? undefined : '10%'}>
-                            <Item
-                                title='Log Transaction'
-                                to='/'
-                                icon={<AddCircleOutlineOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title='Dashboard'
-                                to='/dashboard'
-                                icon={<SpaceDashboardOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title='View all transactions'
-                                to='/transactions'
-                                icon={<TocOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
-                            <Item
-                                title='Settings'
-                                to='/settings'
-                                icon={<SettingsOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                            />
+                            {MenuItems.map((item) => (
+                                item.icon === null ? undefined :
+                                    <Item
+                                        key={item.title}
+                                        title={item.title}
+                                        to={item.to}
+                                        icon={item.icon}
+                                        selected={selected}
+                                        setSelected={setSelected}
+                                    >
+                                    </Item>
+                            ))}
                         </Box>
                     </Menu>
                 </ProSidebar>
