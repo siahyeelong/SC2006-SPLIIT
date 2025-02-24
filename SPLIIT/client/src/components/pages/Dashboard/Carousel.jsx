@@ -1,7 +1,6 @@
 import { React, useState, useEffect } from 'react'
 import { Box, useTheme } from '@mui/material';
 import { tokens } from '../../../theme';
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CarouselCard from './CarouselCard';
@@ -49,8 +48,8 @@ function Carousel() {
         <>
             <Box className="carousel" width={'90%'}>
                 {/* <Slider {...slider_settings}> */}
-                {People.map((person) => (
-                    <CarouselCard key={person.identifier} ower={person} matrix={debtMatrix_R[person.identifier]} />
+                {Object.keys(People).map((person) => (
+                    <CarouselCard key={person} ower={People[person]} matrix={debtMatrix_R[person]} />
                 ))}
                 {/* </Slider> */}
             </Box>

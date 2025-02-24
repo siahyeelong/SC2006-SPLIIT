@@ -1,5 +1,5 @@
 import { React, useState } from 'react'
-import { People, Person } from '../../classes/People';
+import { People } from '../../classes/People';
 import { Categories } from '../../classes/Categories';
 import Chip from '@mui/material/Chip';
 import { useTheme, ToggleButton, ToggleButtonGroup, InputBase } from '@mui/material';
@@ -18,7 +18,6 @@ function LogTransactionForm() {
         description: '',
         payer: ''
     }
-    const categories = Categories.category
 
     const [formData, setFormData] = useState(formResetState);
 
@@ -137,26 +136,26 @@ function LogTransactionForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="container mt-4 ">
-            {/* Chip select input for who paid */}
-            <div className="mb-3">
+        < form onSubmit={handleSubmit} className="container mt-4 " >
+            {/* Chip select input for recipients */}
+            < div className="mb-3" >
                 <label className="form-label">Who is it for?</label><br />
                 <div className="chip-group">
-                    {People.map((person) => {
-                        const selected = formData.recipients.includes(person.identifier);
+                    {Object.keys(People).map((person) => {
+                        const selected = formData.recipients.includes(person);
                         return (
                             <Chip
-                                key={person.identifier}
-                                label={person.displayName}
+                                key={person}
+                                label={People[person].displayName}
                                 sx={{
                                     color: '#000',
-                                    backgroundColor: selected ? Person.findFavColour(person.identifier, People) : '#e0e0e0',
+                                    backgroundColor: selected ? People[person].favColour : '#e0e0e0',
                                     margin: '0.25%',
-                                    '&:hover': { backgroundColor: Person.findFavColour(person.identifier, People) }
+                                    '&:hover': { backgroundColor: People[person].favColour }
                                 }}
                                 clickable
-                                onClick={() => handleChipSelection(person.identifier)}
-                                onDelete={selected ? () => handleChipSelection(person.identifier) : undefined}
+                                onClick={() => handleChipSelection(person)}
+                                onDelete={selected ? () => handleChipSelection(person) : undefined}
                                 className={`chip ${selected ? 'chip-selected' : ''}`}
                             />
                         );
@@ -164,20 +163,20 @@ function LogTransactionForm() {
                 </div>
 
                 {errors.recipients && <div className="text-danger">{errors.recipients}</div>}
-            </div>
+            </div >
             {/* Dropdown input for category selection */}
             < div className="mb-3" >
                 <label htmlFor="category" key="categoryselection" className="form-label">Category</label>
                 <select id="category" className="form-select" value={formData.category} onChange={handleChange}>
                     <option key="default" value="">Select Category</option>
-                    {Object.keys(categories).map((cat) => (
+                    {Object.keys(Categories).map((cat) => (
                         <option value={cat} key={cat}>{cat}</option>
                     ))}
                 </select>
                 {errors.category && <div className="text-danger">{errors.category}</div>}
-            </div>
+            </div >
             {/* Text input for price input */}
-            <div className="mb-3">
+            < div className="mb-3" >
                 <label className="form-label">Price</label>
                 <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', borderRadius: '8px' }}>
                     <ToggleButtonGroup
@@ -217,9 +216,9 @@ function LogTransactionForm() {
                     />
                 </div>
                 {errors.price && <div className="text-danger">{errors.price}</div>}
-            </div>
+            </div >
             {/* Text input for description input */}
-            <div className="mb-3">
+            < div className="mb-3" >
                 <label htmlFor="description" className="form-label">Description</label>
                 <textarea
                     name="description"
@@ -230,21 +229,21 @@ function LogTransactionForm() {
                     onChange={handleChange}
                 ></textarea>
                 {errors.description && <div className="text-danger">{errors.description}</div>}
-            </div>
+            </div >
             {/* Dropdown input for who paid */}
-            <div className="mb-3">
+            < div className="mb-3" >
                 <label htmlFor="payer" className="form-label">Who Paid?</label>
                 <select name="payer" id="payer" className="form-select" value={formData.payer} onChange={handleChange}>
                     <option key="default" value="">Select Payer</option>
-                    {People.map((person) => (
-                        <option value={person.identifier} key={person.identifier}>{person.displayName}</option>
+                    {Object.keys(People).map((person) => (
+                        <option value={person} key={person}>{People[person].displayName}</option>
                     ))}
                 </select>
                 {errors.payer && <div className="text-danger">{errors.payer}</div>}
-            </div>
+            </div >
 
             <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
+        </form >
     )
 }
 

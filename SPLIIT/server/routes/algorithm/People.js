@@ -1,32 +1,20 @@
-class PeopleClass {
-    constructor() {
-        this.group = {}
+class Person {
+    constructor(identifier, displayName, favColour) {
+        this.identifier = identifier;
+        this.displayName = displayName;
+        this.favColour = favColour;
     }
-    setPersonData(person, name, colour) {
-        this.group[person] = { displayName: name, favColour: colour };
-    }
-    getPersonData(person) {
-        return this.group[person] || null;  // Return person data or null if not found
-    }
-
-    getAllPeople() {
-        return Object.entries(this.group).map(([key, value]) => ({
-            personKey: key,
-            ...value
-        }));
-    }
-
 }
 
-export const People = new PeopleClass();
-People.setPersonData('graycemom', "Grayce's Mom", '#FA9189');
-People.setPersonData('graycedad', "Grayce's Dad", '#FCAE7C');
-People.setPersonData('ylmom', "YL's Mom", '#FFE699');
-People.setPersonData('yldad', "YL's Dad", '#F9FFB5');
-People.setPersonData('yuxiang', "Yu Xiang", '#B3F5BC');
-People.setPersonData('danning', "Dan Ning", '#D6F6FF');
-People.setPersonData('yutian', "Yu Tian", '#E2CBF7');
-People.setPersonData('chubby', "Chubby", '#D1BDFF');
-People.setPersonData('sinlu', "Sin Lu", '#B3F5BC');
-People.setPersonData('grayce', "grayce", '#E2CBF7');
-People.setPersonData('yl', "yl", '#D6F6FF');
+export const People = {}
+People['person1'] = new Person('person1', "Person 1 name", '#FA9189');
+People['person2'] = new Person('person2', "Person two", '#FCAE7C');
+People['person3'] = new Person('person3', "User 3", '#FFE699');
+People['person4'] = new Person('person4', "user 4", '#F9FFB5');
+People['person5'] = new Person('person5', "5th person", '#B3F5BC');
+People['person6'] = new Person('person6', "sixth person", '#D6F6FF');
+People['person7'] = new Person('person7', "person number 7", '#E2CBF7');
+People['person8'] = new Person('person8', "person8", '#D1BDFF');
+People['person9'] = new Person('person9', "nine person", '#B3F5BC');
+People['person10'] = new Person('person10', "10th person", '#E2CBF7');
+People['person11'] = new Person('person11', "11th user", '#D6F6FF');

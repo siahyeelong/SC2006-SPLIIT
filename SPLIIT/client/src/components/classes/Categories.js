@@ -8,25 +8,6 @@ import SellRoundedIcon from '@mui/icons-material/SellRounded';
 import HealthAndSafetyRoundedIcon from '@mui/icons-material/HealthAndSafetyRounded';
 import DirectionsBoatFilledRoundedIcon from '@mui/icons-material/DirectionsBoatFilledRounded';
 
-class CategoriesClass {
-    constructor() {
-        this.category = {}
-    }
-    // setCategoryIcon(cat, icon) {
-    //     this.category[cat] = { icon: icon };
-    // }
-    setCategoryIcon(cat, icon, colour) {
-        this.category[cat] = { icon: <BackgroundBox colour={colour} icon={icon} /> };
-        this.category[cat].colour = colour
-    }
-    getCategoryIcon(cat) {
-        return this.category[cat] ? this.category[cat].icon : "no icon";
-    }
-    getCategoryColour(cat) {
-        return this.category[cat].colour || "grey";
-    }
-}
-
 const BackgroundBox = ({ colour, icon }) => {
     return (
         <Box sx={{
@@ -43,12 +24,21 @@ const BackgroundBox = ({ colour, icon }) => {
     )
 }
 
-export const Categories = new CategoriesClass()
-Categories.setCategoryIcon('Food', <RestaurantRoundedIcon style={{ color: '#f8f9fa' }} />, '#ee9b00')
-Categories.setCategoryIcon('Transport', <CommuteRoundedIcon style={{ color: '#f8f9fa' }} />, '#0a9396')
-Categories.setCategoryIcon('Shopping', <LocalMallRoundedIcon style={{ color: '#f8f9fa' }} />, '#ae2012')
-Categories.setCategoryIcon('Entertainment', <AttractionsRoundedIcon style={{ color: '#f8f9fa' }} />, '#ca6702')
-Categories.setCategoryIcon('Accomodation', <KingBedRoundedIcon style={{ color: '#f8f9fa' }} />, '#52796f')
-Categories.setCategoryIcon('Others', <SellRoundedIcon style={{ color: '#f8f9fa' }} />, '#6b705c')
-Categories.setCategoryIcon('Insurance', <HealthAndSafetyRoundedIcon style={{ color: '#f8f9fa' }} />, '#f26a8d')
-Categories.setCategoryIcon('Ferry', <DirectionsBoatFilledRoundedIcon style={{ color: '#f8f9fa' }} />, '#94d2bd')
+class Category {
+    constructor(name, icon, colour) {
+        this.name = name;
+        this.icon = <BackgroundBox colour={colour} icon={icon} />;
+        this.colour = colour;
+    }
+}
+
+export const Categories = {};
+Categories['Food'] = new Category('Food', <RestaurantRoundedIcon style={{ color: '#f8f9fa' }} />, '#ee9b00');
+Categories['Transport'] = new Category('Transport', <CommuteRoundedIcon style={{ color: '#f8f9fa' }} />, '#0a9396')
+Categories['Shopping'] = new Category('Shopping', <LocalMallRoundedIcon style={{ color: '#f8f9fa' }} />, '#ae2012')
+Categories['Entertainment'] = new Category('Entertainment', <AttractionsRoundedIcon style={{ color: '#f8f9fa' }} />, '#ca6702')
+Categories['Accomodation'] = new Category('Accomodation', <KingBedRoundedIcon style={{ color: '#f8f9fa' }} />, '#52796f')
+Categories['Others'] = new Category('Others', <SellRoundedIcon style={{ color: '#f8f9fa' }} />, '#6b705c')
+Categories['Insurance'] = new Category('Insurance', <HealthAndSafetyRoundedIcon style={{ color: '#f8f9fa' }} />, '#f26a8d')
+Categories['Ferry'] = new Category('Ferry', <DirectionsBoatFilledRoundedIcon style={{ color: '#f8f9fa' }} />, '#94d2bd')
+// append more as needed

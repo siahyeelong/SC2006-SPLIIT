@@ -1,6 +1,6 @@
 import React from 'react';
 import { Chip, Box } from '@mui/material';
-import { Person, People } from '../../classes/People';
+import { People } from '../../classes/People';
 
 export default function RecipientsCell({ recipients }) {
     if (!recipients.length) return <></>;
@@ -14,11 +14,11 @@ export default function RecipientsCell({ recipients }) {
             {displayedRecipients.map((recipient) => (
                 <Chip
                     key={recipient}
-                    label={Person.findDisplayName(recipient, People)}
+                    label={People[recipient].displayName}
                     sx={{
                         padding: '1px 1px',
                         borderRadius: '20px',
-                        backgroundColor: Person.findFavColour(recipient, People) || '#CCCCCC',
+                        backgroundColor: People[recipient].favColour || '#CCCCCC',
                         color: '#000',
                         fontWeight: 'bold',
                     }}
