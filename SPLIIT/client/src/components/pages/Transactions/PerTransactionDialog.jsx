@@ -80,7 +80,7 @@ function TransactionCard({ transaction }) {
                     <Typography fontWeight={'bold'}>Exchange rate: </Typography>
                 </Box>
                 <Box display={'flex'} justifyContent={'flex-start'} alignContent={'center'} p={'10px'}>
-                    <Typography>{ExchangeRates.getRate('IDR')}</Typography>
+                    <Typography>{ExchangeRates['IDR'].rate}</Typography>
                 </Box>
             </Box >
             {/* Display recipients */}

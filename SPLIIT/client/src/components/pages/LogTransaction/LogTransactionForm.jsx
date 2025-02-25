@@ -46,7 +46,7 @@ function LogTransactionForm() {
         const rawValue = e.target.value.replace(/[^0-9.]/g, ''); // Allow only digits and a period
         if (!/^(\d+(\.\d{0,2})?)?$/.test(rawValue)) return; // Prevents invalid decimal formats
 
-        const newCurrency = rawValue > ExchangeRates.getRate('IDR') ? 'IDR' : 'SGD';
+        const newCurrency = rawValue > ExchangeRates['IDR'].rate ? 'IDR' : 'SGD';
 
         // Delay or blur event to format the displayed value
         const formattedValue = formatNumberWithCommas(rawValue); // Keep raw input for better typing experience

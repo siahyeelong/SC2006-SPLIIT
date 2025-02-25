@@ -1,17 +1,11 @@
 class ExchangeRate {
-    constructor() {
-        this.exchange_rate = {}
+    // NOTE: the rates are against SGD. e.g. SGD 1 == MYR 3.3
+    constructor(country_name, currency_name, rate) {
+        this.country_name = country_name;
+        this.currency_name = currency_name;
+        this.rate = rate;
     }
-
-    setRate(currency, rate) {
-        this.exchange_rate[currency] = { rate: rate };
-    }
-
-    getRate(currency) {
-        return this.exchange_rate[currency] ? this.exchange_rate[currency].rate : 1
-    }
-
 }
 
-export const ExchangeRates = new ExchangeRate();
-ExchangeRates.setRate('IDR', 11877.96);
+export const ExchangeRates = {}
+ExchangeRates['IDR'] = new ExchangeRate('Indonesia', 'IDR', 11877.96);
