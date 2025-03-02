@@ -2,6 +2,7 @@ import express from "express";
 import db from "../db/connection.js";
 import { ObjectId } from "mongodb"; // This help convert the id from string to ObjectId for the _id.
 import { settle_debt } from "./algorithm/settle_debt.js";
+import { get_rates } from "./exchange_rates/get_rates.js";
 
 // router is an instance of the express router.
 // We use it to define our routes.
@@ -30,6 +31,16 @@ router.get("/owe", async (req, res) => {
     }
 });
 
+// This section will get the exchange rates
+router.get("/rates", async (req, res) => {
+    try {
+        const result = await get_rates();
+        res.send(result).status(200);
+    } catch (error) {
+        console.log(`exchange rates error:\n${error}`.red);
+        res.send("Not found").status(404);
+    }
+});
 // This section will help you get a single record by id
 router.get("/:id", async (req, res) => {
     try {
@@ -114,5 +125,6 @@ router.delete("/:id", async (req, res) => {
         res.status(500).send("Error deleting record");
     }
 });
+
 
 export default router;

@@ -1,10 +1,11 @@
 import { Dialog, DialogActions, DialogContent, Box, Typography, Button, Chip } from '@mui/material'
 import React from 'react'
 import { Categories } from '../../classes/Categories';
-import { ExchangeRates } from '../../classes/ExchangeRates';
+import { useExchangeRates } from '../../classes/ExchangeRates';
 import { People } from '../../classes/People';
 
 function TransactionCard({ transaction }) {
+    const { exchangeRates } = useExchangeRates();
 
     const price = parseFloat(transaction.price).toLocaleString('en-SG', {
         style: 'currency', currency: (transaction.currency === 'SGD') ? 'SGD' : (transaction.currency || 'SGD'),
@@ -80,7 +81,7 @@ function TransactionCard({ transaction }) {
                     <Typography fontWeight={'bold'}>Exchange rate: </Typography>
                 </Box>
                 <Box display={'flex'} justifyContent={'flex-start'} alignContent={'center'} p={'10px'}>
-                    <Typography>{ExchangeRates.getRate('IDR')}</Typography>
+                    <Typography>{exchangeRates['IDR']}</Typography>
                 </Box>
             </Box >
             {/* Display recipients */}
