@@ -8,7 +8,7 @@ function LandingPage() {
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                 <Header title={'LandingPage'} subtitle={'work in progress'} />
             </Box>
-            <div>(work in progress)</div>
+            <div color>(work in progress)</div>
         </Box>
     )
 }

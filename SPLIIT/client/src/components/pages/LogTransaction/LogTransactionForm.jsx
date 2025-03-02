@@ -4,11 +4,12 @@ import { Categories } from '../../classes/Categories';
 import Chip from '@mui/material/Chip';
 import { useTheme, ToggleButton, ToggleButtonGroup, InputBase } from '@mui/material';
 import { tokens } from '../../../theme'
-import { ExchangeRates } from '../../classes/ExchangeRates';
+import { ExchangeRates, useExchangeRates } from '../../classes/ExchangeRates';
 
 function LogTransactionForm() {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
+    const { exchangeRates } = useExchangeRates();
 
     const formResetState = {
         recipients: [],
@@ -46,7 +47,7 @@ function LogTransactionForm() {
         const rawValue = e.target.value.replace(/[^0-9.]/g, ''); // Allow only digits and a period
         if (!/^(\d+(\.\d{0,2})?)?$/.test(rawValue)) return; // Prevents invalid decimal formats
 
-        const newCurrency = rawValue > ExchangeRates['IDR'].rate ? 'IDR' : 'SGD';
+        const newCurrency = rawValue > exchangeRates['IDR'] ? 'IDR' : 'SGD';
 
         // Delay or blur event to format the displayed value
         const formattedValue = formatNumberWithCommas(rawValue); // Keep raw input for better typing experience

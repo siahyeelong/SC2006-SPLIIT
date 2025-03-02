@@ -21,11 +21,9 @@ export async function get_rates() {
     }
     if (todaysRates.length) {
         // data is cached
-        console.log('cached!')
         return todaysRates[0]
     } else {
         // data not cached
-        console.log('not cached!')
         let data = ''
         try {
             data = await call_exchange_rates_api();
