@@ -3,7 +3,7 @@ import { Box, Typography, useTheme, Stack } from '@mui/material';
 import { tokens } from '../../../theme';
 import { DataGrid } from '@mui/x-data-grid';
 import ToCSVButton from './ToCSVButton';
-import { Person, People } from '../../settings/People';
+import { People } from '../../classes/People';
 import RecipientsCell from './RecipientsCell';
 import CurrencySwitch from './CurrencySwitch';
 import PerTransactionDialog from './PerTransactionDialog';
@@ -77,7 +77,7 @@ function TransactionsTable() {
         { field: 'description', headerName: 'Description', flex: 15, sortable: true, filterable: true },
         {
             field: 'payer', headerName: 'Payer', flex: 8, sortable: true, filterable: true,
-            valueGetter: (params) => Person.findDisplayName(params.value, People)
+            valueGetter: (params) => People[params.value].displayName
         },
     ];
 

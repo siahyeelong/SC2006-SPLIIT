@@ -1,6 +1,6 @@
 import { React } from 'react'
 import { Box } from '@mui/material';
-import Header from '../../Header';
+import Header from '../MainUI/Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LogTransactionForm from './LogTransactionForm';
 

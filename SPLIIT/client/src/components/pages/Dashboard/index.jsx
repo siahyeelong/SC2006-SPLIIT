@@ -1,6 +1,6 @@
 import { React, useState, useEffect, createContext } from 'react'
-import { Box } from '@mui/material';
-import Header from '../../Header';
+import { Box, Typography } from '@mui/material';
+import Header from '../MainUI/Header';
 import Carousel from './Carousel';
 
 export const TransactionsContext = createContext([]);
@@ -35,9 +35,11 @@ function Dashboard() {
                 <Header title={'Dashboard'} subtitle={'view analytics'} />
             </Box>
             <TransactionsContext.Provider value={transactions}>
-                <Box display={'flex'} justifyContent={'center'} alignContent={'center'}>
-                    <Carousel />
-                </Box>
+                {error !== '' ?
+                    <Typography color='error'>Something went wrong</Typography> :
+                    <Box display={'flex'} justifyContent={'center'} alignContent={'center'}>
+                        <Carousel />
+                    </Box>}
             </TransactionsContext.Provider>
         </Box >
     )
