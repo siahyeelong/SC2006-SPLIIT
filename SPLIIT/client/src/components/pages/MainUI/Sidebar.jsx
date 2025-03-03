@@ -65,10 +65,12 @@ function Sidebar() {
                                 color: colours.grey[100],
                             }}>
                             {!isCollapsed && (
-                                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} ml={'15px'}>
-                                    <Typography variant='h3' color={colours.grey[100]}>
-                                        SPLIIT
-                                    </Typography>
+                                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} ml={'30px'}>
+                                    <Box display={'flex'} justifyContent={'center'} alignContent={'center'}>
+                                        <a href='/home'>
+                                            <img src='SPLIIT_logo.jpg' height={50} />
+                                        </a>
+                                    </Box>
                                     <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                                         <MenuOutlinedIcon />
                                     </IconButton>

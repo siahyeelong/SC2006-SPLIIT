@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Header from '../MainUI/Header';
 
 function CreateTrip() {
@@ -9,6 +9,9 @@ function CreateTrip() {
                 <Header title={'CreateTrip'} subtitle={'work in progress'} />
             </Box>
             <div>(work in progress)</div>
+            <Box display={'flex'} justifyContent={'center'}>
+                <Button variant='outlined' color='success' sx={{ margin: 5 }} href='/'>(simulate successful trip creation)</Button>
+            </Box>
         </Box>
     )
 }
