@@ -15,13 +15,14 @@ function Topbar() {
     return (
         <Box display='flex' justifyContent='space-between' p={2}>
             <DropdownMenu />
-            <Box display='flex'>
+            <Box flexGrow={1} />
+            <Box display='flex' justifyContent='flex-end'>
                 <IconButton onClick={colourMode.toggleColorMode}>
                     {theme.palette.mode === 'dark' ?
                         <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />
                     }
                 </IconButton>
-                <IconButton>
+                <IconButton href="/profile">
                     <AccountCircleRoundedIcon />
                 </IconButton>
             </Box>
