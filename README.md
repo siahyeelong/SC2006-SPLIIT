@@ -10,6 +10,12 @@
 
 ### Frontend
 ### Backend
+#### APIs used:
+1. Exchange rates - https://exchangeratesapi.io/documentation/
+1. Database - https://www.mongodb.com/
+1. LLM - 
+1. Authentication
+1. Maps - 
 
 ## Documentation
 
