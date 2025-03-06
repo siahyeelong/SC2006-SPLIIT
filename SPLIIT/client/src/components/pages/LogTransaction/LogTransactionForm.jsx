@@ -4,7 +4,7 @@ import { Categories } from '../../classes/Categories';
 import Chip from '@mui/material/Chip';
 import { useTheme, ToggleButton, ToggleButtonGroup, InputBase } from '@mui/material';
 import { tokens } from '../../../theme'
-import { ExchangeRates, useExchangeRates } from '../../classes/ExchangeRates';
+import { useExchangeRates } from '../../classes/ExchangeRates';
 
 function LogTransactionForm() {
     const theme = useTheme();
