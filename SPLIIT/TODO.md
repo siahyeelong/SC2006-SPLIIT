@@ -11,5 +11,4 @@ cookies
 - user
 
 ### To do
-- create a simple create trip form
-- create a simple register user form
+- set up backend for new user and new trip creation
