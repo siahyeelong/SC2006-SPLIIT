@@ -12,7 +12,7 @@ import Profile from "./components/pages/Profile";
 import TripInfo from "./components/pages/TripInfo";
 import LogTransaction from "./components/pages/LogTransaction";
 import Dashboard from "./components/pages/Dashboard";
-import Transactions from "./components/pages/Transactions"
+import Transactions from "./components/pages/Transactions";
 import AItinerary from "./components/pages/AItinirary";
 import { ExchangeRatesProvider } from "./components/classes/ExchangeRates";
 import { AuthProvider } from "./components/classes/AuthContext"
@@ -21,7 +21,6 @@ import AuthLayout from "./components/pages/MainUI/AuthLayout";
 
 function App() {
   const [theme, colorMode] = useMode();
-
   return (
     <AuthProvider>
       <ExchangeRatesProvider>
