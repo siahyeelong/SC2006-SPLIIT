@@ -1,8 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import ActionButton from "./ActionButton";
 import landingBackground from "../../assets/landingBackground.jpg";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+    const navigate = useNavigate();
+
     return (
         <Box
             sx={{
@@ -67,8 +70,11 @@ const HeroSection = () => {
                     flexWrap: "wrap",
                 }}
             >
-                <ActionButton text="Register" />
-                <ActionButton text="Login" />
+                <ActionButton
+                    text="Register"
+                    onClick={() => navigate("/register")}
+                />
+                <ActionButton text="Login" onClick={() => navigate("/login")} />
             </Box>
         </Box>
     );
