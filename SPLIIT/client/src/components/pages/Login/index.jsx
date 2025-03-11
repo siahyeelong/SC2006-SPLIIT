@@ -10,9 +10,6 @@ function Login() {
                 <Header title={'Login'} subtitle={'work in progress'} />
             </Box>
             <LoginForm />
-            <Box display={'flex'} justifyContent={'center'}>
-                <Button variant='outlined' color='success' sx={{ margin: 5 }} href='/selecttrip'>(simulate successful login)</Button>
-            </Box>
         </Box>
     )
 }

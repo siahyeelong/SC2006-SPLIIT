@@ -4,9 +4,8 @@ import Header from '../MainUI/Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LogTransactionForm from './LogTransactionForm';
 
-
-
 function LogTransaction() {
+
     return (
         <Box m='20px'>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>

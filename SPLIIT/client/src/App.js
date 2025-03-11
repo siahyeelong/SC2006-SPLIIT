@@ -15,52 +15,42 @@ import Dashboard from "./components/pages/Dashboard";
 import Transactions from "./components/pages/Transactions";
 import AItinerary from "./components/pages/AItinirary";
 import { ExchangeRatesProvider } from "./components/classes/ExchangeRates";
+import { AuthProvider } from "./components/classes/AuthContext"
 import PublicLayout from "./components/pages/MainUI/PublicLayout";
 import AuthLayout from "./components/pages/MainUI/AuthLayout";
 
 function App() {
-    const [theme, colorMode] = useMode();
-
-    return (
-        <ExchangeRatesProvider>
-            <ColorModeContext.Provider value={colorMode}>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline />
-                    <Routes>
-                        <Route element={<PublicLayout />}>
-                            {/* Visible without authentication */}
-                            <Route path="/home" element={<LandingPage />} />
-                            <Route path="/register" element={<Register />} />
-                            <Route path="/login" element={<Login />} />
-                            <Route
-                                path="/selecttrip"
-                                element={<SelectTrip />}
-                            />
-                            <Route
-                                path="/createtrip"
-                                element={<CreateTrip />}
-                            />
-                        </Route>
-                        <Route element={<AuthLayout />}>
-                            {/* Visible only after authentication */}
-                            <Route path="/profile" element={<Profile />} />
-                            <Route path="/tripinfo" element={<TripInfo />} />
-                            <Route path="/" element={<LogTransaction />} />
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route
-                                path="/transactions"
-                                element={<Transactions />}
-                            />
-                            <Route
-                                path="/aitinerary"
-                                element={<AItinerary />}
-                            />
-                        </Route>
-                    </Routes>
-                </ThemeProvider>
-            </ColorModeContext.Provider>
-        </ExchangeRatesProvider>
-    );
+  const [theme, colorMode] = useMode();
+  return (
+    <AuthProvider>
+      <ExchangeRatesProvider>
+        <ColorModeContext.Provider value={colorMode}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Routes>
+              <Route element={<PublicLayout />}>
+                {/* Visible without authentication */}
+                <Route path='/home' element={<LandingPage />} />
+                <Route path='/register' element={<Register />} />
+                <Route path='/login' element={<Login />} />
+              </Route>
+              <Route element={<AuthLayout />}>
+                {/* Visible only after authentication */}
+                <Route path='/selecttrip' element={<SelectTrip />} />
+                <Route path='/createtrip' element={<CreateTrip />} />
+                <Route path='/profile' element={<Profile />} />
+                <Route path='/tripinfo' element={<TripInfo />} />
+                <Route path='/' element={<LogTransaction />} />
+                <Route path='/dashboard' element={<Dashboard />} />
+                <Route path='/transactions' element={<Transactions />} />
+                <Route path='/aitinerary' element={<AItinerary />} />
+              </Route>
+            </Routes>
+          </ThemeProvider>
+        </ColorModeContext.Provider >
+      </ExchangeRatesProvider >
+    </AuthProvider>
+  );
 }
 
 export default App;
