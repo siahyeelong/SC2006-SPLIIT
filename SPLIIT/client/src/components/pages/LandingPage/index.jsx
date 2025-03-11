@@ -4,6 +4,7 @@ import ActionButton from "./ActionButton";
 import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import logo from "../../assets/SPLIIT_logo.jpg";
+import { Navigate } from "react-router-dom";
 
 const LandingPage = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -51,8 +52,8 @@ const LandingPage = () => {
                             backgroundColor: "transparent",
                         }}
                     >
-                        <ActionButton text="Register" />
-                        <ActionButton text="Login" />
+                        <ActionButton text="Register" to={"/register"} />
+                        <ActionButton text="Login" to={"/login"} />
                     </Box>
                 )}
             </Box>
