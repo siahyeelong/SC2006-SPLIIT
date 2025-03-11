@@ -11,26 +11,28 @@ const LandingPage = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 50 ? true : false);
-            setShowButton(window.scrollY > 100 ? true : false);
+            setScrolled(window.scrollY > 50);
+            setShowButton(window.scrollY > 100);
         };
 
         window.addEventListener("scroll", handleScroll);
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     return (
-        <Box sx={{ fontFamily: "Poppins, sans-sarif" }}>
+        <Box sx={{ fontFamily: "Poppins, sans-serif" }}>
             <Box
                 sx={{
                     top: "0",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "flex-start",
-                    padding: "20px 40px",
+                    padding: {
+                        xs: "10px 20px",
+                        sm: "15px 30px",
+                        md: "20px 40px",
+                        lg: "20px 40px",
+                    },
                     zIndex: "1000",
                     position: "fixed",
                     backgroundColor: scrolled ? "#141b2d" : "transparent",
@@ -39,7 +41,11 @@ const LandingPage = () => {
                 }}
             >
                 <a href="/home">
-                    <img src={logo} height={120} alt="SPLIIT Logo" />
+                    <img
+                        src={logo}
+                        alt="SPLIIT Logo"
+                        style={{ height: "clamp(80px, 6vw, 120px)" }}
+                    />
                 </a>
                 {showButton && (
                     <Box
