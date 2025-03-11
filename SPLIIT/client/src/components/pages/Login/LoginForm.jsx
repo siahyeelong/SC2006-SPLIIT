@@ -1,7 +1,18 @@
-import { Box, Button, TextField } from '@mui/material';
-import React, { useState } from 'react'
+import { Box, Button, TextField, Typography } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../../classes/AuthContext';
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
+
+    const { login, user } = useContext(AuthContext)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (user) {
+            navigate("/selecttrip"); // Redirect if already logged in
+        }
+    }, [user, navigate]); // Runs whenever user state changes
 
     const [formData, setFormData] = useState({
         username: "",
@@ -25,10 +36,15 @@ function LoginForm() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         if (validate()) {
-            e.preventDefault();
-            console.log("Form submitted:", formData);
+            try {
+                await login(formData.username, formData.password)
+                navigate("/selecttrip")
+            } catch (error) {
+                setErrors({ "auth": "Invalid username or password" });
+            }
         }
     };
 
@@ -48,7 +64,8 @@ function LoginForm() {
             <TextField label="Username" required variant="filled" name="username" value={formData.username} onChange={handleChange} />
             {/* TODO: on handleChange, make the password encrypted or something */}
             <TextField label="Password" required variant="filled" name="password" value={formData.password} onChange={handleChange} />
-
+            {errors && <Typography color='error'>
+                {errors.auth}</Typography>}
             <Button type="submit" variant="contained" color="secondary">
                 Submit
             </Button>

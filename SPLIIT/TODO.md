@@ -11,4 +11,4 @@ cookies
 - user
 
 ### To do
-- set up backend for new user and new trip creation
+- make user go back home if not auth before

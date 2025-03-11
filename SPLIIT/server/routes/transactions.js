@@ -20,6 +20,7 @@ router.get("/", async (req, res) => {
     }
 });
 
+
 router.get("/owe", async (req, res) => {
     try {
         let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
@@ -41,6 +42,7 @@ router.get("/rates", async (req, res) => {
         res.send("Not found").status(404);
     }
 });
+
 // This section will help you get a single record by id
 router.get("/:id", async (req, res) => {
     try {
@@ -67,6 +69,7 @@ router.get("/:id", async (req, res) => {
 }
  */
 router.post("/", async (req, res) => {
+    // deprecated version
     try {
         let newRecord = {
             recipients: req.body.recipients,
@@ -77,6 +80,31 @@ router.post("/", async (req, res) => {
             description: req.body.description,
             payer: req.body.payer,
             timestamp: new Date(),
+        };
+        let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
+        let result = await collection.insertOne(newRecord);
+        res.send(result).status(204);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error adding record");
+    }
+});
+router.post("/newtransaction", async (req, res) => {
+    // TODO
+    // active version
+    try {
+        let newRecord = {
+            recipients: req.body.recipients,
+            category: req.body.category,
+            price: req.body.price,
+            currency: req.body.currency,
+            isLocalCurrency: req.body.isLocalCurrency,
+            exchangeRate: req.body.exchangeRate,
+            description: req.body.description,
+            payer: req.body.payer,
+            timestamp: new Date(),
+            tripID: req.body.tripID,
+            geolocation: req.body.geolocation,
         };
         let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
         let result = await collection.insertOne(newRecord);
