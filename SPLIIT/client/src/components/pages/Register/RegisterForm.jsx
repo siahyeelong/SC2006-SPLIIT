@@ -1,6 +1,8 @@
-import { Box, Button, Chip, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import React, { useState } from 'react'
+import { Box, Button, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import React, { useContext, useState } from 'react'
 import CheckIcon from '@mui/icons-material/Check';
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from '../../classes/AuthContext';
 
 const favColourChoices = [
     "#D1BDFF",
@@ -14,6 +16,8 @@ const favColourChoices = [
 ]
 
 function RegisterForm() {
+    const { login } = useContext(AuthContext)
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         email: "",
         username: "",
@@ -46,10 +50,32 @@ function RegisterForm() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         if (validate()) {
-            e.preventDefault();
-            console.log("Form submitted:", formData);
+            try {
+                const backendURL = process.env.REACT_APP_BACKEND_URL;
+                const response = await fetch(`${backendURL}/users/createuser`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                })
+                if (response.status === 400) {
+                    setErrors({ "username": "Please enter a unique username." })
+                    throw new Error("Username already exists");
+                }
+
+                if (!response.ok) {
+                    throw new Error("Network error. Please try again later.");
+                }
+                login(formData.username, formData.password);
+                setErrors({})
+                navigate("/selecttrip")
+            } catch (error) {
+                console.log("Error encountered:", error)
+            }
         }
     };
 
@@ -70,7 +96,7 @@ function RegisterForm() {
                 Enter a valid email
             </Typography>
             <TextField label="Email" required variant="filled" name="email" value={formData.email} onChange={handleChange} />
-            <Typography>
+            <Typography color={errors.username ? 'error' : undefined}>
                 Enter a unique username
             </Typography>
             <TextField label="Username" required variant="filled" name="username" value={formData.username} onChange={handleChange} />

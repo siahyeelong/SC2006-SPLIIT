@@ -11,7 +11,6 @@ function Register() {
             </Box>
             <RegisterForm />
             <Box display={'flex'} justifyContent={'center'}>
-                <Button variant='outlined' color='success' sx={{ margin: 5 }} href='/selecttrip'>(simulate successful registration)</Button>
                 <Button variant='outlined' color='info' sx={{ margin: 5 }} href='/login'>Login instead</Button>
             </Box>
         </Box>
