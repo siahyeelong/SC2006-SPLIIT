@@ -10,7 +10,7 @@ const AboutSection = () => {
     return (
         <Box
             sx={{
-                padding: "100px 40px",
+                padding: { xs: "80px 20px", md: "100px 40px" },
                 textAlign: "center",
                 backgroundColor: "#f9f9f9",
                 position: "relative",
@@ -21,9 +21,9 @@ const AboutSection = () => {
                 <Typography
                     variant="h2"
                     sx={{
-                        fontSize: "2.5rem",
+                        fontSize: { xs: "2rem", md: "2.5rem" },
                         fontWeight: "bold",
-                        marginBottom: "40px",
+                        marginBottom: { xs: "20px", md: "40px" },
                         color: "black",
                     }}
                 >
@@ -32,10 +32,11 @@ const AboutSection = () => {
                 <Typography
                     variant="body1"
                     sx={{
-                        fontSize: "1.1rem",
+                        fontSize: { xs: "1rem", md: "1.1rem" },
                         color: "#4a4a4a",
                         maxWidth: "800px",
-                        margin: "0 auto 60px",
+                        margin: "0 auto",
+                        marginBottom: { xs: "40px", md: "60px" },
                         fontWeight: 500,
                         lineHeight: 1.6,
                     }}
@@ -80,12 +81,19 @@ const AboutSection = () => {
                             icon: <People sx={{ fontSize: "2.5rem" }} />,
                         },
                     ].map((feature, index) => (
-                        <Grid2 item xs={4} key={index} sx={{ display: "flex" }}>
+                        <Grid2
+                            item
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            key={index}
+                            sx={{ display: "flex", justifyContent: "center" }}
+                        >
                             <Box
                                 sx={{
-                                    padding: "35px",
-                                    width: "350px",
-                                    height: "400px",
+                                    padding: { xs: "20px", md: "35px" },
+                                    width: { xs: "300px", md: "350px" },
+                                    height: { xs: "380px", md: "400px" },
                                     display: "flex",
                                     flexDirection: "column",
                                     background: "rgba(255,255,255,0.96)",
@@ -117,6 +125,10 @@ const AboutSection = () => {
                                         marginBottom: "10px",
                                         color: "black",
                                         flexShrink: 0,
+                                        fontSize: {
+                                            xs: "1.25rem",
+                                            md: "1.5rem",
+                                        },
                                     }}
                                 >
                                     {feature.title}
@@ -127,7 +139,10 @@ const AboutSection = () => {
                                         color: "#616161",
                                         marginBottom: "15px",
                                         fontWeight: "bold",
-                                        fontSize: "0.95rem",
+                                        fontSize: {
+                                            xs: "0.85rem",
+                                            md: "0.95rem",
+                                        },
                                         flexShrink: 0,
                                     }}
                                 >
@@ -136,7 +151,7 @@ const AboutSection = () => {
                                 <Box
                                     component="ul"
                                     sx={{
-                                        padding: " 10px 0",
+                                        padding: "10px 0",
                                         textAlign: "left",
                                         margin: "0 20px",
                                         flexGrow: 1,
@@ -145,12 +160,18 @@ const AboutSection = () => {
                                             display: "flex",
                                             alignItems: "center",
                                             marginBottom: "15px",
-                                            fontSize: "0.9rem",
+                                            fontSize: {
+                                                xs: "0.8rem",
+                                                md: "0.9rem",
+                                            },
                                             color: "#2d2d2d",
                                             fontWeight: 500,
                                         },
                                         "& svg": {
-                                            fontSize: "1rem",
+                                            fontSize: {
+                                                xs: "0.8rem",
+                                                md: "1rem",
+                                            },
                                             marginRight: "15px",
                                             color: "primary.main",
                                         },
