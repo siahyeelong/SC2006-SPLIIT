@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 
-const ActionButton = ({ text, onClick }) => {
+const ActionButton = ({ text, onClick, to }) => {
     return (
         <Button
             variant="contained"
@@ -15,6 +15,7 @@ const ActionButton = ({ text, onClick }) => {
                 "&:hover": { backgroundColor: "rgba(70, 129, 244, 0.8)" },
             }}
             onClick={onClick}
+            href={to}
         >
             {text}
         </Button>
