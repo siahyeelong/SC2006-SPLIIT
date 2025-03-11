@@ -114,7 +114,7 @@ function LogTransactionForm() {
                 let response = "";
                 const backendURL = process.env.REACT_APP_BACKEND_URL;
 
-                response = await fetch(`${backendURL}/record`, {
+                response = await fetch(`${backendURL}/transactions`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

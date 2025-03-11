@@ -18,7 +18,7 @@ export const ExchangeRatesProvider = ({ children }) => {
     const getRates = async () => {
         const backendURL = process.env.REACT_APP_BACKEND_URL;
         try {
-            const response = await fetch(`${backendURL}/record/rates`);
+            const response = await fetch(`${backendURL}/transactions/rates`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

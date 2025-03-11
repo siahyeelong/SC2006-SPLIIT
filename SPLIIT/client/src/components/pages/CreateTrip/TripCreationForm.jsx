@@ -4,8 +4,8 @@ import { useExchangeRates } from '../../classes/ExchangeRates';
 
 function TripCreationForm() {
 
-    const [formData, setFormData] = useState({
-        tripId: "",
+    const formResetState = {
+        tripID: "",
         tripName: "",
         tripDescription: "",
         foreignCurrency: "",
@@ -15,11 +15,26 @@ function TripCreationForm() {
         budget: "",
         startDate: "",
         endDate: "",
-    });
+        users: "", // TODO: set to cookies' current user
+    };
+
+    const [formData, setFormData] = useState(formResetState);
 
     const [errors, setErrors] = useState({});
 
     const { exchangeRates } = useExchangeRates();
+
+    // gets all trip IDs to ensure new ID created does not match any
+    const getAllTripIDs = async () => {
+        // TODO
+    }
+
+    // verifies if the tripID keyed in matches a record. if it does, auto submit and move on to the next page
+    const handleTripIDChange = (e) => {
+        // TODO
+        // if e.target.value matches a record
+        // file a jointrip request to join the trip
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -42,10 +57,42 @@ function TripCreationForm() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    // generates a new unique trip ID
+    const generateTripID = async () => {
+        // TODO
+        return 0
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         if (validate()) {
-            e.preventDefault();
-            console.log("Form submitted:", formData);
+            // Submit form logic here
+            try {
+                // Adjust price back to number format
+                formData.price = formData.price.replace(/[^0-9.]/g, '')
+
+                let response = "";
+                const backendURL = process.env.REACT_APP_BACKEND_URL;
+
+                response = await fetch(`${backendURL}/trips/createtrip`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                alert('Transaction logged successfully!');
+
+            } catch (error) {
+                console.error("something went wrong with updating a record: ", error);
+                alert("Something went wrong!");
+            } finally {
+                // Clear form
+                setFormData(formResetState);
+            }
         }
     };
 
@@ -65,7 +112,7 @@ function TripCreationForm() {
             {/* TODO: reformat the layout of the form to make UI more logical */}
 
             {/* TODO: once this field is filled in, all other fields should be disabled */}
-            <TextField label="I have a Trip ID" variant="filled" name="tripId" value={formData.tripId} onChange={handleChange} />
+            <TextField label="I have a Trip ID" variant="filled" name="tripID" value={formData.tripID} onChange={handleChange} />
             <TextField label="Trip Name" variant="filled" name="tripName" value={formData.tripName} onChange={handleChange} required />
             <TextField label="Trip Description" variant="filled" name="tripDescription" value={formData.tripDescription} onChange={handleChange} multiline rows={3} />
 
