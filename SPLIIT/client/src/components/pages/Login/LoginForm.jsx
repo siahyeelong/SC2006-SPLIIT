@@ -1,12 +1,24 @@
-import { Box, Button, TextField, Typography } from '@mui/material';
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../../classes/AuthContext';
+import {
+    Box,
+    Button,
+    FilledInput,
+    FormControl,
+    FormHelperText,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    TextField,
+    Typography,
+} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../classes/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function LoginForm() {
-
-    const { login, user } = useContext(AuthContext)
-    const navigate = useNavigate()
+    const { login, user } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -16,20 +28,35 @@ function LoginForm() {
 
     const [formData, setFormData] = useState({
         username: "",
-        password: ""
-    })
+        password: "",
+    });
 
-    const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleTogglePassword = () => {
+        setShowPassword((s) => !s);
+    };
+
     const validate = () => {
         const newErrors = {};
-        if (!formData.username.length) newErrors.username = "Please enter a username.";
-        if (!formData.password.length) newErrors.password = "Please enter a password.";
+        const passwordLength = 8;
+
+        if (!formData.username.length)
+            newErrors.username = "Please enter a username.";
+        else if (/\s/.test(formData.username))
+            newErrors.username = "Username should not contain whitespaces";
+
+        if (!formData.password.length)
+            newErrors.password = "Please enter a password.";
+        else if (formData.password.length < passwordLength)
+            newErrors.password = `Password should contain at least ${passwordLength} characters.`;
+        else if (/\s/.test(formData.password))
+            newErrors.password = "Password should not contain whitespaces.";
         // validation logic to verify user and password matches
 
         setErrors(newErrors);
@@ -40,10 +67,10 @@ function LoginForm() {
         e.preventDefault();
         if (validate()) {
             try {
-                await login(formData.username, formData.password)
-                navigate("/selecttrip")
+                await login(formData.username, formData.password);
+                navigate("/selecttrip");
             } catch (error) {
-                setErrors({ "auth": "Invalid username or password" });
+                setErrors({ auth: "Invalid username or password" });
             }
         }
     };
@@ -61,16 +88,54 @@ function LoginForm() {
                 mt: 4,
             }}
         >
-            <TextField label="Username" required variant="filled" name="username" value={formData.username} onChange={handleChange} />
-            {/* TODO: on handleChange, make the password encrypted or something */}
-            <TextField label="Password" required variant="filled" name="password" value={formData.password} onChange={handleChange} />
-            {errors && <Typography color='error'>
-                {errors.auth}</Typography>}
+            <TextField
+                label="Username"
+                required
+                variant="filled"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                error={Boolean(errors.username)}
+                helperText={errors.username}
+            />
+
+            <FormControl
+                variant="filled"
+                required
+                error={Boolean(errors.password)}
+            >
+                <InputLabel>Password</InputLabel>
+                <FilledInput
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                onClick={handleTogglePassword}
+                                edge="end"
+                            >
+                                {showPassword ? (
+                                    <VisibilityOff />
+                                ) : (
+                                    <Visibility />
+                                )}
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                />
+                {errors.password && (
+                    <FormHelperText>{errors.password}</FormHelperText>
+                )}
+            </FormControl>
+
+            {errors && <Typography color="error">{errors.auth}</Typography>}
             <Button type="submit" variant="contained" color="secondary">
                 Submit
             </Button>
         </Box>
-    )
+    );
 }
 
-export default LoginForm
+export default LoginForm;
