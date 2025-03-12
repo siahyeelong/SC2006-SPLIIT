@@ -4,34 +4,61 @@ import ActionButton from "./ActionButton";
 import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import logo from "../../assets/SPLIIT_logo.jpg";
-import { Navigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
     const [scrolled, setScrolled] = useState(false);
     const [showButton, setShowButton] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
+        // Immediate scroll to top on mount/route change
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
+        // New scroll handler with throttling
         const handleScroll = () => {
-            setScrolled(window.scrollY > 50 ? true : false);
-            setShowButton(window.scrollY > 100 ? true : false);
+            setScrolled(window.scrollY > 50);
+            setShowButton(window.scrollY > 100);
         };
 
-        window.addEventListener("scroll", handleScroll);
+        // Add passive scroll listener
+        window.addEventListener("scroll", handleScroll, { passive: true });
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
+            // Cleanup scroll position when leaving page
+            window.history.replaceState(
+                { ...window.history.state, scrollPosition: 0 },
+                ""
+            );
         };
+    }, [location.key]); // Use location.key instead of pathname
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+            setShowButton(window.scrollY > 100);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
     return (
-        <Box sx={{ fontFamily: "Poppins, sans-sarif" }}>
+        <Box sx={{ fontFamily: "Poppins, sans-serif" }}>
             <Box
                 sx={{
                     top: "0",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "flex-start",
-                    padding: "20px 40px",
+                    padding: {
+                        xs: "10px 20px",
+                        sm: "15px 30px",
+                        md: "20px 40px",
+                        lg: "20px 40px",
+                    },
                     zIndex: "1000",
                     position: "fixed",
                     backgroundColor: scrolled ? "#141b2d" : "transparent",
@@ -40,7 +67,11 @@ const LandingPage = () => {
                 }}
             >
                 <a href="/home">
-                    <img src={logo} height={120} alt="SPLIIT Logo" />
+                    <img
+                        src={logo}
+                        alt="SPLIIT Logo"
+                        style={{ height: "clamp(80px, 6vw, 120px)" }}
+                    />
                 </a>
                 {showButton && (
                     <Box
@@ -52,8 +83,14 @@ const LandingPage = () => {
                             backgroundColor: "transparent",
                         }}
                     >
-                        <ActionButton text="Register" to={"/register"} />
-                        <ActionButton text="Login" to={"/login"} />
+                        <ActionButton
+                            text="Register"
+                            onClick={() => navigate("/register")}
+                        />
+                        <ActionButton
+                            text="Login"
+                            onClick={() => navigate("/login")}
+                        />
                     </Box>
                 )}
             </Box>
