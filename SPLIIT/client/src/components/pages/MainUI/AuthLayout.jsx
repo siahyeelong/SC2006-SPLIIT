@@ -4,22 +4,22 @@ import Topbar from "./Topbar";
 import { useAuth } from "../../classes/AuthContext";
 
 const AuthLayout = () => {
-    const { user, loading } = useAuth();
+    // const { user, loading } = useAuth();
 
-    if (loading) {
-        return <div>Loading...</div>
-    }
+    // if (loading) {
+    //     return <div>Loading...</div>
+    // }
 
-    if (!user) {
-        return <Navigate to="/home" />;
-    }
+    // if (!user) {
+    //     return <Navigate to="/home" />;
+    // }
 
     return (
         <div className="app">
             <Sidebar />
             <main className="content">
                 <Topbar />
-                <Outlet />  {/* This will render child routes */}
+                <Outlet /> {/* This will render child routes */}
             </main>
         </div>
     );
