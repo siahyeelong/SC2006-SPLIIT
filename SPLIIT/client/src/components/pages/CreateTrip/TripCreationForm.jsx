@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { TextField, MenuItem, Button, Box } from "@mui/material";
-import { useExchangeRates } from '../../classes/ExchangeRates';
+import { useExchangeRates } from "../../classes/ExchangeRates";
 
 function TripCreationForm() {
-
     const formResetState = {
         tripID: "",
         tripName: "",
@@ -27,14 +26,14 @@ function TripCreationForm() {
     // gets all trip IDs to ensure new ID created does not match any
     const getAllTripIDs = async () => {
         // TODO
-    }
+    };
 
     // verifies if the tripID keyed in matches a record. if it does, auto submit and move on to the next page
     const handleTripIDChange = (e) => {
         // TODO
         // if e.target.value matches a record
         // file a jointrip request to join the trip
-    }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -47,11 +46,16 @@ function TripCreationForm() {
 
     const validate = () => {
         const newErrors = {};
-        if (!formData.tripName.length) newErrors.tripName = "Please enter a trip name.";
-        if (!formData.foreignCurrency) newErrors.foreignCurrency = "Please select a foreign currency.";
-        if (!formData.localCurrency) newErrors.localCurrency = "Please select a local currency.";
-        if (!formData.budget || isNaN(formData.price.replace(/[^0-9.]/g, ''))) newErrors.price = "Budget must be a valid number.";
-        if (formData.startDate > formData.endDate) newErrors.date = "End date must be later than start date."
+        if (!formData.tripName.length)
+            newErrors.tripName = "Please enter a trip name.";
+        if (!formData.foreignCurrency)
+            newErrors.foreignCurrency = "Please select a foreign currency.";
+        if (!formData.localCurrency)
+            newErrors.localCurrency = "Please select a local currency.";
+        if (!formData.budget || isNaN(formData.price.replace(/[^0-9.]/g, "")))
+            newErrors.price = "Budget must be a valid number.";
+        if (formData.startDate > formData.endDate)
+            newErrors.date = "End date must be later than start date.";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -60,8 +64,8 @@ function TripCreationForm() {
     // generates a new unique trip ID
     const generateTripID = async () => {
         // TODO
-        return 0
-    }
+        return 0;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -69,7 +73,7 @@ function TripCreationForm() {
             // Submit form logic here
             try {
                 // Adjust price back to number format
-                formData.price = formData.price.replace(/[^0-9.]/g, '')
+                formData.price = formData.price.replace(/[^0-9.]/g, "");
 
                 let response = "";
                 const backendURL = process.env.REACT_APP_BACKEND_URL;
@@ -82,12 +86,15 @@ function TripCreationForm() {
                     body: JSON.stringify(formData),
                 });
 
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                if (!response.ok)
+                    throw new Error(`HTTP error! status: ${response.status}`);
 
-                alert('Transaction logged successfully!');
-
+                alert("Transaction logged successfully!");
             } catch (error) {
-                console.error("something went wrong with updating a record: ", error);
+                console.error(
+                    "something went wrong with updating a record: ",
+                    error
+                );
                 alert("Something went wrong!");
             } finally {
                 // Clear form
@@ -112,21 +119,62 @@ function TripCreationForm() {
             {/* TODO: reformat the layout of the form to make UI more logical */}
 
             {/* TODO: once this field is filled in, all other fields should be disabled */}
-            <TextField label="I have a Trip ID" variant="filled" name="tripID" value={formData.tripID} onChange={handleChange} />
-            <TextField label="Trip Name" variant="filled" name="tripName" value={formData.tripName} onChange={handleChange} required />
-            <TextField label="Trip Description" variant="filled" name="tripDescription" value={formData.tripDescription} onChange={handleChange} multiline rows={3} />
+            <TextField
+                label="I have a Trip ID"
+                variant="filled"
+                name="tripID"
+                value={formData.tripID}
+                onChange={handleChange}
+            />
+            <TextField
+                label="Trip Name"
+                variant="filled"
+                name="tripName"
+                value={formData.tripName}
+                onChange={handleChange}
+                required
+            />
+            <TextField
+                label="Trip Description"
+                variant="filled"
+                name="tripDescription"
+                value={formData.tripDescription}
+                onChange={handleChange}
+                multiline
+                rows={3}
+            />
 
             {/* TODO: input validation for currency fields. foreign cannot be same as local currency */}
             {/* Currency Dropdowns */}
-            <TextField select label="Foreign Currency" variant="filled" name="foreignCurrency" value={formData.foreignCurrency} onChange={handleChange} required>
+            <TextField
+                select
+                label="Foreign Currency"
+                variant="filled"
+                name="foreignCurrency"
+                value={formData.foreignCurrency}
+                onChange={handleChange}
+                required
+            >
                 {Object.keys(exchangeRates).map((currency) => (
-                    <MenuItem key={currency} value={currency}>{currency}</MenuItem>
+                    <MenuItem key={currency} value={currency}>
+                        {currency}
+                    </MenuItem>
                 ))}
             </TextField>
 
-            <TextField select label="Local Currency" variant="filled" name="localCurrency" value={formData.localCurrency} onChange={handleChange} required>
+            <TextField
+                select
+                label="Local Currency"
+                variant="filled"
+                name="localCurrency"
+                value={formData.localCurrency}
+                onChange={handleChange}
+                required
+            >
                 {Object.keys(exchangeRates).map((currency) => (
-                    <MenuItem key={currency} value={currency}>{currency}</MenuItem>
+                    <MenuItem key={currency} value={currency}>
+                        {currency}
+                    </MenuItem>
                 ))}
             </TextField>
 
@@ -137,19 +185,46 @@ function TripCreationForm() {
             </Button>
 
             {/* TODO: user can type a city / state and when they press enter, they can add more  */}
-            <TextField label="Cities/States" variant="filled" name="cities" value={formData.cities} onChange={handleChange} />
-            <TextField label="Budget" variant="filled" name="budget" value={formData.budget} onChange={handleChange} type="number" />
+            <TextField
+                label="Cities/States"
+                variant="filled"
+                name="cities"
+                value={formData.cities}
+                onChange={handleChange}
+            />
+            <TextField
+                label="Budget"
+                variant="filled"
+                name="budget"
+                value={formData.budget}
+                onChange={handleChange}
+                type="number"
+            />
 
             {/* TODO: input validation for date fields. end date cannot be earlier than start date */}
-            <TextField label="Start Date" variant="filled" name="startDate" value={formData.startDate} onChange={handleChange} type="date" />
-            <TextField label="End Date" variant="filled" name="endDate" value={formData.endDate} onChange={handleChange} type="date" />
+            <TextField
+                label="Start Date"
+                variant="filled"
+                name="startDate"
+                value={formData.startDate}
+                onChange={handleChange}
+                type="date"
+            />
+            <TextField
+                label="End Date"
+                variant="filled"
+                name="endDate"
+                value={formData.endDate}
+                onChange={handleChange}
+                type="date"
+            />
 
             {/* Submit Button */}
             <Button type="submit" variant="contained" color="secondary">
                 Submit
             </Button>
-        </Box >
+        </Box>
     );
 }
 
-export default TripCreationForm
+export default TripCreationForm;
