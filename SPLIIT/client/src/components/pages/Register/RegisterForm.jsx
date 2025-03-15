@@ -236,6 +236,7 @@ function RegisterForm() {
                 variant="contained"
                 color="secondary"
                 sx={{ margin: 4 }}
+                onClick={handleSubmit}
             >
                 Submit
             </Button>
