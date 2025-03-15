@@ -18,7 +18,7 @@ import Header from "../MainUI/Header";
 
 // placeholder until connect with backend
 const MOCK_PROFILE = {
-    displayName: "Boris",
+    displayName: "Bob",
     favoriteColor: "#D1BDFF",
     trips: [
         { id: 1, name: "USA'25", flag: "🇺🇸", date: "2025-06-01" },
@@ -61,12 +61,12 @@ function Profile() {
 
     return (
         <Box
-            sx={{
-                padding: { xs: 2, sm: 3 },
-                maxWidth: { xs: "100%", md: 1200, lg: 1400 },
-                margin: "0 auto",
-                boxSizing: "border-box",
-            }}
+        // sx={{
+        //     padding: { xs: 2, sm: 3 },
+        //     maxWidth: { xs: "100%", md: 1200, lg: 1400 },
+        //     margin: "0 auto",
+        //     boxSizing: "border-box",
+        // }}
         >
             <Header title="Profile" subtitle="Personalize your experience" />
 

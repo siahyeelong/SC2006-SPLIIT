@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -13,6 +13,7 @@ import { tokens } from "../../../theme";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MenuItems from "../../classes/MenuItems";
 import logo from "../../assets/SPLIIT_logo.jpg";
+import { useState } from "react";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
@@ -30,21 +31,27 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
     );
 };
 
-function Sidebar() {
+function Sidebar({ isCollapsed, setIsCollapsed }) {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
-    const [isCollapsed, setIsCollapsed] = useState(true);
     const [selected, setSelected] = useState("logtransaction");
     const isVertical = useMediaQuery("(max-aspect-ratio: 1/1)");
 
     return isVertical ? (
         <></>
     ) : (
-        // if display is horizontal
         <Box
             sx={{
                 "& .pro-sidebar-inner": {
                     background: `${colours.primary[400]} !important`,
+                    height: "100vh !important",
+                },
+                "& .pro-sidebar": {
+                    height: "100vh !important",
+                    width: "100% !important",
+                    position: "static !important",
+                    top: 0,
+                    left: 0,
                 },
                 "& .pro-icon-wrapper": {
                     backgroundColor: "transparent !important",
@@ -77,11 +84,7 @@ function Sidebar() {
                                 alignItems={"center"}
                                 ml={"30px"}
                             >
-                                <Box
-                                    display={"flex"}
-                                    justifyContent={"center"}
-                                    alignContent={"center"}
-                                >
+                                <Box display={"flex"} justifyContent={"center"}>
                                     <a href="/home">
                                         <img
                                             src={logo}
@@ -108,7 +111,7 @@ function Sidebar() {
                                     icon={item.icon}
                                     selected={selected}
                                     setSelected={setSelected}
-                                ></Item>
+                                />
                             )
                         )}
                     </Box>
