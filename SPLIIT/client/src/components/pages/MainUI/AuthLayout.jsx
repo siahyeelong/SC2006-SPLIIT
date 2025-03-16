@@ -44,8 +44,8 @@ const AuthLayout = () => {
             <Box
                 sx={{
                     flexGrow: 1,
-                    marginLeft: `${sidebarWidth}px`,
-                    width: `calc(100% - ${sidebarWidth}px)`,
+                    marginLeft: `${sidebarWidth + 30}px`,
+                    width: `calc(100% - ${sidebarWidth + 30}px)`,
                     transition: "margin-left 0.3s ease, width 0.3s ease",
                 }}
             >
