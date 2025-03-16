@@ -35,11 +35,16 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
     const [selected, setSelected] = useState("logtransaction");
-    const isVertical = useMediaQuery("(max-aspect-ratio: 1/1)");
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-    return isVertical ? (
-        <></>
-    ) : (
+    // Handle automatic collapse on mobile
+    React.useEffect(() => {
+        if (isMobile) {
+            setIsCollapsed(true);
+        }
+    }, [isMobile, setIsCollapsed]);
+
+    return (
         <Box
             sx={{
                 "& .pro-sidebar-inner": {
@@ -49,18 +54,21 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                 "& .pro-sidebar": {
                     height: "100vh !important",
                     width: "100% !important",
-                    position: "static !important",
+                    position: isMobile
+                        ? "fixed !important"
+                        : "static !important",
                     top: 0,
                     left: 0,
+                    zIndex: isMobile ? 1200 : "auto",
                 },
                 "& .pro-icon-wrapper": {
                     backgroundColor: "transparent !important",
                 },
                 "& .pro-inner-item": {
                     padding: "5px 35px 5px 20px !important",
-                },
-                "& .pro-inner-item:hover": {
-                    color: "#868dfb !important",
+                    "&:hover": {
+                        color: "#868dfb !important",
+                    },
                 },
                 "& .pro-menu-item.active": {
                     color: "#6870fa !important",
@@ -84,24 +92,42 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                                 alignItems={"center"}
                                 ml={"30px"}
                             >
-                                <Box display={"flex"} justifyContent={"center"}>
+                                <Box
+                                    display={"flex"}
+                                    justifyContent={"center"}
+                                    sx={{
+                                        "& img": {
+                                            height: { xs: 40, sm: 50 },
+                                        },
+                                    }}
+                                >
                                     <a href="/home">
-                                        <img
-                                            src={logo}
-                                            height={50}
-                                            alt="SPLLIT-Logo"
-                                        />
+                                        <img src={logo} alt="SPLLIT-Logo" />
                                     </a>
                                 </Box>
-                                <IconButton
-                                    onClick={() => setIsCollapsed(!isCollapsed)}
-                                >
-                                    <MenuOutlinedIcon />
-                                </IconButton>
+                                {!isMobile && (
+                                    <IconButton
+                                        onClick={() =>
+                                            setIsCollapsed(!isCollapsed)
+                                        }
+                                        sx={{
+                                            display: { xs: "none", sm: "flex" },
+                                        }}
+                                    >
+                                        <MenuOutlinedIcon />
+                                    </IconButton>
+                                )}
                             </Box>
                         )}
                     </MenuItem>
-                    <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+                    <Box
+                        paddingLeft={isCollapsed ? undefined : "10%"}
+                        sx={{
+                            "& .pro-item-content": {
+                                fontSize: { xs: "0.9rem", sm: "1rem" },
+                            },
+                        }}
+                    >
                         {MenuItems.map((item) =>
                             item.icon === null ? undefined : (
                                 <Item
