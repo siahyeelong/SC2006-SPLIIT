@@ -1,33 +1,34 @@
-import { Box, IconButton, InputBase, useTheme } from "@mui/material"
+import { Box, IconButton, InputBase, useTheme } from "@mui/material";
 import { ColorModeContext, tokens } from "../../../theme";
 import { useContext } from "react";
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import DropdownMenu from "./DropdownMenu";
 
 function Topbar() {
-
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
     const colourMode = useContext(ColorModeContext);
 
     return (
-        <Box display='flex' justifyContent='space-between' p={2}>
+        <Box display="flex" justifyContent="space-between" p={2}>
             <DropdownMenu />
             <Box flexGrow={1} />
-            <Box display='flex' justifyContent='flex-end'>
+            <Box display="flex" justifyContent="flex-end">
                 <IconButton onClick={colourMode.toggleColorMode}>
-                    {theme.palette.mode === 'dark' ?
-                        <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />
-                    }
+                    {theme.palette.mode === "dark" ? (
+                        <DarkModeOutlinedIcon />
+                    ) : (
+                        <LightModeOutlinedIcon />
+                    )}
                 </IconButton>
                 <IconButton href="/profile">
                     <AccountCircleRoundedIcon />
                 </IconButton>
             </Box>
-        </Box >
-    )
+        </Box>
+    );
 }
 
-export default Topbar
+export default Topbar;
