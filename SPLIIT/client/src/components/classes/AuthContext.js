@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
                 const res = await axios.get(`${backendURL}/users/refresh`, { withCredentials: true });
                 setAccessToken(res.data.accessToken);
                 setUser(res.data.user);
+                localStorage.setItem("user", res.data.user)
             } catch (error) {
                 if (error.response) {
                     if (error.response.status === 401) {
@@ -29,6 +30,7 @@ export const AuthProvider = ({ children }) => {
                     console.log("Network error or server unreachable.");
                 }
                 setUser(null);
+                localStorage.removeItem("user")
             } finally {
                 setLoading(false);
             }
@@ -48,6 +50,7 @@ export const AuthProvider = ({ children }) => {
 
             setAccessToken(res.data.accessToken);
             setUser(res.data.user);
+            localStorage.setItem("user", res.data.user)
         } catch (error) {
             if (error.response) {
                 // Server responded with a status outside the 2xx range
@@ -63,18 +66,25 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const setSessionTrip = (tripID) => {
+        localStorage.setItem("trip", tripID)
+    }
+
     const logout = async () => {
         try {
             await axios.post(`${backendURL}/users/logout`, {}, { withCredentials: true });
             setUser(null);
             setAccessToken(null);
+            localStorage.removeItem("user")
+            localStorage.removeItem("trip")
         } catch (error) {
             console.error("Logout failed:", error);
         }
     };
 
+
     return (
-        <AuthContext.Provider value={{ user, accessToken, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, accessToken, login, logout, loading, setSessionTrip }}>
             {children}
         </AuthContext.Provider>
     );
