@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { TextField, MenuItem, Button, Box } from "@mui/material";
+import React, { useContext, useState } from "react";
+import { TextField, MenuItem, Button, Box, Typography, IconButton } from "@mui/material";
 import { useExchangeRates } from "../../classes/ExchangeRates";
+import { AuthContext } from "../../classes/AuthContext";
+import { useNavigate } from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function TripCreationForm() {
     const formResetState = {
-        tripID: "",
         tripName: "",
         tripDescription: "",
         foreignCurrency: "",
@@ -14,16 +16,17 @@ function TripCreationForm() {
         budget: "",
         startDate: "",
         endDate: "",
-        users: "", // TODO: set to cookies' current user
+        users: [localStorage.getItem("user")], // set to session's active user
     };
 
+    const [tripID, setTripID] = useState();
+    const { setSessionTrip } = useContext(AuthContext);
     const [formData, setFormData] = useState(formResetState);
-
     const [errors, setErrors] = useState({});
-
     const { exchangeRates } = useExchangeRates();
+    const navigate = useNavigate();
 
-    // gets all trip IDs to ensure new ID created does not match any
+
     const getAllTripIDs = async () => {
         // TODO
     };
@@ -40,9 +43,42 @@ function TripCreationForm() {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleFileChange = (e) => {
-        setFormData({ ...formData, tripImage: e.target.files[0] });
+    const handleUploadImage = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Read the image file as a Data URL
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+
+                // Determine the square crop size (smallest dimension)
+                const size = Math.min(img.width, img.height);
+                const sx = (img.width - size) / 2;  // Crop start X
+                const sy = (img.height - size) / 2; // Crop start Y
+
+                // Set canvas size to 512x512
+                canvas.width = 512;
+                canvas.height = 512;
+
+                // Draw cropped and resized image
+                ctx.drawImage(img, sx, sy, size, size, 0, 0, 512, 512);
+
+                // Convert canvas to Base64 with JPEG compression (quality: 0.8)
+                const base64String = canvas.toDataURL("image/jpeg", 0.8);
+
+                // Store Base64 in state
+                setFormData({ ...formData, tripImage: base64String });
+                console.log(base64String)
+            };
+        };
     };
+
 
     const validate = () => {
         const newErrors = {};
@@ -52,8 +88,8 @@ function TripCreationForm() {
             newErrors.foreignCurrency = "Please select a foreign currency.";
         if (!formData.localCurrency)
             newErrors.localCurrency = "Please select a local currency.";
-        if (!formData.budget || isNaN(formData.price.replace(/[^0-9.]/g, "")))
-            newErrors.price = "Budget must be a valid number.";
+        if (formData.budget && isNaN(formData.budget.replace(/[^0-9.]/g, "")))
+            newErrors.budget = "Budget must be a valid number.";
         if (formData.startDate > formData.endDate)
             newErrors.date = "End date must be later than start date.";
 
@@ -61,24 +97,14 @@ function TripCreationForm() {
         return Object.keys(newErrors).length === 0;
     };
 
-    // generates a new unique trip ID
-    const generateTripID = async () => {
-        // TODO
-        return 0;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (validate()) {
             // Submit form logic here
             try {
-                // Adjust price back to number format
-                formData.price = formData.price.replace(/[^0-9.]/g, "");
 
-                let response = "";
                 const backendURL = process.env.REACT_APP_BACKEND_URL;
-
-                response = await fetch(`${backendURL}/trips/createtrip`, {
+                const response = await fetch(`${backendURL}/trips/createtrip`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -89,10 +115,17 @@ function TripCreationForm() {
                 if (!response.ok)
                     throw new Error(`HTTP error! status: ${response.status}`);
 
-                alert("Transaction logged successfully!");
+                // creation success
+                alert("Trip created successfully!");
+                const { generatedTripID } = await response.json()
+                // set current session trip as the trip ID
+                setTripID(generatedTripID)
+                console.log("trip ID is", generatedTripID)
+                setSessionTrip(generatedTripID)
+                navigate("/")
             } catch (error) {
                 console.error(
-                    "something went wrong with updating a record: ",
+                    "something went wrong with creating a trip: ",
                     error
                 );
                 alert("Something went wrong!");
@@ -100,6 +133,9 @@ function TripCreationForm() {
                 // Clear form
                 setFormData(formResetState);
             }
+        }
+        else {
+            console.log("Errors exist:", errors)
         }
     };
 
@@ -123,8 +159,8 @@ function TripCreationForm() {
                 label="I have a Trip ID"
                 variant="filled"
                 name="tripID"
-                value={formData.tripID}
-                onChange={handleChange}
+                value={tripID}
+                onChange={handleTripIDChange}
             />
             <TextField
                 label="Trip Name"
@@ -181,8 +217,18 @@ function TripCreationForm() {
             {/* File Upload */}
             <Button variant="outlined" color="secondary" component="label">
                 Upload Trip Image
-                <input type="file" hidden onChange={handleFileChange} />
+                <input type="file" hidden onChange={handleUploadImage} />
             </Button>
+            {formData.tripImage && (
+                <>
+                    <Box display={"flex"} justifyContent={"space-between"}>
+                        <Typography variant="h6" color="secondary" display="block">Preview:</Typography>
+                        <img src={formData.tripImage} alt="Preview" style={{ width: "200px", borderRadius: 20 }} />
+                        <IconButton onClick={() => setFormData({ ...formData, tripImage: "" })} color="error" sx={{ borderRadius: 5 }}><DeleteIcon /></IconButton>
+                    </Box>
+                </>
+            )
+            }
 
             {/* TODO: user can type a city / state and when they press enter, they can add more  */}
             <TextField
@@ -210,6 +256,7 @@ function TripCreationForm() {
                 onChange={handleChange}
                 type="date"
             />
+            {errors.date && <Typography color="error">{errors.date}</Typography>}
             <TextField
                 label="End Date"
                 variant="filled"
@@ -223,7 +270,9 @@ function TripCreationForm() {
             <Button type="submit" variant="contained" color="secondary">
                 Submit
             </Button>
-        </Box>
+
+            <Button variant='outlined' color='info' sx={{ margin: 5 }} href='/selecttrip'>Select existing trips instead</Button>
+        </Box >
     );
 }
 
