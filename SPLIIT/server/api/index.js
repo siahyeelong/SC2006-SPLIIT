@@ -5,10 +5,12 @@ import transactions from "../routes/transactions.js";
 import trips from "../routes/trips.js"
 import users from "../routes/users.js"
 import colors from "colors";
+import bodyParser from "body-parser"
 
 const app = express();
 const frontEndURL = process.env.FRONT_END_URL
-
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors({
     origin: `http://${frontEndURL}`,
     credentials: true,

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { Box, Stack } from "@mui/material";
+import React, { useContext, useState } from "react";
+import { Box, Button, Stack } from "@mui/material";
 import Header from "../MainUI/Header";
 import ProfileInfo from "./ProfileInfo";
 import ColourPicker from "./ColourPicker";
 import Trips from "./Trips";
 import DeletionConfirmationDialog from "./DeletionConfirmationDialog";
 import AddConfirmationDialog from "./AddConfirmationDialog";
+import { AuthContext } from "../../classes/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 // placeholder until connect with backend
 const MOCK_PROFILE = {
@@ -36,6 +38,8 @@ function Profile() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [tripToDelete, setTripToDelete] = useState(null);
     const [addDialogOpen, setAddDialogOpen] = useState(false);
+    const { logout } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     const handleSaveName = () => {
         setProfile((p) => ({
@@ -126,7 +130,10 @@ function Profile() {
                     setAddDialogOpen={setAddDialogOpen}
                 />
             </Stack>
-        </Box>
+            <Button variant="outlined" color="error" onClick={() => { logout().then(navigate("/")) }}>
+                Log out
+            </Button>
+        </Box >
     );
 }
 

@@ -9,6 +9,11 @@ localStorage
 
 cookies
 - user
+- trip
 
 ### To do
-- make user go back home if not auth before
+- add a loading screen
+- edit profile api
+- edit trip info api
+- jump to tripcreationsuccess page to share trip ID
+- join trip using trip ID

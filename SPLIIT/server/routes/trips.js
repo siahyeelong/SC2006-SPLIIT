@@ -4,34 +4,65 @@ import { ObjectId } from "mongodb"; // This help convert the id from string to O
 
 const router = express.Router();
 
-router.get("/getAllTripIDs", async (req, res) => {
+router.get("/getAllTrips/:user", async (req, res) => {
     try {
         let collection = await db.collection(process.env.TRIPS_COLLECTION);
-        let results = await collection.find({}).toArray();
-        res.send(results).status(200);
+        let user = req.params.user;
+
+        // Find trips where the 'users' array contains the given user
+        let results = await collection.find({ users: user }).toArray();
+
+        res.status(200).send(results);
     } catch (error) {
-        console.log(`get error:\n${error}`.red);
+        console.error(`Error fetching trips:\n${error}`);
+        res.status(500).send("Error retrieving trips");
     }
 });
 
+
+const generateUniqueTripID = async (collection) => {
+    const characters = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";
+    let allTripIDs = [];
+    // get all trip IDs
+    try {
+        let trips = await collection.find({}, { projection: { tripID: 1, _id: 0 } }).toArray();
+        allTripIDs = trips.map(trip => trip.tripID);
+    } catch (error) {
+        console.log(`Error fetching trip IDs:\n${error}`);
+        return null;
+    }
+    // generate a new trip ID
+    let newTripID;
+    do {
+        newTripID = Array.from({ length: 6 }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join("");
+    } while (allTripIDs.includes(newTripID));
+
+    return newTripID;
+};
+
+
 router.post("/createtrip", async (req, res) => {
     try {
-        let newRecord = {
-            tripID: req.body.tripID,
+        const collection = await db.collection(process.env.TRIPS_COLLECTION);
+
+        // generate a unique trip ID
+        const tripID = await generateUniqueTripID(collection)
+
+        const newRecord = {
+            tripID: tripID,
             tripName: req.body.tripName,
             tripDescription: req.body.tripDescription,
             foreignCurrency: req.body.foreignCurrency,
             localCurrency: req.body.localCurrency,
             tripImage: req.body.tripImage,
-            cities: req.body.citiesStates,
+            cities: req.body.cities,
             budget: req.body.budget,
             startDate: req.body.startDate,
             endDate: req.body.endDate,
             users: req.body.users,
         };
-        let collection = await db.collection(process.env.TRIPS_COLLECTION);
-        let result = await collection.insertOne(newRecord);
-        res.send(result).status(204);
+        const result = await collection.insertOne(newRecord);
+        res.send({ "generatedTripID": tripID }).status(204);
     } catch (err) {
         console.error(err);
         res.status(500).send("Error adding record");
@@ -41,6 +72,11 @@ router.post("/createtrip", async (req, res) => {
 router.patch("/jointrip/:id", async (req, res) => {
     // TODO: append user to trip
     // TODO: append trip to user
+})
+
+// returns all trip information
+router.get("/tripinfo/:id", async (req, res) => {
+
 })
 
 router.get("/test", async (req, res) => {
