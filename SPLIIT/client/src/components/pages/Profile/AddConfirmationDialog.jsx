@@ -10,6 +10,7 @@ import Grid2 from "@mui/material/Grid2";
 import { Create, GroupAdd } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import JoinTripDialog from "./JoinTripDialog";
+import tripImage from "../../assets/defaultTripBackground.png";
 
 const AddConfirmationDialog = ({
     open,
@@ -37,6 +38,7 @@ const AddConfirmationDialog = ({
             name: `New Trip ${profile.trips.length + 1}`,
             flag: "🌍",
             date: new Date().toISOString().split("T")[0],
+            image: tripImage,
         };
         setProfile((p) => ({ ...p, trips: [...p.trips, newTrip] }));
         setAddDialogOpen(false);

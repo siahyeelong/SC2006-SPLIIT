@@ -8,16 +8,41 @@ import DeletionConfirmationDialog from "./DeletionConfirmationDialog";
 import AddConfirmationDialog from "./AddConfirmationDialog";
 import { AuthContext } from "../../classes/AuthContext";
 import { useNavigate } from "react-router-dom";
+import tripImage from "../../assets/defaultTripBackground.png";
 
 // placeholder until connect with backend
 const MOCK_PROFILE = {
     displayName: "Bob",
     favoriteColor: "#D1BDFF",
     trips: [
-        { id: 1, name: "USA'25", flag: "🇺🇸", date: "2025-06-01" },
-        { id: 2, name: "Japan'23", flag: "🇯🇵", date: "2023-11-15" },
-        { id: 3, name: "South Korea'22", flag: "🇰🇷", date: "2022-09-01" },
-        { id: 4, name: "Germany'20", flag: "🇩🇪", date: "2020-07-10" },
+        {
+            id: 1,
+            name: "USA'25",
+            flag: "🇺🇸",
+            date: "2025-06-01",
+            image: tripImage,
+        },
+        {
+            id: 2,
+            name: "Japan'23",
+            flag: "🇯🇵",
+            date: "2023-11-15",
+            image: tripImage,
+        },
+        {
+            id: 3,
+            name: "South Korea'22",
+            flag: "🇰🇷",
+            date: "2022-09-01",
+            image: tripImage,
+        },
+        {
+            id: 4,
+            name: "Germany'20",
+            flag: "🇩🇪",
+            date: "2020-07-10",
+            image: tripImage,
+        },
     ],
     colorOptions: [
         { name: "Lavender Mist", value: "#D1BDFF" },
@@ -38,8 +63,8 @@ function Profile() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [tripToDelete, setTripToDelete] = useState(null);
     const [addDialogOpen, setAddDialogOpen] = useState(false);
-    const { logout } = useContext(AuthContext)
-    const navigate = useNavigate()
+    const { logout } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleSaveName = () => {
         setProfile((p) => ({
@@ -130,10 +155,34 @@ function Profile() {
                     setAddDialogOpen={setAddDialogOpen}
                 />
             </Stack>
-            <Button variant="outlined" color="error" onClick={() => { logout().then(navigate("/")) }}>
-                Log out
-            </Button>
-        </Box >
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: { xs: 2, md: 4 },
+                }}
+            >
+                <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => {
+                        logout().then(() => navigate("/"));
+                    }}
+                    sx={{
+                        borderRadius: "50px",
+                        px: { xs: 2, md: 4 },
+                        py: { xs: 1, md: 1.5 },
+                        textTransform: "none",
+                        boxShadow: 3,
+                        fontWeight: "bold",
+                        fontSize: { xs: "0.875rem", md: "1rem" },
+                        transition: "all 0.3s ease",
+                    }}
+                >
+                    Log Out
+                </Button>
+            </Box>
+        </Box>
     );
 }
 
