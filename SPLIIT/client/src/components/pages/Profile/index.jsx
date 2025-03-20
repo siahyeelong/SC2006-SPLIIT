@@ -169,7 +169,7 @@ function Profile() {
                         logout().then(() => navigate("/"));
                     }}
                     sx={{
-                        borderRadius: "50px",
+                        borderRadius: 2,
                         px: { xs: 2, md: 4 },
                         py: { xs: 1, md: 1.5 },
                         textTransform: "none",

@@ -84,6 +84,9 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                                         bgcolor: "background.paper",
                                         boxShadow: 1,
                                         zIndex: 2,
+                                        "&:hover": {
+                                            transition: "all 0.3s ease",
+                                        },
                                     }}
                                 >
                                     <Delete fontSize="small" />
