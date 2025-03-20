@@ -51,7 +51,7 @@ router.post("/login", async (req, res) => {
         maxAge: 34 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({ accessToken, user: { username } });
+    res.json({ accessToken, user: username });
 });
 
 router.get("/refresh", async (req, res) => {
@@ -77,7 +77,7 @@ router.get("/refresh", async (req, res) => {
             // Generate a new access token
             const accessToken = generateAccessToken({ username });
 
-            res.json({ accessToken, user: { username } });
+            res.json({ accessToken, user: username });
         });
     } catch (error) {
         console.error("Error in /refresh:", error);
