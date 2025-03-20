@@ -1,8 +1,10 @@
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, Divider } from '@mui/material';
 import React, { useState } from 'react'
+import GoogleLoginButton from '../../common/GoogleLoginButton';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
-
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: "",
         password: ""
@@ -52,6 +54,9 @@ function LoginForm() {
             <Button type="submit" variant="contained" color="secondary">
                 Submit
             </Button>
+
+            <Divider sx={{ my: 2 }}>OR</Divider>
+            <GoogleLoginButton />
         </Box>
     )
 }
