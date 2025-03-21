@@ -6,7 +6,7 @@ function Profile() {
     return (
         <Box m='20px'>
             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Header title={'Profile'} subtitle={'work in progress'} />
+                <Header title={'Profile'} subtitle={'done'} />
             </Box>
             <div>(work in progress)</div>
         </Box>
