@@ -107,6 +107,11 @@ function Profile() {
     };
 
     return (
+<<<<<<< HEAD
+        <Box m='20px'>
+            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                <Header title={'Profile'} subtitle={'done'} />
+=======
         <Box
         // sx={{
         //     padding: { xs: 2, sm: 3 },
@@ -181,6 +186,7 @@ function Profile() {
                 >
                     Log Out
                 </Button>
+>>>>>>> f2d843c5338ad172970bbd159b60ec9a26fd5e3f
             </Box>
         </Box>
     );
