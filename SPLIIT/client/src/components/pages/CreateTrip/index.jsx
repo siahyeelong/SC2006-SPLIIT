@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import Header from '../MainUI/Header';
 import TripCreationForm from './TripCreationForm';
 
