@@ -1,11 +1,27 @@
 import React from "react";
-import { Card, CardContent, Typography, Box, Tooltip } from "@mui/material";
+import {
+    Card,
+    CardContent,
+    Typography,
+    Box,
+    Tooltip,
+    useTheme,
+} from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { Check } from "@mui/icons-material";
 
 const ColourPicker = ({ profile, setProfile }) => {
+    const theme = useTheme();
+
     return (
-        <Card variant="outlined" sx={{ width: "100%", maxWidth: "1500px" }}>
+        <Card
+            // variant="outlined"
+            sx={{
+                bgcolor: theme.palette.background.default,
+                width: "100%",
+                maxWidth: "1500px",
+            }}
+        >
             <CardContent>
                 <Typography
                     variant="h5"

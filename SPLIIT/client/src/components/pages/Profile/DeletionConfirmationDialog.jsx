@@ -14,6 +14,7 @@ const DeletionConfirmationDialog = ({ open, onClose, onConfirm, tripName }) => {
         <Dialog
             open={open}
             onClose={onClose}
+            disableRestoreFocus
             sx={{
                 "& .MuiPaper-root": {
                     width: { xs: "90%", sm: "80%", md: "400px" },

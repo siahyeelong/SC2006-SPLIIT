@@ -28,7 +28,14 @@ const AddConfirmationDialog = ({
     };
 
     const handleJoinTripSubmit = () => {
+        const trimmedId = tripId.trim();
+        console.log(`Join trip with ${trimmedId}`);
+        handleCloseDialog();
+    };
+
+    const handleCloseDialog = () => {
         setJoinTripDialogOpen(false);
+        setTripId("");
     };
 
     // remember comment out after backend
@@ -46,7 +53,12 @@ const AddConfirmationDialog = ({
 
     return (
         <>
-            <Dialog open={open} onClose={onClose} maxWidth="md">
+            <Dialog
+                open={open}
+                onClose={onClose}
+                maxWidth="md"
+                disableRestoreFocus
+            >
                 <DialogTitle>
                     <Typography
                         variant="h6"
@@ -189,10 +201,7 @@ const AddConfirmationDialog = ({
 
             <JoinTripDialog
                 open={joinTripDialogOpen}
-                onClose={() => {
-                    setJoinTripDialogOpen(false);
-                    setTripId("");
-                }}
+                onClose={handleCloseDialog}
                 tripId={tripId}
                 setTripId={setTripId}
                 onJoin={handleJoinTripSubmit}

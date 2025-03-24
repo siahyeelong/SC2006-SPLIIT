@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -14,9 +14,35 @@ import {
 const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
     const theme = useTheme();
     const isMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        if (open) {
+            const timer = setTimeout(() => {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                }
+            }, 300);
+
+            return () => clearTimeout(timer);
+        }
+    }, [open]);
+
+    const handleSubmit = (e) => {
+        if (e.key === "Enter" && tripId) {
+            e.preventDefault();
+            onJoin(tripId);
+        }
+    };
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth="sm"
+            fullWidth
+            disableRestoreFocus
+        >
             <DialogTitle
                 sx={{
                     textAlign: "center",
@@ -48,6 +74,8 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
                     label="Trip ID"
                     value={tripId}
                     onChange={(e) => setTripId(e.target.value)}
+                    inputRef={inputRef}
+                    onKeyDown={handleSubmit}
                     sx={{
                         "& .MuiInputBase-input": {
                             fontSize: isMediumScreen ? "1rem" : "0.875rem",
@@ -82,7 +110,7 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
                 <Button
                     variant="contained"
                     onClick={onJoin}
-                    disabled={!tripId}
+                    disabled={!tripId?.trim()} // disable if empty or whitespace
                     sx={{
                         width: { sm: "auto", xs: "100%" },
                         px: 4,

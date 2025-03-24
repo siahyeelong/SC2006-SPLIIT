@@ -7,6 +7,7 @@ import {
     Typography,
     TextField,
     IconButton,
+    useTheme,
 } from "@mui/material";
 import { Edit, Check } from "@mui/icons-material";
 
@@ -18,8 +19,17 @@ const ProfileInfo = ({
     setIsEditingName,
     handleSaveName,
 }) => {
+    const theme = useTheme();
+
     return (
-        <Card variant="outlined" sx={{ width: "100%", maxWidth: "1500px" }}>
+        <Card
+            // variant="outlined"
+            sx={{
+                bgcolor: theme.palette.background.default,
+                width: "100%",
+                maxWidth: "1500px",
+            }}
+        >
             <CardContent>
                 <Stack
                     direction={{ xs: "column", sm: "row" }}
@@ -70,7 +80,7 @@ const ProfileInfo = ({
                                             if (
                                                 e.relatedTarget &&
                                                 e.relatedTarget ===
-                                                "save-button"
+                                                    "save-button"
                                             )
                                                 return;
 
