@@ -1,15 +1,25 @@
-import { Snackbar } from "@mui/material";
+import { Alert, Portal, Snackbar } from "@mui/material";
 import React from "react";
 
-const SnackbarNotifs = ({ open, message, onClose }) => {
+const SnackbarNotifs = ({ key, open, message, onClose, severity }) => {
     return (
-        <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            open={open}
-            autoHideDuration={2000}
-            onClose={onClose}
-            message={message}
-        />
+        <Portal>
+            <Snackbar
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                open={Boolean(open)}
+                autoHideDuration={2000}
+                onClose={onClose}
+                key={key}
+            >
+                <Alert
+                    severity={severity || "info"}
+                    variant="filled"
+                    sx={{ width: "100%", fontWeight: 600, fontSize: "larger" }}
+                >
+                    {message}
+                </Alert>
+            </Snackbar>
+        </Portal>
     );
 };
 

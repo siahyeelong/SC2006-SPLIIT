@@ -8,13 +8,22 @@ import {
     IconButton,
     Stack,
     Box,
+    useTheme,
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { Delete, Add } from "@mui/icons-material";
 
 const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
+    const theme = useTheme();
     return (
-        <Card variant="outlined" sx={{ width: "100%", maxWidth: "1500px" }}>
+        <Card
+            // variant="outlined"
+            sx={{
+                bgcolor: theme.palette.background.default,
+                width: "100%",
+                maxWidth: "1500px",
+            }}
+        >
             <CardContent>
                 <Typography
                     variant="h5"
@@ -107,22 +116,22 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                                         variant="h6"
                                         textAlign="center"
                                         fontWeight={"bold"}
-                                    // sx={{ color: "white" }}
+                                        // sx={{ color: "white" }}
                                     >
                                         {trip.name}
                                     </Typography>
                                     <Typography
                                         variant="body2"
                                         fontWeight={"bold"}
-                                    // sx={{ color: "white" }}
+                                        // sx={{ color: "white" }}
                                     >
                                         {new Date(
                                             trip.date
                                         ).toLocaleDateString()}
                                     </Typography>
                                 </Stack>
-                            </Paper >
-                        </Grid2 >
+                            </Paper>
+                        </Grid2>
                     ))}
                     <Grid2
                         xs={12}
@@ -156,9 +165,9 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                             </Typography>
                         </Button>
                     </Grid2>
-                </Grid2 >
-            </CardContent >
-        </Card >
+                </Grid2>
+            </CardContent>
+        </Card>
     );
 };
 

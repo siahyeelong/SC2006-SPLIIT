@@ -15,6 +15,7 @@ import tripImage from "../../assets/defaultTripBackground.png";
 const AddConfirmationDialog = ({
     open,
     onClose,
+    onJoinResult,
     profile, // simlation only
     setProfile, // simlation only
     setAddDialogOpen, // simlation only
@@ -28,7 +29,29 @@ const AddConfirmationDialog = ({
     };
 
     const handleJoinTripSubmit = () => {
+        const trimmedId = tripId.trim();
+
+        // edit logic after connect backend
+        if (trimmedId !== "test") {
+            console.log(`Joined trip with ${trimmedId}`);
+            onJoinResult({
+                message: `Joined ${trimmedId}`,
+                severity: "success",
+            });
+            handleCloseDialog();
+        } else if (trimmedId === "test") {
+            console.log("Invalid Trip ID");
+            onJoinResult({
+                message: `Invalid Trip ID`,
+                severity: "error",
+            });
+            setTripId("");
+        }
+    };
+
+    const handleCloseDialog = () => {
         setJoinTripDialogOpen(false);
+        setTripId("");
     };
 
     // remember comment out after backend
@@ -42,11 +65,20 @@ const AddConfirmationDialog = ({
         };
         setProfile((p) => ({ ...p, trips: [...p.trips, newTrip] }));
         setAddDialogOpen(false);
+        onJoinResult({
+            message: `Joined ${newTrip.name}`,
+            severity: "success",
+        });
     };
 
     return (
         <>
-            <Dialog open={open} onClose={onClose} maxWidth="md">
+            <Dialog
+                open={open}
+                onClose={onClose}
+                maxWidth="md"
+                disableRestoreFocus
+            >
                 <DialogTitle>
                     <Typography
                         variant="h6"
@@ -189,10 +221,7 @@ const AddConfirmationDialog = ({
 
             <JoinTripDialog
                 open={joinTripDialogOpen}
-                onClose={() => {
-                    setJoinTripDialogOpen(false);
-                    setTripId("");
-                }}
+                onClose={handleCloseDialog}
                 tripId={tripId}
                 setTripId={setTripId}
                 onJoin={handleJoinTripSubmit}

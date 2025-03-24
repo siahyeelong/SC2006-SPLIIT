@@ -1,7 +1,14 @@
 import React, { useContext, useState } from "react";
-import { 
-    TextField, MenuItem, Button, Box, Typography, 
-    Grid, Card, CardContent 
+import {
+    TextField,
+    MenuItem,
+    Button,
+    Box,
+    Typography,
+    Grid,
+    Card,
+    CardContent,
+    useTheme,
 } from "@mui/material";
 import { useExchangeRates } from "../../classes/ExchangeRates";
 import { AuthContext } from "../../classes/AuthContext";
@@ -27,6 +34,7 @@ function TripCreationForm() {
     const [errors, setErrors] = useState({});
     const { exchangeRates } = useExchangeRates();
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -46,14 +54,22 @@ function TripCreationForm() {
 
     const validate = () => {
         const newErrors = {};
-        if (!formData.tripName.trim()) newErrors.tripName = "Please enter a trip name.";
-        if (!formData.foreignCurrency) newErrors.foreignCurrency = "Please select a foreign currency.";
-        if (!formData.localCurrency) newErrors.localCurrency = "Please select a local currency.";
+        if (!formData.tripName.trim())
+            newErrors.tripName = "Please enter a trip name.";
+        if (!formData.foreignCurrency)
+            newErrors.foreignCurrency = "Please select a foreign currency.";
+        if (!formData.localCurrency)
+            newErrors.localCurrency = "Please select a local currency.";
         if (formData.foreignCurrency === formData.localCurrency)
-            newErrors.currency = "Foreign and local currency cannot be the same.";
+            newErrors.currency =
+                "Foreign and local currency cannot be the same.";
         if (formData.budget && isNaN(formData.budget.replace(/[^0-9.]/g, "")))
             newErrors.budget = "Budget must be a valid number.";
-        if (formData.startDate && formData.endDate && formData.startDate > formData.endDate)
+        if (
+            formData.startDate &&
+            formData.endDate &&
+            formData.startDate > formData.endDate
+        )
             newErrors.date = "End date must be later than start date.";
 
         setErrors(newErrors);
@@ -72,7 +88,8 @@ function TripCreationForm() {
                 body: JSON.stringify(formData),
             });
 
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok)
+                throw new Error(`HTTP error! status: ${response.status}`);
 
             alert("Trip created successfully!");
             const { generatedTripID } = await response.json();
@@ -88,8 +105,20 @@ function TripCreationForm() {
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-            <Card sx={{ width: "90vw", p: 3, boxShadow: 5}}>
+        <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100vh"
+        >
+            <Card
+                sx={{
+                    bgcolor: theme.palette.background.default,
+                    width: "90vw",
+                    p: 3,
+                    boxShadow: 5,
+                }}
+            >
                 <CardContent>
                     <Grid container spacing={3}>
                         {/* Left Section */}
@@ -143,9 +172,16 @@ function TripCreationForm() {
                                         helperText={errors.foreignCurrency}
                                         required
                                     >
-                                        {Object.keys(exchangeRates).map((currency) => (
-                                            <MenuItem key={currency} value={currency}>{currency}</MenuItem>
-                                        ))}
+                                        {Object.keys(exchangeRates).map(
+                                            (currency) => (
+                                                <MenuItem
+                                                    key={currency}
+                                                    value={currency}
+                                                >
+                                                    {currency}
+                                                </MenuItem>
+                                            )
+                                        )}
                                     </TextField>
                                 </Grid>
 
@@ -162,9 +198,16 @@ function TripCreationForm() {
                                         helperText={errors.currency}
                                         required
                                     >
-                                        {Object.keys(exchangeRates).map((currency) => (
-                                            <MenuItem key={currency} value={currency}>{currency}</MenuItem>
-                                        ))}
+                                        {Object.keys(exchangeRates).map(
+                                            (currency) => (
+                                                <MenuItem
+                                                    key={currency}
+                                                    value={currency}
+                                                >
+                                                    {currency}
+                                                </MenuItem>
+                                            )
+                                        )}
                                     </TextField>
                                 </Grid>
                             </Grid>
@@ -217,14 +260,25 @@ function TripCreationForm() {
 
                             {/* Upload Image Section */}
                             <Box mt={3}>
-                                <Typography variant="body1">Upload Trip Image</Typography>
-                                <input type="file" accept="image/*" onChange={handleUploadImage} />
+                                <Typography variant="body1">
+                                    Upload Trip Image
+                                </Typography>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleUploadImage}
+                                />
                                 {formData.tripImage && (
                                     <Box mt={2}>
                                         <img
                                             src={formData.tripImage}
                                             alt="Trip Preview"
-                                            style={{ width: "100%", maxHeight: "200px", objectFit: "cover", borderRadius: "8px" }}
+                                            style={{
+                                                width: "100%",
+                                                maxHeight: "200px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                            }}
                                         />
                                     </Box>
                                 )}
@@ -232,11 +286,23 @@ function TripCreationForm() {
                         </Grid>
                     </Grid>
 
-                    <Button fullWidth variant="contained" color="secondary" sx={{ mt: 3 }} onClick={handleSubmit}>
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="secondary"
+                        sx={{ mt: 3 }}
+                        onClick={handleSubmit}
+                    >
                         Create Trip
                     </Button>
 
-                    <Button fullWidth variant="contained" color="secondary" sx={{ mt: 2 }} href="/selecttrip">
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="secondary"
+                        sx={{ mt: 2 }}
+                        href="/selecttrip"
+                    >
                         Select Existing Trips
                     </Button>
                 </CardContent>

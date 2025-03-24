@@ -40,11 +40,12 @@ const TripDetails = () => {
                 }}
             >
                 <Paper
-                    variant="outlined"
+                    // variant="outlined"
                     sx={{
+                        bgcolor: theme.palette.background.default,
                         padding: { xs: 2, sm: 3, md: 4 },
                         borderRadius: 4,
-                        border: `1.5px solid ${theme.palette.divider}`,
+                        // border: `1.5px solid ${theme.palette.divider}`,
                     }}
                 >
                     {/* General Info and Trip Image */}
