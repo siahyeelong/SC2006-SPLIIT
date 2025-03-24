@@ -70,7 +70,7 @@ const ProfileInfo = ({
                                             if (
                                                 e.relatedTarget &&
                                                 e.relatedTarget ===
-                                                    "save-button"
+                                                "save-button"
                                             )
                                                 return;
 
