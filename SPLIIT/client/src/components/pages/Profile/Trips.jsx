@@ -7,6 +7,7 @@ import {
     Button,
     IconButton,
     Stack,
+    Box,
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { Delete, Add } from "@mui/icons-material";
@@ -44,32 +45,34 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                             <Paper
                                 elevation={3}
                                 sx={{
-                                    padding: 2,
-                                    width: {
-                                        xs: "100%",
-                                        sm: 280,
-                                        lg: 300,
-                                    },
-                                    height: {
-                                        xs: 180,
-                                        sm: 200,
-                                        lg: 220,
-                                    },
                                     position: "relative",
+                                    width: { xs: "100%", sm: 280, lg: 300 },
+                                    height: { xs: 180, sm: 200, lg: 220 },
+                                    borderRadius: 2,
+                                    overflow: "hidden",
                                     transition: "all 0.3s",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
                                     "&:hover": {
                                         transform: {
                                             xs: "none",
                                             sm: "translateY(-4px)",
                                         },
-                                        boxShadow: 3,
+                                        boxShadow: 6,
                                     },
                                 }}
                             >
+                                {trip.image && (
+                                    <Box
+                                        component="img"
+                                        src={trip.image}
+                                        alt={trip.name}
+                                        sx={{
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "cover",
+                                            filter: "brightness(0.7)",
+                                        }}
+                                    />
+                                )}
                                 <IconButton
                                     size="small"
                                     onClick={() => onDeleteTrip(trip.id)}
@@ -80,32 +83,46 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                                         top: 8,
                                         bgcolor: "background.paper",
                                         boxShadow: 1,
+                                        zIndex: 2,
+                                        "&:hover": {
+                                            transition: "all 0.3s ease",
+                                        },
                                     }}
                                 >
                                     <Delete fontSize="small" />
                                 </IconButton>
-                                <Stack spacing={1} alignItems="center">
-                                    <Typography variant="h2" sx={{ mb: 1 }}>
-                                        {trip.flag}
-                                    </Typography>
+                                <Stack
+                                    spacing={0.5}
+                                    alignItems="center"
+                                    sx={{
+                                        position: "absolute",
+                                        bottom: 8,
+                                        left: 0,
+                                        right: 0,
+                                        zIndex: 2,
+                                        px: 1,
+                                    }}
+                                >
                                     <Typography
                                         variant="h6"
                                         textAlign="center"
-                                        fontWeight={500}
+                                        fontWeight={"bold"}
+                                    // sx={{ color: "white" }}
                                     >
                                         {trip.name}
                                     </Typography>
                                     <Typography
                                         variant="body2"
-                                        color="text.secondary"
+                                        fontWeight={"bold"}
+                                    // sx={{ color: "white" }}
                                     >
                                         {new Date(
                                             trip.date
                                         ).toLocaleDateString()}
                                     </Typography>
                                 </Stack>
-                            </Paper>
-                        </Grid2>
+                            </Paper >
+                        </Grid2 >
                     ))}
                     <Grid2
                         xs={12}
@@ -139,9 +156,9 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                             </Typography>
                         </Button>
                     </Grid2>
-                </Grid2>
-            </CardContent>
-        </Card>
+                </Grid2 >
+            </CardContent >
+        </Card >
     );
 };
 

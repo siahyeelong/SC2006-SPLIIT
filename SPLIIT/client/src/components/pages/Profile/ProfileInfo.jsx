@@ -70,7 +70,7 @@ const ProfileInfo = ({
                                             if (
                                                 e.relatedTarget &&
                                                 e.relatedTarget ===
-                                                    "save-button"
+                                                "save-button"
                                             )
                                                 return;
 
@@ -88,7 +88,10 @@ const ProfileInfo = ({
                                 </>
                             ) : (
                                 <>
-                                    <Typography variant="h4" fontWeight={600}>
+                                    <Typography
+                                        variant="h4"
+                                        fontWeight={"bold"}
+                                    >
                                         {profile.displayName}
                                     </Typography>
                                     <IconButton
