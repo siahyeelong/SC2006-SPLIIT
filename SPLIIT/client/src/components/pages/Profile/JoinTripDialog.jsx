@@ -99,6 +99,7 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
             >
                 <Button
                     onClick={onClose}
+                    color="error"
                     sx={{
                         width: { sm: "auto", xs: "100%" },
                         px: 4,

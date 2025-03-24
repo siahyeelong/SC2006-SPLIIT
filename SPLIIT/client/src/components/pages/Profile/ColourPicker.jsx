@@ -10,7 +10,7 @@ import {
 import Grid2 from "@mui/material/Grid2";
 import { Check } from "@mui/icons-material";
 
-const ColourPicker = ({ profile, setProfile }) => {
+const ColourPicker = ({ profile, setProfile, onColourChange }) => {
     const theme = useTheme();
 
     return (
@@ -74,12 +74,13 @@ const ColourPicker = ({ profile, setProfile }) => {
                                                 boxShadow: 2,
                                             },
                                         }}
-                                        onClick={() =>
+                                        onClick={() => {
                                             setProfile((p) => ({
                                                 ...p,
                                                 favoriteColor: color.value,
-                                            }))
-                                        }
+                                            }));
+                                            onColourChange();
+                                        }}
                                     >
                                         {profile.favoriteColor ===
                                             color.value && (

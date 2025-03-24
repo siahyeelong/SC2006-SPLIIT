@@ -9,6 +9,7 @@ import AddConfirmationDialog from "./AddConfirmationDialog";
 import { AuthContext } from "../../classes/AuthContext";
 import { useNavigate } from "react-router-dom";
 import tripImage from "../../assets/defaultTripBackground.png";
+import SnackbarNotifs from "../TripInfo/SnackbarNotifs";
 
 // placeholder until connect with backend
 const MOCK_PROFILE = {
@@ -63,8 +64,23 @@ function Profile() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [tripToDelete, setTripToDelete] = useState(null);
     const [addDialogOpen, setAddDialogOpen] = useState(false);
+    const [snackbarState, setSnackbarState] = useState({
+        open: false,
+        message: "",
+        severity: "",
+        key: 0,
+    });
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    const showSnackbar = (message, severity) => {
+        setSnackbarState((s) => ({
+            open: true,
+            message,
+            severity,
+            key: s.key + 1,
+        }));
+    };
 
     const handleSaveName = () => {
         setProfile((p) => ({
@@ -72,6 +88,7 @@ function Profile() {
             displayName: tempName,
         }));
 
+        showSnackbar("Display name saved!", "success");
         setIsEditingName(false);
     };
 
@@ -89,6 +106,7 @@ function Profile() {
         }));
 
         setDeleteDialogOpen(false);
+        showSnackbar(`Deleted ${tripToDelete.name}`, "info");
         setTripToDelete(null);
     };
 
@@ -106,83 +124,114 @@ function Profile() {
         setAddDialogOpen(true);
     };
 
+    const handleCloseSnackbar = () => {
+        setSnackbarState((s) => ({ ...s, open: false }));
+    };
+
+    const handleColourChange = () => {
+        showSnackbar("Favourite colour saved!", "success");
+    };
+
+    const handleJoinResult = (result) => {
+        showSnackbar(result.message, result.severity);
+    };
+
     return (
-        <Box
-        // sx={{
-        //     padding: { xs: 2, sm: 3 },
-        //     maxWidth: { xs: "100%", md: 1200, lg: 1400 },
-        //     margin: "0 auto",
-        //     boxSizing: "border-box",
-        // }}
-        >
-            <Header title="Profile" subtitle="Personalise your experience" />
-
-            <Stack
-                spacing={{ xs: 3, md: 4 }}
-                sx={{ mt: 4 }}
-                alignItems="center"
-            >
-                <ProfileInfo
-                    profile={profile}
-                    isEditingName={isEditingName}
-                    tempName={tempName}
-                    setTempName={setTempName}
-                    setIsEditingName={setIsEditingName}
-                    handleSaveName={handleSaveName}
-                />
-
-                <ColourPicker profile={profile} setProfile={setProfile} />
-
-                <Trips
-                    trips={profile.trips}
-                    onDeleteTrip={handleDeleteTrip}
-                    onAddTrip={handleAddTrip}
-                />
-
-                <DeletionConfirmationDialog
-                    open={deleteDialogOpen}
-                    onClose={() => setDeleteDialogOpen(false)}
-                    onConfirm={confirmDelete}
-                    tripName={tripToDelete?.name} // check for null or undefined
-                />
-
-                <AddConfirmationDialog
-                    open={addDialogOpen}
-                    onClose={() => setAddDialogOpen(false)}
-                    // for simulation purpose only
-                    profile={profile}
-                    setProfile={setProfile}
-                    setAddDialogOpen={setAddDialogOpen}
-                />
-            </Stack>
+        <>
             <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    mt: { xs: 2, md: 4 },
-                }}
+            // sx={{
+            //     padding: { xs: 2, sm: 3 },
+            //     maxWidth: { xs: "100%", md: 1200, lg: 1400 },
+            //     margin: "0 auto",
+            //     boxSizing: "border-box",
+            // }}
             >
-                <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                        logout().then(() => navigate("/"));
-                    }}
+                <Header
+                    title="Profile"
+                    subtitle="Personalise your experience"
+                />
+
+                <Stack
+                    spacing={{ xs: 3, md: 4 }}
+                    sx={{ mt: 4 }}
+                    alignItems="center"
+                >
+                    <ProfileInfo
+                        profile={profile}
+                        isEditingName={isEditingName}
+                        tempName={tempName}
+                        setTempName={setTempName}
+                        setIsEditingName={setIsEditingName}
+                        handleSaveName={handleSaveName}
+                    />
+
+                    <ColourPicker
+                        profile={profile}
+                        setProfile={setProfile}
+                        onColourChange={handleColourChange}
+                    />
+
+                    <Trips
+                        trips={profile.trips}
+                        onDeleteTrip={handleDeleteTrip}
+                        onAddTrip={handleAddTrip}
+                    />
+
+                    <DeletionConfirmationDialog
+                        open={deleteDialogOpen}
+                        onClose={() => setDeleteDialogOpen(false)}
+                        onConfirm={confirmDelete}
+                        tripName={tripToDelete?.name} // check for null or undefined
+                    />
+
+                    <AddConfirmationDialog
+                        open={addDialogOpen}
+                        onClose={() => setAddDialogOpen(false)}
+                        onJoinResult={handleJoinResult}
+                        // for simulation purpose only
+                        profile={profile}
+                        setProfile={setProfile}
+                        setAddDialogOpen={setAddDialogOpen}
+                    />
+                </Stack>
+                <Box
                     sx={{
-                        borderRadius: 2,
-                        px: { xs: 2, md: 4 },
-                        py: { xs: 1, md: 1.5 },
-                        textTransform: "none",
-                        boxShadow: 3,
-                        fontWeight: "bold",
-                        fontSize: { xs: "0.875rem", md: "1rem" },
-                        transition: "all 0.3s ease",
+                        display: "flex",
+                        justifyContent: "center",
+                        mt: { xs: 2, md: 4 },
                     }}
                 >
-                    Log Out
-                </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => {
+                            logout().then(() => navigate("/"));
+                        }}
+                        sx={{
+                            borderRadius: 2,
+                            px: { xs: 2, md: 4 },
+                            py: { xs: 1, md: 1.5 },
+                            textTransform: "none",
+                            boxShadow: 3,
+                            fontWeight: "bold",
+                            fontSize: { xs: "0.875rem", md: "1rem" },
+                            transition: "all 0.3s ease",
+                        }}
+                    >
+                        Log Out
+                    </Button>
+                </Box>
             </Box>
-        </Box>
+
+            <SnackbarNotifs
+                key={snackbarState.key}
+                open={snackbarState.open}
+                message={snackbarState.message}
+                onClose={handleCloseSnackbar}
+                severity={snackbarState.severity}
+                sx={{ position: "fixed", zIndex: 9999 }}
+            />
+        </>
     );
 }
 

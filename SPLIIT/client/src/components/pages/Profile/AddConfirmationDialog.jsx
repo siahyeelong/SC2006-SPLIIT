@@ -15,6 +15,7 @@ import tripImage from "../../assets/defaultTripBackground.png";
 const AddConfirmationDialog = ({
     open,
     onClose,
+    onJoinResult,
     profile, // simlation only
     setProfile, // simlation only
     setAddDialogOpen, // simlation only
@@ -29,8 +30,23 @@ const AddConfirmationDialog = ({
 
     const handleJoinTripSubmit = () => {
         const trimmedId = tripId.trim();
-        console.log(`Join trip with ${trimmedId}`);
-        handleCloseDialog();
+
+        // edit logic after connect backend
+        if (trimmedId !== "test") {
+            console.log(`Joined trip with ${trimmedId}`);
+            onJoinResult({
+                message: `Joined ${trimmedId}`,
+                severity: "success",
+            });
+            handleCloseDialog();
+        } else if (trimmedId === "test") {
+            console.log("Invalid Trip ID");
+            onJoinResult({
+                message: `Invalid Trip ID`,
+                severity: "error",
+            });
+            setTripId("");
+        }
     };
 
     const handleCloseDialog = () => {
@@ -49,6 +65,10 @@ const AddConfirmationDialog = ({
         };
         setProfile((p) => ({ ...p, trips: [...p.trips, newTrip] }));
         setAddDialogOpen(false);
+        onJoinResult({
+            message: `Joined ${newTrip.name}`,
+            severity: "success",
+        });
     };
 
     return (

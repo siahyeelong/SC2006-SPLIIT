@@ -14,20 +14,32 @@ import { useTheme } from "@mui/material/styles";
 import SnackbarNotifs from "./SnackbarNotifs";
 
 const TripGeneral = ({ trip, setTrip }) => {
-    const [copySuccess, setCopySuccess] = useState(false);
-    const [uploadSuccess, setUploadSuccess] = useState(false);
+    const [snackbarState, setSnackbarState] = useState({
+        open: false,
+        message: "",
+        severity: "",
+        key: 0,
+    });
     const fileInputRef = useRef(null);
     const theme = useTheme();
 
+    const showSnackbar = (message, severity) => {
+        setSnackbarState((s) => ({
+            open: true,
+            message,
+            severity,
+            key: s.key + 1,
+        }));
+    };
+
     const handleCopy = () => {
         navigator.clipboard.writeText(trip.id).then(() => {
-            setCopySuccess(true);
+            showSnackbar("Trip ID Copied!", "success");
         });
     };
 
     const handleCloseSnackbar = () => {
-        setCopySuccess(false);
-        setUploadSuccess(false);
+        setSnackbarState((s) => ({ ...s, open: false }));
     };
 
     const handleClickEditImage = () => {
@@ -66,7 +78,7 @@ const TripGeneral = ({ trip, setTrip }) => {
                 // Update trip state with the new image
                 setTrip((t) => ({ ...t, image: base64String }));
 
-                setUploadSuccess(true);
+                showSnackbar("Image uploaded!", "success");
             };
         };
     };
@@ -164,15 +176,11 @@ const TripGeneral = ({ trip, setTrip }) => {
             </Stack>
 
             <SnackbarNotifs
-                open={copySuccess}
-                message="Trip ID Copied!"
+                key={snackbarState.key}
+                open={snackbarState.open}
+                message={snackbarState.message}
                 onClose={handleCloseSnackbar}
-            />
-
-            <SnackbarNotifs
-                open={uploadSuccess}
-                message="Image Uploaded!"
-                onClose={handleCloseSnackbar}
+                severity={snackbarState.severity}
             />
         </>
     );
