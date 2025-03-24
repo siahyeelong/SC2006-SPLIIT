@@ -20,7 +20,7 @@ import {
     AccountCircle,
     Lock,
 } from "@mui/icons-material";
-import GoogleLoginButton from "../../common/GoogleLoginButton";
+import GoogleLoginButton from './GoogleLoginButton';
 
 function LoginForm() {
     const { login, user } = useContext(AuthContext);
