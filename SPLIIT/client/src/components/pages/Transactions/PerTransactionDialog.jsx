@@ -115,7 +115,7 @@ function PerTransactionDialog({ showDialog, transaction, onClose }) {
             let response = "";
             const backendURL = process.env.REACT_APP_BACKEND_URL;
 
-            response = await fetch(`${backendURL}/record/${transaction._id}`, { method: "DELETE" });
+            response = await fetch(`${backendURL}/transactions/${transaction._id}`, { method: "DELETE" });
 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 

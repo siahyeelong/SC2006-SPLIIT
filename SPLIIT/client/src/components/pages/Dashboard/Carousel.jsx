@@ -16,7 +16,7 @@ function Carousel() {
 
     function fetchMatrices() {
         const backendURL = process.env.REACT_APP_BACKEND_URL;
-        fetch(`${backendURL}/record/owe`)
+        fetch(`${backendURL}/transactions/owe`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
