@@ -107,22 +107,22 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                                         variant="h6"
                                         textAlign="center"
                                         fontWeight={"bold"}
-                                        // sx={{ color: "white" }}
+                                    // sx={{ color: "white" }}
                                     >
                                         {trip.name}
                                     </Typography>
                                     <Typography
                                         variant="body2"
                                         fontWeight={"bold"}
-                                        // sx={{ color: "white" }}
+                                    // sx={{ color: "white" }}
                                     >
                                         {new Date(
                                             trip.date
                                         ).toLocaleDateString()}
                                     </Typography>
                                 </Stack>
-                            </Paper>
-                        </Grid2>
+                            </Paper >
+                        </Grid2 >
                     ))}
                     <Grid2
                         xs={12}
@@ -156,9 +156,9 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                             </Typography>
                         </Button>
                     </Grid2>
-                </Grid2>
-            </CardContent>
-        </Card>
+                </Grid2 >
+            </CardContent >
+        </Card >
     );
 };
 

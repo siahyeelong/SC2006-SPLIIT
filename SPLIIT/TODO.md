@@ -17,3 +17,4 @@ cookies
 - edit trip info api
 - jump to tripcreationsuccess page to share trip ID
 - join trip using trip ID
+- complete trip info
