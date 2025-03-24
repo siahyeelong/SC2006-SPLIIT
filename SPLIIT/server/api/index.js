@@ -5,8 +5,12 @@ import transactions from "../routes/transactions.js";
 import trips from "../routes/trips.js"
 import users from "../routes/users.js"
 import colors from "colors";
+
+import auth from "../routes/auth.js";
+import dotenv from "dotenv";
 import bodyParser from "body-parser"
 
+dotenv.config();
 const app = express();
 const frontEndURL = process.env.FRONT_END_URL
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -17,6 +21,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
+app.use("/auth", auth);
 app.use("/transactions", transactions);
 app.use("/trips", trips);
 app.use("/users", users);
