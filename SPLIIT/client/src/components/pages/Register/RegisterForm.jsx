@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     FilledInput,
     FormControl,
@@ -10,9 +9,10 @@ import {
     Typography,
     ToggleButtonGroup,
     ToggleButton,
-    Grid,
+    Grid2 as Grid,
     useTheme,
     Card,
+    Divider,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../classes/AuthContext";
@@ -132,13 +132,12 @@ function RegisterForm() {
                 flexDirection: "column",
                 gap: 3,
                 width: "100%",
-                maxWidth: 800, // Increased form width
+                maxWidth: 600, // Increased form width
                 mx: "auto",
                 mt: 2,
                 p: 4,
                 boxShadow: 6,
                 borderRadius: 4,
-                // bgcolor: "#1e1e1e", // Dark background
                 bgcolor: theme.palette.background.default,
                 color: "white", // White text for contrast
                 textAlign: "center",
@@ -150,23 +149,8 @@ function RegisterForm() {
                 },
             }}
         >
-            {/* REGISTER Title */}
-            <Typography
-                variant="h3"
-                fontWeight="bold"
-                sx={{
-                    color: "white",
-                    mb: 2, // Margin bottom
-                    borderBottom: "2px solid white", // Add underline
-                    display: "inline-block", // Ensure the underline only spans the text width
-                    paddingBottom: 1, // Add space between text and underline
-                }}
-            >
-                REGISTER
-            </Typography>
-
             {/* Input Fields */}
-            <Grid container spacing={3}>
+            <Grid container spacing={3} direction={'column'}>
                 {/* Email */}
                 <Grid item xs={12} md={6}>
                     <FormControl
@@ -339,6 +323,8 @@ function RegisterForm() {
                     </FormControl>
                 </Grid>
 
+                <Divider >Personalised fields</Divider>
+
                 {/* Display Name */}
                 <Grid item xs={12} md={6}>
                     <FormControl
@@ -395,7 +381,7 @@ function RegisterForm() {
             </Grid>
 
             {/* Favourite Colour Selection */}
-            <Typography sx={{ color: "white", mt: 2 }}>
+            <Typography sx={{ color: "white", variant: "body1" }}>
                 Select your favourite colour
             </Typography>
             <ToggleButtonGroup
@@ -406,7 +392,6 @@ function RegisterForm() {
                 sx={{
                     display: "flex",
                     justifyContent: "center",
-                    mt: 2,
                 }}
             >
                 {favColourChoices.map((colour) => (
@@ -418,6 +403,7 @@ function RegisterForm() {
                             width: 40,
                             height: 40,
                             margin: 0.5,
+                            p: 1,
                             "&.Mui-selected, &:hover": {
                                 bgcolor: colour,
                                 borderColor: "gray",
