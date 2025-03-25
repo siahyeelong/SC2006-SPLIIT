@@ -16,19 +16,16 @@ function Login() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
-                p: 4, // Padding
             }}
         >
             {/* Header */}
             <Box
                 sx={{
                     textAlign: "center",
-                    mb: 4, // Margin bottom
                 }}
             >
                 <Header
-                    title={"Welcome Back!"}
+                    title={"Welcome"}
                     subtitle={"Login to access your account"}
                     sx={{
                         "& .MuiTypography-h1": {
@@ -50,7 +47,6 @@ function Login() {
                     maxWidth: 400, // Limit form width
                     // bgcolor: "background.paper", // Form background
                     bgcolor: theme.palette.background.default,
-                    p: 4, // Padding
                     borderRadius: 4, // Rounded corners
                     // boxShadow: 6, // Shadow for depth
                     transition:
@@ -62,19 +58,6 @@ function Login() {
                 }}
             >
                 <LoginForm />
-            </Box>
-
-            {/* Footer */}
-            <Box
-                sx={{
-                    mt: 4, // Margin top
-                    textAlign: "center",
-                    color: "text.secondary",
-                }}
-            >
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                    &copy; 2023 Your Company. All rights reserved.
-                </Typography>
             </Box>
         </Box>
     );

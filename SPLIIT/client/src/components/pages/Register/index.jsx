@@ -16,20 +16,17 @@ function Register() {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start", // Align content to the top
-                pt: 4, // Reduced padding top to shift content up
-                pb: 4, // Padding bottom to ensure footer is visible
             }}
         >
             {/* Header */}
             <Box
                 sx={{
                     textAlign: "center",
-                    mb: 2, // Reduced margin bottom to bring form closer
                 }}
             >
                 <Header
-                    title={"Create an Account"}
-                    subtitle={"Register to get started"}
+                    title={"Register"}
+                    subtitle={"Create an account to get started"}
                     sx={{
                         "& .MuiTypography-h1": {
                             fontSize: "2.5rem", // Larger title
@@ -50,7 +47,6 @@ function Register() {
                     maxWidth: 800, // Increased form width
                     // bgcolor: "background.paper", // Form background
                     bgcolor: theme.palette.background.default,
-                    p: 4, // Padding
                     borderRadius: 4, // Rounded corners
                     // boxShadow: 6, // Shadow for depth
                     transition:
@@ -72,7 +68,7 @@ function Register() {
                     color: "text.secondary",
                 }}
             >
-                <Typography variant="body2" sx={{ mt: 1 }}>
+                <Typography variant="body1" sx={{ mt: 1 }}>
                     Already have an account?{" "}
                     <a
                         href="/login"
@@ -80,9 +76,6 @@ function Register() {
                     >
                         Login
                     </a>
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 1 }}>
-                    &copy; 2023 Your Company. All rights reserved.
                 </Typography>
             </Box>
         </Box>

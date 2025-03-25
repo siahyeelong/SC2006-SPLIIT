@@ -1,5 +1,4 @@
 import {
-    Box,
     Button,
     Card,
     FilledInput,
@@ -77,7 +76,7 @@ function LoginForm() {
                 await login(formData.username, formData.password);
                 navigate("/selecttrip");
             } catch (error) {
-                setErrors({ auth: "Invalid username or password" });
+                setErrors({ auth: error });
             }
         }
     };
@@ -96,9 +95,8 @@ function LoginForm() {
                 p: 4,
                 boxShadow: 6,
                 borderRadius: 4,
-                // bgcolor: "#1e1e1e", // Dark background
                 bgcolor: theme.palette.background.default,
-                color: "white", // White text for contrast
+                color: "primary", // White text for contrast
                 textAlign: "center",
                 transition:
                     "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
@@ -108,21 +106,6 @@ function LoginForm() {
                 },
             }}
         >
-            {/* LOGIN Title */}
-            <Typography
-                variant="h3"
-                fontWeight="bold"
-                sx={{
-                    color: "white",
-                    mb: 2, // Margin bottom
-                    borderBottom: "2px solid white", // Add underline
-                    display: "inline-block", // Ensure the underline only spans the text width
-                    paddingBottom: 1, // Add space between text and underline
-                }}
-            >
-                LOGIN
-            </Typography>
-
             {/* Username Input */}
             <FormControl
                 variant="filled"
@@ -268,7 +251,7 @@ function LoginForm() {
             </Button>
 
             {/* Register Link */}
-            <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
+            <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
                 Don't have an account?{" "}
                 <a
                     href="/register"

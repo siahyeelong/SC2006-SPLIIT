@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }) => {
 
 
     const login = async (username, password) => {
+        setLoading(true)
         try {
             const res = await axios.post(
                 `${backendURL}/users/login`,
@@ -63,8 +64,16 @@ export const AuthProvider = ({ children }) => {
                 // No response received or other network issue
                 throw new Error("Network error. Please check your connection.");
             }
+        } finally {
+            setLoading(false);
         }
     };
+
+    const googleLogin = (username, token) => {
+        setAccessToken(token);
+        setUser(username);
+        localStorage.setItem("user", username);
+    }
 
     const setSessionTrip = (tripID) => {
         localStorage.setItem("trip", tripID)
@@ -84,7 +93,7 @@ export const AuthProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={{ user, accessToken, login, logout, loading, setSessionTrip }}>
+        <AuthContext.Provider value={{ user, accessToken, login, logout, loading, setSessionTrip, googleLogin }}>
             {children}
         </AuthContext.Provider>
     );

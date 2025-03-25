@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../classes/AuthContext';
 
 function GoogleLoginButton() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
+  const { googleLogin } = useContext(AuthContext);
+
   useEffect(() => {
     // Log the client ID for debugging
     console.log("Google Client ID:", process.env.REACT_APP_GOOGLE_CLIENT_ID);
-    
+
     // Create a specific element ID for the Google button
     const buttonId = "google-signin-button";
-    
+
     // Function to initialize Google Sign-In
     const initializeGoogleSignIn = () => {
       if (window.google && window.google.accounts) {
@@ -22,15 +25,15 @@ function GoogleLoginButton() {
             client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
             callback: handleCredentialResponse
           });
-          
+
           // Make sure the element exists before rendering
           const buttonElement = document.getElementById(buttonId);
           if (buttonElement) {
             window.google.accounts.id.renderButton(
-              buttonElement, 
+              buttonElement,
               { theme: 'outline', size: 'large', width: 250 }
             );
-            
+
             setLoading(false);
             console.log("Google Sign-In initialized successfully");
           } else {
@@ -48,7 +51,7 @@ function GoogleLoginButton() {
 
     // Start the initialization process
     setTimeout(initializeGoogleSignIn, 1000); // Give the DOM time to render
-    
+
     return () => {
       // Cleanup if needed
     };
@@ -57,19 +60,19 @@ function GoogleLoginButton() {
   const handleCredentialResponse = async (response) => {
     console.log("Google credential response received");
     try {
-      const apiResponse = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5050'}/auth/google`, {
+      const apiResponse = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5050'}/users/googlelogin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ credential: response.credential }),
+        credentials: "include"
       });
 
       if (apiResponse.ok) {
         const data = await apiResponse.json();
-        localStorage.setItem('userToken', data.token);
-        localStorage.setItem('userData', JSON.stringify(data.user));
-        navigate('/dashboard');
+        googleLogin(data.user, data.token);
+        navigate('/selecttrip');
       } else {
         console.error('Google login failed');
       }
