@@ -187,33 +187,6 @@ const AddConfirmationDialog = ({
                                 justifyContent: "center",
                             }}
                         >
-                            <Button
-                                variant="outlined"
-                                onClick={handleExampleAdd}
-                                sx={{
-                                    width: { xs: "100%", sm: 280, lg: 300 },
-                                    height: { xs: 180, sm: 200, lg: 220 },
-                                    borderStyle: "1px solid",
-                                    color: "text.primary",
-                                    flexDirection: "column",
-                                    gap: 1,
-                                    "&:hover": {
-                                        borderStyle: "solid",
-                                        backgroundColor: "action.hover",
-                                    },
-                                }}
-                            >
-                                <GroupAdd fontSize="large" />
-                                <Typography variant="h5" fontWeight={600}>
-                                    Simulate new trip added
-                                </Typography>
-                                <Typography
-                                    variant="caption"
-                                    color="text.secondary"
-                                >
-                                    Placeholder
-                                </Typography>
-                            </Button>
                         </Grid2>
                     </Grid2>
                 </DialogContent>

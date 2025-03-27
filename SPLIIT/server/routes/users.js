@@ -2,6 +2,7 @@ import express from "express";
 import db from "../db/connection.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
+import { ObjectId } from "mongodb";
 
 const router = express.Router();
 const USERS_COLLECTION = process.env.USERS_COLLECTION;
@@ -142,7 +143,37 @@ router.get("/refresh", async (req, res) => {
     }
 });
 
+router.get("/userinfo/:username", async (req, res) => {
+    try {
+        let query = { username: req.params.username };
+        let result = await collection.findOne(query);
 
+        if (!result) res.send("Not found").status(404);
+        else res.send(result).status(200);
+    } catch (error) {
+        console.log(`get id error:\n${error}`.red);
+        res.send("Not found").status(404);
+    }
+});
+
+router.patch("/edituser/:username", async (req, res) => {
+    try {
+        const updateField = req.body.updateField;
+        if (updateField === "password" || updateField === "username")
+            throw new Error("SOMEONE TRYNA CHANGE SENSITIVE USER PARAMS!!")
+        const query = { username: req.params.username };
+        const updates = {
+            $set: {
+                [req.body.updateField]: req.body.value
+            },
+        };
+
+        let result = await collection.updateOne(query, updates);
+    } catch (err) {
+        console.error(err.red);
+        res.status(500).send("Error updating record");
+    }
+})
 
 router.post("/logout", (req, res) => {
     res.clearCookie("refreshToken");
@@ -151,7 +182,7 @@ router.post("/logout", (req, res) => {
 
 // Test API
 router.get("/test", async (req, res) => {
-    res.status(200).send("Hello from the users API");
+    res.send("Hello from the users API").status(200)
 });
 
 export default router;

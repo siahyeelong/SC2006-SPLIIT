@@ -39,7 +39,7 @@ const ProfileInfo = ({
                 >
                     <Avatar
                         sx={{
-                            bgcolor: profile.favoriteColor,
+                            bgcolor: profile.favColour,
                             width: { xs: 80, sm: 100 },
                             height: { xs: 80, sm: 100 },
                             fontSize: { xs: "2rem", sm: "2.5rem" },
@@ -80,7 +80,7 @@ const ProfileInfo = ({
                                             if (
                                                 e.relatedTarget &&
                                                 e.relatedTarget ===
-                                                    "save-button"
+                                                "save-button"
                                             )
                                                 return;
 
