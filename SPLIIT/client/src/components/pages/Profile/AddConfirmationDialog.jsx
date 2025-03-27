@@ -1,0 +1,233 @@
+import React, { useState } from "react";
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    Button,
+    Typography,
+} from "@mui/material";
+import Grid2 from "@mui/material/Grid2";
+import { Create, GroupAdd } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import JoinTripDialog from "./JoinTripDialog";
+import tripImage from "../../assets/defaultTripBackground.png";
+
+const AddConfirmationDialog = ({
+    open,
+    onClose,
+    onJoinResult,
+    profile, // simlation only
+    setProfile, // simlation only
+    setAddDialogOpen, // simlation only
+}) => {
+    const [joinTripDialogOpen, setJoinTripDialogOpen] = useState(false);
+    const [tripId, setTripId] = useState("");
+    const navigate = useNavigate();
+
+    const handleClickJoinTrip = () => {
+        setJoinTripDialogOpen(true);
+    };
+
+    const handleJoinTripSubmit = () => {
+        const trimmedId = tripId.trim();
+
+        // edit logic after connect backend
+        if (trimmedId !== "test") {
+            console.log(`Joined trip with ${trimmedId}`);
+            onJoinResult({
+                message: `Joined ${trimmedId}`,
+                severity: "success",
+            });
+            handleCloseDialog();
+        } else if (trimmedId === "test") {
+            console.log("Invalid Trip ID");
+            onJoinResult({
+                message: `Invalid Trip ID`,
+                severity: "error",
+            });
+            setTripId("");
+        }
+    };
+
+    const handleCloseDialog = () => {
+        setJoinTripDialogOpen(false);
+        setTripId("");
+    };
+
+    // remember comment out after backend
+    const handleExampleAdd = () => {
+        const newTrip = {
+            id: Date.now(),
+            name: `New Trip ${profile.trips.length + 1}`,
+            flag: "🌍",
+            date: new Date().toISOString().split("T")[0],
+            image: tripImage,
+        };
+        setProfile((p) => ({ ...p, trips: [...p.trips, newTrip] }));
+        setAddDialogOpen(false);
+        onJoinResult({
+            message: `Joined ${newTrip.name}`,
+            severity: "success",
+        });
+    };
+
+    return (
+        <>
+            <Dialog
+                open={open}
+                onClose={onClose}
+                maxWidth="md"
+                disableRestoreFocus
+            >
+                <DialogTitle>
+                    <Typography
+                        variant="h6"
+                        gutterBottom
+                        textAlign={"center"}
+                        borderRadius={"5px"}
+                        sx={{
+                            fontSize: { xs: "1.25rem", md: "1.5rem" },
+                            fontWeight: 600,
+                        }}
+                    >
+                        Add Trip
+                    </Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Grid2
+                        container
+                        spacing={{ xs: 2, sm: 3, lg: 4 }}
+                        justifyContent="center"
+                    >
+                        <Grid2
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            lg={3}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Button
+                                variant="outlined"
+                                onClick={() => navigate("/createtrip")}
+                                sx={{
+                                    width: { xs: "100%", sm: 280, lg: 300 },
+                                    height: { xs: 180, sm: 200, lg: 220 },
+                                    borderStyle: "1px solid",
+                                    color: "text.primary",
+                                    flexDirection: "column",
+                                    gap: 1,
+                                    "&:hover": {
+                                        borderStyle: "solid",
+                                        backgroundColor: "action.hover",
+                                    },
+                                }}
+                            >
+                                <Create fontSize="large" />
+                                <Typography variant="h5" fontWeight={600}>
+                                    Create Trip
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
+                                    Start a new journey and invite your friends
+                                </Typography>
+                            </Button>
+                        </Grid2>
+                        <Grid2
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            lg={3}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Button
+                                variant="outlined"
+                                onClick={handleClickJoinTrip}
+                                sx={{
+                                    width: { xs: "100%", sm: 280, lg: 300 },
+                                    height: { xs: 180, sm: 200, lg: 220 },
+                                    borderStyle: "1px solid",
+                                    color: "text.primary",
+                                    flexDirection: "column",
+                                    gap: 1,
+                                    "&:hover": {
+                                        borderStyle: "solid",
+                                        backgroundColor: "action.hover",
+                                    },
+                                }}
+                            >
+                                <GroupAdd fontSize="large" />
+                                <Typography variant="h5" fontWeight={600}>
+                                    Join Trip
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
+                                    Enter a trip code to join an existing group.
+                                </Typography>
+                            </Button>
+                        </Grid2>
+
+                        {/* for simulation purposes */}
+                        <Grid2
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            lg={3}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Button
+                                variant="outlined"
+                                onClick={handleExampleAdd}
+                                sx={{
+                                    width: { xs: "100%", sm: 280, lg: 300 },
+                                    height: { xs: 180, sm: 200, lg: 220 },
+                                    borderStyle: "1px solid",
+                                    color: "text.primary",
+                                    flexDirection: "column",
+                                    gap: 1,
+                                    "&:hover": {
+                                        borderStyle: "solid",
+                                        backgroundColor: "action.hover",
+                                    },
+                                }}
+                            >
+                                <GroupAdd fontSize="large" />
+                                <Typography variant="h5" fontWeight={600}>
+                                    Simulate new trip added
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
+                                    Placeholder
+                                </Typography>
+                            </Button>
+                        </Grid2>
+                    </Grid2>
+                </DialogContent>
+            </Dialog>
+
+            <JoinTripDialog
+                open={joinTripDialogOpen}
+                onClose={handleCloseDialog}
+                tripId={tripId}
+                setTripId={setTripId}
+                onJoin={handleJoinTripSubmit}
+            />
+        </>
+    );
+};
+
+export default AddConfirmationDialog;

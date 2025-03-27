@@ -1,13 +1,28 @@
 import express from "express";
 import cors from "cors";
-import records from "../routes/record.js";
+import cookieParser from "cookie-parser"
+import transactions from "../routes/transactions.js";
+import trips from "../routes/trips.js"
+import users from "../routes/users.js"
+import dotenv from "dotenv";
+import bodyParser from "body-parser"
 import colors from "colors";
 
+dotenv.config();
 const app = express();
+const frontEndURL = process.env.FRONT_END_URL
 
-app.use(cors());
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(cors({
+    origin: `http://${frontEndURL}`,
+    credentials: true,
+}));
 app.use(express.json());
-app.use("/record", records);
+app.use(cookieParser());
+app.use("/transactions", transactions);
+app.use("/trips", trips);
+app.use("/users", users);
 
 // start the Express server only if in dev mode
 const PORT = process.env.PORT || 5050;

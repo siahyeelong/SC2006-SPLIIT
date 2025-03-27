@@ -1,12 +1,19 @@
-import { React, useState } from 'react';
-import { Link } from 'react-router-dom'
-import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import 'react-pro-sidebar/dist/css/styles.css';
-import { Box, IconButton, Typography, useTheme, useMediaQuery } from '@mui/material';
-import { tokens } from '../../../theme'
-import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
-import MenuItems from '../../classes/MenuItems';
-
+import React from "react";
+import { Link } from "react-router-dom";
+import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
+import "react-pro-sidebar/dist/css/styles.css";
+import {
+    Box,
+    IconButton,
+    Typography,
+    useTheme,
+    useMediaQuery,
+} from "@mui/material";
+import { tokens } from "../../../theme";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import MenuItems from "../../classes/MenuItems";
+import logo from "../../assets/SPLIIT_logo.jpg";
+import { useState } from "react";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
@@ -18,83 +25,155 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
             onClick={() => setSelected(title)}
             icon={icon}
         >
-            <Typography>
-                {title}
-            </Typography>
+            <Typography>{title}</Typography>
             <Link to={to} />
-        </MenuItem >
-    )
-}
+        </MenuItem>
+    );
+};
 
-function Sidebar() {
+function Sidebar({ isCollapsed, setIsCollapsed }) {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
-    const [isCollapsed, setIsCollapsed] = useState(true);
-    const [selected, setSelected] = useState('logtransaction');
-    const isVertical = useMediaQuery('(max-aspect-ratio: 1/1)');
+    const [selected, setSelected] = useState("logtransaction");
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-    return isVertical ?
-        <></>
-        :
-        ( // if display is horizontal
-            <Box
-                sx={{
-                    "& .pro-sidebar-inner": {
-                        background: `${colours.primary[400]} !important`,
-                    },
-                    "& .pro-icon-wrapper": {
-                        backgroundColor: "transparent !important",
-                    },
-                    "& .pro-inner-item": {
-                        padding: "5px 35px 5px 20px !important",
-                    },
-                    "& .pro-inner-item:hover": {
+    // Handle automatic collapse on mobile
+    React.useEffect(() => {
+        if (isMobile) {
+            setIsCollapsed(true);
+        }
+    }, [isMobile, setIsCollapsed]);
+
+    return (
+        <Box
+            sx={{
+                "& .pro-sidebar-inner": {
+                    background: `${colours.primary[400]} !important`,
+                    height: "100vh !important",
+                },
+                "& .pro-sidebar": {
+                    height: "100vh !important",
+                    width: "100% !important",
+                    position: isMobile
+                        ? "fixed !important"
+                        : "static !important",
+                    top: 0,
+                    left: 0,
+                    zIndex: isMobile ? 1200 : "auto",
+                },
+                "& .pro-icon-wrapper": {
+                    backgroundColor: "transparent !important",
+                },
+                "& .pro-inner-item": {
+                    padding: "5px 35px 5px 20px !important",
+                    "&:hover": {
                         color: "#868dfb !important",
                     },
-                    "& .pro-menu-item.active": {
-                        color: "#6870fa !important",
-                    },
-                }}>
-                <ProSidebar collapsed={isCollapsed}>
-                    <Menu iconShape='square'>
+                },
+                "& .pro-menu-item.active": {
+                    color: "#6870fa !important",
+                },
+            }}
+        >
+            <ProSidebar collapsed={isCollapsed}>
+                <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+                    <Menu iconShape="square">
                         <MenuItem
                             onClick={() => setIsCollapsed(!isCollapsed)}
                             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
                             style={{
                                 margin: "10px 0 20px 0",
                                 color: colours.grey[100],
-                            }}>
+                            }}
+                        >
                             {!isCollapsed && (
-                                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} ml={'30px'}>
-                                    <Box display={'flex'} justifyContent={'center'} alignContent={'center'}>
-                                        <a href='/home'>
-                                            <img src='SPLIIT_logo.jpg' height={50} />
+                                <Box
+                                    display={"flex"}
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    ml={"30px"}
+                                >
+                                    <Box
+                                        display={"flex"}
+                                        justifyContent={"center"}
+                                        sx={{
+                                            "& img": {
+                                                height: { xs: 40, sm: 50 },
+                                            },
+                                        }}
+                                    >
+                                        <a href="/home">
+                                            <img src={logo} alt="SPLIIT-Logo" />
                                         </a>
                                     </Box>
-                                    <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                                        <MenuOutlinedIcon />
-                                    </IconButton>
+                                    {!isMobile && (
+                                        <IconButton
+                                            onClick={() =>
+                                                setIsCollapsed(!isCollapsed)
+                                            }
+                                            sx={{
+                                                display: { xs: "none", sm: "flex" },
+                                            }}
+                                        >
+                                            <MenuOutlinedIcon />
+                                        </IconButton>
+                                    )}
                                 </Box>
                             )}
                         </MenuItem>
-                        <Box paddingLeft={isCollapsed ? undefined : '10%'}>
-                            {MenuItems.map((item) => (
-                                item.icon === null ? undefined :
-                                    <Item
-                                        key={item.title}
-                                        title={item.title}
-                                        to={item.to}
-                                        icon={item.icon}
-                                        selected={selected}
-                                        setSelected={setSelected}
-                                    >
-                                    </Item>
-                            ))}
+                        <Box
+                            paddingLeft={isCollapsed ? undefined : "10%"}
+                            sx={{
+                                "& .pro-item-content": {
+                                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                                },
+                            }}
+                        >
+                            {MenuItems.map((item) =>
+                                (item.icon === null || item.title === "TripInfo") ? undefined : <Item
+                                    key={item.title}
+                                    title={item.title}
+                                    to={item.to}
+                                    icon={item.icon}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                />
+                            )}
+
                         </Box>
                     </Menu>
-                </ProSidebar>
-            </Box >
-        )
+                    <Box>
+                        {/* TODO: make the trip picture and name show here */}
+                    </Box>
+                    <Menu iconShape="square">
+                        {MenuItems.map((item) => {
+                            if (item.title === "TripInfo") {
+                                return (
+                                    <Box key={item.title}
+                                        paddingLeft={isCollapsed ? undefined : "10%"}
+                                        sx={{
+                                            mb: 2,
+                                            "& .pro-item-content": {
+                                                fontSize: { xs: "0.9rem", sm: "1rem" },
+                                            },
+                                        }}>
+                                        <Item
+                                            title={item.title}
+                                            to={item.to}
+                                            icon={item.icon}
+                                            selected={selected}
+                                            setSelected={setSelected}
+                                        />
+                                    </Box>
+                                );
+                            }
+                            return null;
+                        })}
+                    </Menu>
+                </Box>
+            </ProSidebar>
+        </Box>
+    );
 }
 
-export default Sidebar
+export default Sidebar;

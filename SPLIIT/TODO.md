@@ -9,6 +9,12 @@ localStorage
 
 cookies
 - user
+- trip
 
 ### To do
-- set up backend for new user and new trip creation
+- add a loading screen
+- edit profile api
+- edit trip info api
+- jump to tripcreationsuccess page to share trip ID
+- join trip using trip ID
+- complete trip info

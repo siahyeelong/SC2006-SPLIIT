@@ -1,10 +1,10 @@
-import { React, useState, useEffect } from 'react'
-import { Box, useTheme } from '@mui/material';
-import { tokens } from '../../../theme';
+import { React, useState, useEffect } from "react";
+import { Box, useTheme, Typography } from "@mui/material";
+import { tokens } from "../../../theme";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import CarouselCard from './CarouselCard';
-import { People } from '../../classes/People';
+import CarouselCard from "./CarouselCard";
+import { People } from "../../classes/People";
 
 function Carousel() {
     const theme = useTheme();
@@ -16,22 +16,25 @@ function Carousel() {
 
     function fetchMatrices() {
         const backendURL = process.env.REACT_APP_BACKEND_URL;
-        fetch(`${backendURL}/record/owe`)
-            .then(response => {
+        fetch(`${backendURL}/transactions/owe`)
+            .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    throw new Error("Network response was not ok");
                 }
                 return response.json();
             })
-            .then(data => {
+            .then((data) => {
                 setDebtMatrix_R(data[1] || []);
                 setDebtMatrix_S(data[2] || []);
             })
-            .catch(error => {
-                setError('Failed to fetch transactions. Please try again later.');
-                console.error('Error fetching data:', error);
+            .catch((error) => {
+                setError(
+                    "Failed to fetch transactions. Please try again later."
+                );
+                console.error("Error fetching data:", error);
             });
     }
+
     useEffect(() => fetchMatrices(), []);
 
     const slider_settings = {
@@ -44,17 +47,34 @@ function Carousel() {
         adaptiveHeight: false,
     };
 
+    if (error) {
+        return (
+            <Typography color="error" variant="h6">
+                {error}
+            </Typography>
+        );
+    }
+
     return (
         <>
-            <Box className="carousel" width={'90%'}>
-                {/* <Slider {...slider_settings}> */}
+            {/* You can replace the static Box with a Slider if desired */}
+            <Box
+                className="carousel"
+                display="flex"
+                flexWrap="wrap"
+                justifyContent="center"
+                sx={{ width: "100%", maxWidth: "1500px" }}
+            >
                 {Object.keys(People).map((person) => (
-                    <CarouselCard key={person} ower={People[person]} matrix={debtMatrix_R[person]} />
+                    <CarouselCard
+                        key={person}
+                        ower={People[person]}
+                        matrix={debtMatrix_R[person]}
+                    />
                 ))}
-                {/* </Slider> */}
             </Box>
         </>
-    )
+    );
 }
 
-export default Carousel
+export default Carousel;
