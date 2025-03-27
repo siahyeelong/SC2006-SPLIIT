@@ -3,10 +3,10 @@ import db from "../db/connection.js";
 import { ObjectId } from "mongodb"; // This help convert the id from string to ObjectId for the _id.
 
 const router = express.Router();
+const collection = await db.collection(process.env.TRIPS_COLLECTION);
 
 router.get("/getAllTrips/:user", async (req, res) => {
     try {
-        let collection = await db.collection(process.env.TRIPS_COLLECTION);
         let user = req.params.user;
 
         // Find trips where the 'users' array contains the given user
@@ -43,8 +43,6 @@ const generateUniqueTripID = async (collection) => {
 
 router.post("/createtrip", async (req, res) => {
     try {
-        const collection = await db.collection(process.env.TRIPS_COLLECTION);
-
         // generate a unique trip ID
         const tripID = await generateUniqueTripID(collection)
 
@@ -61,7 +59,12 @@ router.post("/createtrip", async (req, res) => {
             endDate: req.body.endDate,
             users: req.body.users,
         };
-        const result = await collection.insertOne(newRecord);
+
+        const tripresult = await collection.insertOne(newRecord);
+        // append the tripID to the user too
+        const users_collection = await db.collection(process.env.USERS_COLLECTION);
+        const userresult = await users_collection.updateOne({ username: req.body.users[0] }, { $push: { trips: tripID } });
+
         res.send({ "generatedTripID": tripID }).status(204);
     } catch (err) {
         console.error(err);
@@ -69,14 +72,21 @@ router.post("/createtrip", async (req, res) => {
     }
 });
 
-router.patch("/jointrip/:id", async (req, res) => {
+router.patch("/jointrip/:username", async (req, res) => {
     // TODO: append user to trip
     // TODO: append trip to user
 })
 
 // returns all trip information
-router.get("/tripinfo/:id", async (req, res) => {
-
+router.get("/tripinfo/:tripID", async (req, res) => {
+    try {
+        const trip = await collection.findOne({ tripID: req.params.tripID });
+        if (!trip) res.send("Not found").status(404);
+        else res.send(trip).status(200);
+    } catch (error) {
+        console.log(`get id error:\n${error}`.red);
+        res.send("Not found").status(404);
+    }
 })
 
 router.get("/test", async (req, res) => {
