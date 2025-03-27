@@ -124,7 +124,7 @@ function CarouselCard({ ower, matrix }) {
 
                     {/* Display debts */}
                     {matrix &&
-                    Object.values(matrix).some((amount) => amount !== 0) ? (
+                        Object.values(matrix).some((amount) => amount !== 0) ? (
                         <>
                             <Divider
                                 variant="middle"

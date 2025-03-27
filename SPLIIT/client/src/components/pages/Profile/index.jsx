@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Stack } from "@mui/material";
 import Header from "../MainUI/Header";
 import ProfileInfo from "./ProfileInfo";
@@ -12,55 +12,55 @@ import tripImage from "../../assets/defaultTripBackground.png";
 import SnackbarNotifs from "../TripInfo/SnackbarNotifs";
 
 // placeholder until connect with backend
-const MOCK_PROFILE = {
-    displayName: "Bob",
-    favoriteColor: "#D1BDFF",
-    trips: [
-        {
-            id: 1,
-            name: "USA'25",
-            flag: "🇺🇸",
-            date: "2025-06-01",
-            image: tripImage,
-        },
-        {
-            id: 2,
-            name: "Japan'23",
-            flag: "🇯🇵",
-            date: "2023-11-15",
-            image: tripImage,
-        },
-        {
-            id: 3,
-            name: "South Korea'22",
-            flag: "🇰🇷",
-            date: "2022-09-01",
-            image: tripImage,
-        },
-        {
-            id: 4,
-            name: "Germany'20",
-            flag: "🇩🇪",
-            date: "2020-07-10",
-            image: tripImage,
-        },
-    ],
-    colorOptions: [
-        { name: "Lavender Mist", value: "#D1BDFF" },
-        { name: "Soft Lilac", value: "#E2CBF7" },
-        { name: "Sky Breeze", value: "#D6F6FF" },
-        { name: "Minty Meadow", value: "#B3F5BC" },
-        { name: "Lemon Glow", value: "#F9FFB5" },
-        { name: "Buttercream", value: "#FFE699" },
-        { name: "Coral Blush", value: "#FCAE7C" },
-        { name: "Rosewood", value: "#FA9189" },
-    ],
-};
+// const MOCK_PROFILE = {
+//     displayName: "Bob",
+//     favoriteColor: "#D1BDFF",
+//     trips: [
+//         {
+//             id: 1,
+//             name: "USA'25",
+//             flag: "🇺🇸",
+//             date: "2025-06-01",
+//             image: tripImage,
+//         },
+//         {
+//             id: 2,
+//             name: "Japan'23",
+//             flag: "🇯🇵",
+//             date: "2023-11-15",
+//             image: tripImage,
+//         },
+//         {
+//             id: 3,
+//             name: "South Korea'22",
+//             flag: "🇰🇷",
+//             date: "2022-09-01",
+//             image: tripImage,
+//         },
+//         {
+//             id: 4,
+//             name: "Germany'20",
+//             flag: "🇩🇪",
+//             date: "2020-07-10",
+//             image: tripImage,
+//         },
+//     ],
+//     colorOptions: [
+//         { name: "Lavender Mist", value: "#D1BDFF" },
+//         { name: "Soft Lilac", value: "#E2CBF7" },
+//         { name: "Sky Breeze", value: "#D6F6FF" },
+//         { name: "Minty Meadow", value: "#B3F5BC" },
+//         { name: "Lemon Glow", value: "#F9FFB5" },
+//         { name: "Buttercream", value: "#FFE699" },
+//         { name: "Coral Blush", value: "#FCAE7C" },
+//         { name: "Rosewood", value: "#FA9189" },
+//     ],
+// };
 
 function Profile() {
-    const [profile, setProfile] = useState(MOCK_PROFILE);
+    const [profile, setProfile] = useState(null);
     const [isEditingName, setIsEditingName] = useState(false);
-    const [tempName, setTempName] = useState(profile.displayName);
+    const [tempName, setTempName] = useState("temp");
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [tripToDelete, setTripToDelete] = useState(null);
     const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -72,9 +72,46 @@ function Profile() {
     });
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true)
+    const [updating, setUpdating] = useState(false)
+    const backendURL = process.env.REACT_APP_BACKEND_URL;
+
+    /**
+     * Example profile:
+     * {
+        "_id": "67d8c09b505b07df4021e34a",
+        "email": "yeelongsiah@gmail.com",
+        "username": "yeelong",
+        "password": "$2b$10$8Y1AyfLImrkpkaSWoCshS.G/YgvQ4CKZ621bliddmAWrdnXbaQNLy",
+        "displayName": "Yee Long",
+        "favColour": #FFF,
+        "trips": []
+     * }
+     */
+    function getUserInfo() {
+        fetch(`${backendURL}/users/userinfo/${localStorage.getItem("user")}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setProfile(data || []);
+                setTempName(data.displayName)
+            })
+            .catch(error => {
+                // setError('Failed to fetch profile. Please try again later.');
+                console.error('Error fetching data:', error);
+            }).finally(
+                setLoading(false)
+            );
+    }
+    useEffect(() => getUserInfo(), []);
+    if (loading || !profile) return <></>
 
     const showSnackbar = (message, severity) => {
-        setSnackbarState((s) => ({
+        !updating && setSnackbarState((s) => ({
             open: true,
             message,
             severity,
@@ -82,11 +119,38 @@ function Profile() {
         }));
     };
 
+    async function updateUserInfo(updateField, value) {
+        try {
+            setUpdating(true)
+            const response = await fetch(`${backendURL}/users/edituser/${localStorage.getItem("user")}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ updateField, value }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+
+            return await response.json(); // Return response if needed
+        } catch (error) {
+            console.error("Failed to update user:", error);
+        } finally {
+            setUpdating(false)
+        }
+    }
+
+
     const handleSaveName = () => {
         setProfile((p) => ({
             ...p,
             displayName: tempName,
         }));
+
+        // update user data in the backend
+        updateUserInfo("displayName", tempName)
 
         showSnackbar("Display name saved!", "success");
         setIsEditingName(false);
@@ -104,6 +168,8 @@ function Profile() {
             ...p,
             trips: p.trips.filter((t) => t.id !== tripToDelete.id),
         }));
+
+        updateUserInfo("trips", profile.trips)
 
         setDeleteDialogOpen(false);
         showSnackbar(`Deleted ${tripToDelete.name}`, "info");
@@ -128,7 +194,12 @@ function Profile() {
         setSnackbarState((s) => ({ ...s, open: false }));
     };
 
-    const handleColourChange = () => {
+    const handleColourChange = (color) => {
+        setProfile((p) => ({
+            ...p,
+            favColour: color,
+        }));
+        updateUserInfo("favColour", color)
         showSnackbar("Favourite colour saved!", "success");
     };
 
@@ -148,7 +219,7 @@ function Profile() {
             >
                 <Header
                     title="Profile"
-                    subtitle="Personalise your experience"
+                    subtitle="Personalise your information"
                 />
 
                 <Stack
