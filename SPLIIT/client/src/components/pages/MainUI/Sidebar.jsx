@@ -76,61 +76,61 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
             }}
         >
             <ProSidebar collapsed={isCollapsed}>
-                <Menu iconShape="square">
-                    <MenuItem
-                        onClick={() => setIsCollapsed(!isCollapsed)}
-                        icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-                        style={{
-                            margin: "10px 0 20px 0",
-                            color: colours.grey[100],
-                        }}
-                    >
-                        {!isCollapsed && (
-                            <Box
-                                display={"flex"}
-                                justifyContent={"space-between"}
-                                alignItems={"center"}
-                                ml={"30px"}
-                            >
+                <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+                    <Menu iconShape="square">
+                        <MenuItem
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+                            style={{
+                                margin: "10px 0 20px 0",
+                                color: colours.grey[100],
+                            }}
+                        >
+                            {!isCollapsed && (
                                 <Box
                                     display={"flex"}
-                                    justifyContent={"center"}
-                                    sx={{
-                                        "& img": {
-                                            height: { xs: 40, sm: 50 },
-                                        },
-                                    }}
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    ml={"30px"}
                                 >
-                                    <a href="/home">
-                                        <img src={logo} alt="SPLLIT-Logo" />
-                                    </a>
-                                </Box>
-                                {!isMobile && (
-                                    <IconButton
-                                        onClick={() =>
-                                            setIsCollapsed(!isCollapsed)
-                                        }
+                                    <Box
+                                        display={"flex"}
+                                        justifyContent={"center"}
                                         sx={{
-                                            display: { xs: "none", sm: "flex" },
+                                            "& img": {
+                                                height: { xs: 40, sm: 50 },
+                                            },
                                         }}
                                     >
-                                        <MenuOutlinedIcon />
-                                    </IconButton>
-                                )}
-                            </Box>
-                        )}
-                    </MenuItem>
-                    <Box
-                        paddingLeft={isCollapsed ? undefined : "10%"}
-                        sx={{
-                            "& .pro-item-content": {
-                                fontSize: { xs: "0.9rem", sm: "1rem" },
-                            },
-                        }}
-                    >
-                        {MenuItems.map((item) =>
-                            item.icon === null ? undefined : (
-                                <Item
+                                        <a href="/home">
+                                            <img src={logo} alt="SPLIIT-Logo" />
+                                        </a>
+                                    </Box>
+                                    {!isMobile && (
+                                        <IconButton
+                                            onClick={() =>
+                                                setIsCollapsed(!isCollapsed)
+                                            }
+                                            sx={{
+                                                display: { xs: "none", sm: "flex" },
+                                            }}
+                                        >
+                                            <MenuOutlinedIcon />
+                                        </IconButton>
+                                    )}
+                                </Box>
+                            )}
+                        </MenuItem>
+                        <Box
+                            paddingLeft={isCollapsed ? undefined : "10%"}
+                            sx={{
+                                "& .pro-item-content": {
+                                    fontSize: { xs: "0.9rem", sm: "1rem" },
+                                },
+                            }}
+                        >
+                            {MenuItems.map((item) =>
+                                (item.icon === null || item.title === "TripInfo") ? undefined : <Item
                                     key={item.title}
                                     title={item.title}
                                     to={item.to}
@@ -138,10 +138,39 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                                     selected={selected}
                                     setSelected={setSelected}
                                 />
-                            )
-                        )}
+                            )}
+
+                        </Box>
+                    </Menu>
+                    <Box>
+                        {/* TODO: make the trip picture and name show here */}
                     </Box>
-                </Menu>
+                    <Menu iconShape="square">
+                        {MenuItems.map((item) => {
+                            if (item.title === "TripInfo") {
+                                return (
+                                    <Box key={item.title}
+                                        paddingLeft={isCollapsed ? undefined : "10%"}
+                                        sx={{
+                                            mb: 2,
+                                            "& .pro-item-content": {
+                                                fontSize: { xs: "0.9rem", sm: "1rem" },
+                                            },
+                                        }}>
+                                        <Item
+                                            title={item.title}
+                                            to={item.to}
+                                            icon={item.icon}
+                                            selected={selected}
+                                            setSelected={setSelected}
+                                        />
+                                    </Box>
+                                );
+                            }
+                            return null;
+                        })}
+                    </Menu>
+                </Box>
             </ProSidebar>
         </Box>
     );
