@@ -37,6 +37,7 @@ function Profile() {
         }));
     };
 
+
     const handleSaveName = () => {
         user.updateInfo("displayName", tempName)
 
