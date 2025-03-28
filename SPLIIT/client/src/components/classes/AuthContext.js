@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { User } from '../entities/User';
 
 export const AuthContext = createContext(null);
 
@@ -7,6 +8,7 @@ export const AuthProvider = ({ children }) => {
     const backendURL = process.env.REACT_APP_BACKEND_URL;
 
     const [user, setUser] = useState(null);
+    const [trip, setTrip] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -15,8 +17,8 @@ export const AuthProvider = ({ children }) => {
             try {
                 const res = await axios.get(`${backendURL}/users/refresh`, { withCredentials: true });
                 setAccessToken(res.data.accessToken);
-                setUser(res.data.user);
-                localStorage.setItem("user", res.data.user)
+                setUser(new User(res.data.user));
+                localStorage.setItem("user", res.data.user.username)
             } catch (error) {
                 if (error.response) {
                     if (error.response.status === 401) {
@@ -50,8 +52,8 @@ export const AuthProvider = ({ children }) => {
             );
 
             setAccessToken(res.data.accessToken);
-            setUser(res.data.user);
-            localStorage.setItem("user", res.data.user)
+            setUser(new User(res.data.user));
+            localStorage.setItem("user", res.data.user.username)
         } catch (error) {
             if (error.response) {
                 // Server responded with a status outside the 2xx range
@@ -71,12 +73,12 @@ export const AuthProvider = ({ children }) => {
 
     const googleLogin = (username, token) => {
         setAccessToken(token);
-        setUser(username);
         localStorage.setItem("user", username);
     }
 
-    const setSessionTrip = (tripID) => {
-        localStorage.setItem("trip", tripID)
+    const setSessionTrip = (theTrip) => {
+        setTrip(theTrip)
+        localStorage.setItem("trip", theTrip.tripID)
     }
 
     const logout = async () => {

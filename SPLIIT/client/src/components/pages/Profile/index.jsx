@@ -11,56 +11,10 @@ import { useNavigate } from "react-router-dom";
 import tripImage from "../../assets/defaultTripBackground.png";
 import SnackbarNotifs from "../TripInfo/SnackbarNotifs";
 
-// placeholder until connect with backend
-// const MOCK_PROFILE = {
-//     displayName: "Bob",
-//     favoriteColor: "#D1BDFF",
-//     trips: [
-//         {
-//             id: 1,
-//             name: "USA'25",
-//             flag: "🇺🇸",
-//             date: "2025-06-01",
-//             image: tripImage,
-//         },
-//         {
-//             id: 2,
-//             name: "Japan'23",
-//             flag: "🇯🇵",
-//             date: "2023-11-15",
-//             image: tripImage,
-//         },
-//         {
-//             id: 3,
-//             name: "South Korea'22",
-//             flag: "🇰🇷",
-//             date: "2022-09-01",
-//             image: tripImage,
-//         },
-//         {
-//             id: 4,
-//             name: "Germany'20",
-//             flag: "🇩🇪",
-//             date: "2020-07-10",
-//             image: tripImage,
-//         },
-//     ],
-//     colorOptions: [
-//         { name: "Lavender Mist", value: "#D1BDFF" },
-//         { name: "Soft Lilac", value: "#E2CBF7" },
-//         { name: "Sky Breeze", value: "#D6F6FF" },
-//         { name: "Minty Meadow", value: "#B3F5BC" },
-//         { name: "Lemon Glow", value: "#F9FFB5" },
-//         { name: "Buttercream", value: "#FFE699" },
-//         { name: "Coral Blush", value: "#FCAE7C" },
-//         { name: "Rosewood", value: "#FA9189" },
-//     ],
-// };
-
 function Profile() {
-    const [profile, setProfile] = useState(null);
+    const { logout, user } = useContext(AuthContext);
     const [isEditingName, setIsEditingName] = useState(false);
-    const [tempName, setTempName] = useState("temp");
+    const [tempName, setTempName] = useState(user.displayName);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [tripToDelete, setTripToDelete] = useState(null);
     const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -70,45 +24,9 @@ function Profile() {
         severity: "",
         key: 0,
     });
-    const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(true)
     const [updating, setUpdating] = useState(false)
     const backendURL = process.env.REACT_APP_BACKEND_URL;
-
-    /**
-     * Example profile:
-     * {
-        "_id": "67d8c09b505b07df4021e34a",
-        "email": "yeelongsiah@gmail.com",
-        "username": "yeelong",
-        "password": "$2b$10$8Y1AyfLImrkpkaSWoCshS.G/YgvQ4CKZ621bliddmAWrdnXbaQNLy",
-        "displayName": "Yee Long",
-        "favColour": #FFF,
-        "trips": []
-     * }
-     */
-    function getUserInfo() {
-        fetch(`${backendURL}/users/userinfo/${localStorage.getItem("user")}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                setProfile(data || []);
-                setTempName(data.displayName)
-            })
-            .catch(error => {
-                // setError('Failed to fetch profile. Please try again later.');
-                console.error('Error fetching data:', error);
-            }).finally(
-                setLoading(false)
-            );
-    }
-    useEffect(() => getUserInfo(), []);
-    if (loading || !profile) return <></>
 
     const showSnackbar = (message, severity) => {
         !updating && setSnackbarState((s) => ({
@@ -119,57 +37,23 @@ function Profile() {
         }));
     };
 
-    async function updateUserInfo(updateField, value) {
-        try {
-            setUpdating(true)
-            const response = await fetch(`${backendURL}/users/edituser/${localStorage.getItem("user")}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ updateField, value }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status} - ${response.statusText}`);
-            }
-
-            return await response.json(); // Return response if needed
-        } catch (error) {
-            console.error("Failed to update user:", error);
-        } finally {
-            setUpdating(false)
-        }
-    }
-
 
     const handleSaveName = () => {
-        setProfile((p) => ({
-            ...p,
-            displayName: tempName,
-        }));
-
-        // update user data in the backend
-        updateUserInfo("displayName", tempName)
+        user.updateInfo("displayName", tempName)
 
         showSnackbar("Display name saved!", "success");
         setIsEditingName(false);
     };
 
     const handleDeleteTrip = (id) => {
-        setTripToDelete(profile.trips.find((t) => t.id === id));
+        setTripToDelete(user.trips.find((t) => t.id === id));
         setDeleteDialogOpen(true);
     };
 
     const confirmDelete = () => {
         if (!tripToDelete) return;
 
-        setProfile((p) => ({
-            ...p,
-            trips: p.trips.filter((t) => t.id !== tripToDelete.id),
-        }));
-
-        updateUserInfo("trips", profile.trips)
+        user.deleteTrip(tripToDelete.id)
 
         setDeleteDialogOpen(false);
         showSnackbar(`Deleted ${tripToDelete.name}`, "info");
@@ -195,11 +79,7 @@ function Profile() {
     };
 
     const handleColourChange = (color) => {
-        setProfile((p) => ({
-            ...p,
-            favColour: color,
-        }));
-        updateUserInfo("favColour", color)
+        user.updateInfo("favColour", color)
         showSnackbar("Favourite colour saved!", "success");
     };
 
@@ -228,7 +108,7 @@ function Profile() {
                     alignItems="center"
                 >
                     <ProfileInfo
-                        profile={profile}
+                        profile={user}
                         isEditingName={isEditingName}
                         tempName={tempName}
                         setTempName={setTempName}
@@ -237,13 +117,12 @@ function Profile() {
                     />
 
                     <ColourPicker
-                        profile={profile}
-                        setProfile={setProfile}
+                        profile={user}
                         onColourChange={handleColourChange}
                     />
 
                     <Trips
-                        trips={profile.trips}
+                        trips={user.trips}
                         onDeleteTrip={handleDeleteTrip}
                         onAddTrip={handleAddTrip}
                     />
@@ -260,8 +139,7 @@ function Profile() {
                         onClose={() => setAddDialogOpen(false)}
                         onJoinResult={handleJoinResult}
                         // for simulation purpose only
-                        profile={profile}
-                        setProfile={setProfile}
+                        profile={user}
                         setAddDialogOpen={setAddDialogOpen}
                     />
                 </Stack>

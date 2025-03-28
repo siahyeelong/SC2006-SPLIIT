@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     Grid2,
     Card,
@@ -10,39 +10,33 @@ import {
 } from "@mui/material";
 import defaultBackground from "../../assets/defaultTripBackground.png";
 import { tokens } from "../../../theme";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
+import { AuthContext } from "../../classes/AuthContext";
 
 function TripSelection() {
-    const [allTrips, setAllTrips] = useState([]);
+    const [allTrips, setAllTrips] = useState(null);
     const [error, setError] = useState(null);
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+    const { user } = useContext(AuthContext)
 
-    function fetchAllTrips() {
-        const backendURL = process.env.REACT_APP_BACKEND_URL;
-        fetch(`${backendURL}/trips/getallTrips/${localStorage.getItem("user")}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setAllTrips(data || []);
-            })
-            .catch((error) => {
-                setError("Failed to fetch trip IDs. Please try again later.");
-                console.error("Error fetching data:", error);
-            })
-            .finally(() => {
+    useEffect(() => {
+        async function fetchAllTrips() {
+            try {
+                const trips = await user.getAllTripInfo();
+                setAllTrips(trips);
+            } catch (err) {
+                setError("Failed to fetch trips");
+                console.error(err);
+            } finally {
                 setLoading(false);
-            });
-    }
-
-    useEffect(() => fetchAllTrips(), []);
+            }
+        }
+        fetchAllTrips();
+    }, [user]);
 
     if (loading) return <Typography>Loading...</Typography>;
 
