@@ -13,6 +13,7 @@ import {
 import { useExchangeRates } from "../../classes/ExchangeRates";
 import { AuthContext } from "../../classes/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Trip } from "../../entities/Trip";
 
 function TripCreationForm() {
     const formResetState = {
@@ -92,9 +93,10 @@ function TripCreationForm() {
                 throw new Error(`HTTP error! status: ${response.status}`);
 
             alert("Trip created successfully!");
+
             const { generatedTripID } = await response.json();
-            setTripID(generatedTripID);
-            setSessionTrip(generatedTripID);
+            formData['tripID'] = generatedTripID;
+            setSessionTrip(new Trip(formData));
             navigate("/");
         } catch (error) {
             console.error("Error creating trip:", error);
