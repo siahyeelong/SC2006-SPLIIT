@@ -34,11 +34,12 @@ const AuthLayout = () => {
                     transition: "width 0.3s ease",
                 }}
             >
-                {localStorage.getItem("trip")
-                    && <Sidebar // enable sidebar only if trip has been selected before
+                {localStorage.getItem("trip") && (
+                    <Sidebar // enable sidebar only if trip has been selected before
                         isCollapsed={isCollapsed}
                         setIsCollapsed={setIsCollapsed}
-                    />}
+                    />
+                )}
             </Box>
 
             {/* Main Content Area */}
