@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button } from '@mui/material';
 import Header from '../MainUI/Header';
-import { useExchangeRates } from '../../classes/ExchangeRates';
 import { createAgentRun } from './toolhouse'; // <-- Import the API call
+import axios from 'axios';
+import { User } from '../../entities/User';
 
 function AItinerary() {
-  const { exchangeRates } = useExchangeRates();
 
-  // Handler to test exchange rates (existing functionality)
-  const handleTestExchangeRates = async () => {
-    console.log(typeof exchangeRates['USD']);
-  };
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  const [profile, setProfile] = useState("huh")
+  const [loading, setLoading] = useState(true)
+
+  async function testFunction() {
+    const backendURL = process.env.REACT_APP_BACKEND_URL;
+
+    try {
+      const res = await axios.post(
+        `${backendURL}/users/login`,
+        { username: "yeelong", password: "password123" },
+        { withCredentials: true }
+      );
+      setProfile(res.data.user);
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+      const activeuser = new User(profile)
+      console.log(activeuser.printInfo())
+    }
+  }
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // New handler to create the agent run for AI Itinerary
   const handleCreateAgentRun = async () => {
@@ -34,16 +56,16 @@ function AItinerary() {
       </Box>
       <div>(work in progress)</div>
       <Button
-        onClick={handleTestExchangeRates}
+        onClick={async () => await testFunction()}
         color="secondary"
         variant="outlined"
         style={{ margin: 20 }}
       >
-        Test Exchange Rates button
+        Test button
       </Button>
       <Button
         onClick={handleCreateAgentRun}
-        color="primary"
+        color="secondary"
         variant="outlined"
         style={{ margin: 20 }}
       >

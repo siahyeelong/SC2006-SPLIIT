@@ -51,7 +51,9 @@ router.post("/login", async (req, res) => {
         maxAge: 34 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({ accessToken, user: username });
+    user.password = ""
+
+    res.json({ accessToken, user: user });
 });
 
 import { OAuth2Client } from 'google-auth-library';
@@ -135,7 +137,8 @@ router.get("/refresh", async (req, res) => {
             // Generate a new access token
             const accessToken = generateAccessToken({ username });
 
-            res.json({ accessToken, user: username });
+            user.password = ""
+            res.json({ accessToken, user: user });
         });
     } catch (error) {
         console.error("Error in /refresh:", error);
