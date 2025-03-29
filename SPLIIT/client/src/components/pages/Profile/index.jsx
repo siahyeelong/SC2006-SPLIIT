@@ -8,7 +8,6 @@ import DeletionConfirmationDialog from "./DeletionConfirmationDialog";
 import AddConfirmationDialog from "./AddConfirmationDialog";
 import { AuthContext } from "../../classes/AuthContext";
 import { useNavigate } from "react-router-dom";
-import tripImage from "../../assets/defaultTripBackground.png";
 import SnackbarNotifs from "../TripInfo/SnackbarNotifs";
 
 function Profile() {
@@ -64,23 +63,17 @@ function Profile() {
     const confirmDelete = () => {
         if (!tripToDelete) return;
 
-        user.deleteTrip(tripToDelete.id)
-        tempProfile.trips = tempProfile.trips.filter(id => tripToDelete.id !== id);
+        user.deleteTrip(tripToDelete.id) // update the user object
+        tempProfile.trips = tempProfile.trips.filter(id => tripToDelete.id !== id); // update tempProfile to show live changes
 
         setDeleteDialogOpen(false);
         showSnackbar(`Deleted ${tripToDelete.name}`, "info");
         setTripToDelete(null);
     };
 
-    // const handleAddTrip = () => {
-    //     const newTrip = {
-    //         id: Date.now(),
-    //         name: `New Trip ${profile.trips.length + 1}`,
-    //         flag: "🌍",
-    //         date: new Date().toISOString().split("T")[0],
-    //     };
-    //     setProfile((p) => ({ ...p, trips: [...p.trips, newTrip] }));
-    // };
+    const handleJoinResult = (result) => {
+        showSnackbar(result.message, result.severity);
+    };
 
     const handleAddTrip = () => {
         setAddDialogOpen(true);
@@ -91,9 +84,6 @@ function Profile() {
     };
 
 
-    const handleJoinResult = (result) => {
-        showSnackbar(result.message, result.severity);
-    };
 
     return (
         <>
@@ -140,9 +130,9 @@ function Profile() {
                         open={addDialogOpen}
                         onClose={() => setAddDialogOpen(false)}
                         onJoinResult={handleJoinResult}
-                        // for simulation purpose only
-                        profile={tempProfile}
+                        user={user}
                         setAddDialogOpen={setAddDialogOpen}
+                        setProfile={setTempProfile}
                     />
                 </Stack>
                 <Box
