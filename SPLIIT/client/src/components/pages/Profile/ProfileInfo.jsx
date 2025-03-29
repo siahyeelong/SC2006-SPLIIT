@@ -23,7 +23,6 @@ const ProfileInfo = ({
 
     return (
         <Card
-            // variant="outlined"
             sx={{
                 bgcolor: theme.palette.background.default,
                 width: "100%",

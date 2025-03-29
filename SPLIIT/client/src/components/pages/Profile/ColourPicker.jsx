@@ -11,12 +11,11 @@ import Grid2 from "@mui/material/Grid2";
 import { Check } from "@mui/icons-material";
 import { favColourChoices } from "../Register/favColourChoices"
 
-const ColourPicker = ({ profile, setProfile, onColourChange }) => {
+const ColourPicker = ({ profile, onColourChange }) => {
     const theme = useTheme();
 
     return (
         <Card
-            // variant="outlined"
             sx={{
                 bgcolor: theme.palette.background.default,
                 width: "100%",
