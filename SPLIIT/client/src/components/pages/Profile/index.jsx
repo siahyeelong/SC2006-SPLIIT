@@ -13,8 +13,9 @@ import SnackbarNotifs from "../TripInfo/SnackbarNotifs";
 
 function Profile() {
     const { logout, user } = useContext(AuthContext);
-    const [isEditingName, setIsEditingName] = useState(false);
+    const [tempProfile, setTempProfile] = useState(user);
     const [tempName, setTempName] = useState(user.displayName);
+    const [isEditingName, setIsEditingName] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [tripToDelete, setTripToDelete] = useState(null);
     const [addDialogOpen, setAddDialogOpen] = useState(false);
@@ -39,14 +40,24 @@ function Profile() {
 
 
     const handleSaveName = () => {
-        user.updateInfo("displayName", tempName)
+        user.updateInfo("displayName", tempName) // update the user object
+        tempProfile.displayName = tempName // update tempProfile to show live changes
 
+        // show confirmation
         showSnackbar("Display name saved!", "success");
         setIsEditingName(false);
     };
 
-    const handleDeleteTrip = (id) => {
-        setTripToDelete(user.trips.find((t) => t.id === id));
+    const handleColourChange = (color) => {
+        user.updateInfo("favColour", color) // update the user object
+        tempProfile.favColour = color // update tempProfile to show live changes
+
+        // show confirmation
+        showSnackbar("Favourite colour saved!", "success");
+    };
+
+    const handleDeleteTrip = (tripID, tripName) => {
+        setTripToDelete({ name: tripName, id: tripID });
         setDeleteDialogOpen(true);
     };
 
@@ -54,6 +65,7 @@ function Profile() {
         if (!tripToDelete) return;
 
         user.deleteTrip(tripToDelete.id)
+        tempProfile.trips = tempProfile.trips.filter(id => tripToDelete.id !== id);
 
         setDeleteDialogOpen(false);
         showSnackbar(`Deleted ${tripToDelete.name}`, "info");
@@ -78,10 +90,6 @@ function Profile() {
         setSnackbarState((s) => ({ ...s, open: false }));
     };
 
-    const handleColourChange = (color) => {
-        user.updateInfo("favColour", color)
-        showSnackbar("Favourite colour saved!", "success");
-    };
 
     const handleJoinResult = (result) => {
         showSnackbar(result.message, result.severity);
@@ -90,12 +98,6 @@ function Profile() {
     return (
         <>
             <Box
-            // sx={{
-            //     padding: { xs: 2, sm: 3 },
-            //     maxWidth: { xs: "100%", md: 1200, lg: 1400 },
-            //     margin: "0 auto",
-            //     boxSizing: "border-box",
-            // }}
             >
                 <Header
                     title="Profile"
@@ -108,7 +110,7 @@ function Profile() {
                     alignItems="center"
                 >
                     <ProfileInfo
-                        profile={user}
+                        profile={tempProfile}
                         isEditingName={isEditingName}
                         tempName={tempName}
                         setTempName={setTempName}
@@ -117,12 +119,12 @@ function Profile() {
                     />
 
                     <ColourPicker
-                        profile={user}
+                        profile={tempProfile}
                         onColourChange={handleColourChange}
                     />
 
                     <Trips
-                        trips={user.trips}
+                        trips={tempProfile.trips}
                         onDeleteTrip={handleDeleteTrip}
                         onAddTrip={handleAddTrip}
                     />
@@ -131,7 +133,7 @@ function Profile() {
                         open={deleteDialogOpen}
                         onClose={() => setDeleteDialogOpen(false)}
                         onConfirm={confirmDelete}
-                        tripName={tripToDelete?.name} // check for null or undefined
+                        trip={tripToDelete}
                     />
 
                     <AddConfirmationDialog
@@ -139,7 +141,7 @@ function Profile() {
                         onClose={() => setAddDialogOpen(false)}
                         onJoinResult={handleJoinResult}
                         // for simulation purpose only
-                        profile={user}
+                        profile={tempProfile}
                         setAddDialogOpen={setAddDialogOpen}
                     />
                 </Stack>
@@ -173,7 +175,6 @@ function Profile() {
             </Box>
 
             <SnackbarNotifs
-                key={snackbarState.key}
                 open={snackbarState.open}
                 message={snackbarState.message}
                 onClose={handleCloseSnackbar}

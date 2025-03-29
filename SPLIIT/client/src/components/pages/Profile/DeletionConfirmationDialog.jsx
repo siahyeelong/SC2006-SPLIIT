@@ -9,7 +9,8 @@ import {
     Typography,
 } from "@mui/material";
 
-const DeletionConfirmationDialog = ({ open, onClose, onConfirm, tripName }) => {
+const DeletionConfirmationDialog = ({ open, onClose, onConfirm, trip }) => {
+    if (!trip) return
     return (
         <Dialog
             open={open}
@@ -43,7 +44,7 @@ const DeletionConfirmationDialog = ({ open, onClose, onConfirm, tripName }) => {
                     }}
                 >
                     Are you sure you want to delete{" "}
-                    <strong>{tripName || "this trip"}</strong>?
+                    <strong>{trip.name || "this trip"}</strong>?
                     <br />
                     This action cannot be undone.
                 </DialogContentText>
