@@ -3,7 +3,8 @@ import db from "../db/connection.js";
 import { ObjectId } from "mongodb"; // This help convert the id from string to ObjectId for the _id.
 
 const router = express.Router();
-const collection = await db.collection(process.env.TRIPS_COLLECTION);
+const collection = db.collection(process.env.TRIPS_COLLECTION);
+const users_collection = db.collection(process.env.USERS_COLLECTION);
 
 router.get("/getAllTrips/:user", async (req, res) => {
     try {
@@ -62,7 +63,6 @@ router.post("/createtrip", async (req, res) => {
 
         const tripresult = await collection.insertOne(newRecord);
         // append the tripID to the user too
-        const users_collection = await db.collection(process.env.USERS_COLLECTION);
         const userresult = await users_collection.updateOne({ username: req.body.users[0] }, { $push: { trips: tripID } });
 
         res.send({ "generatedTripID": tripID }).status(204);
@@ -73,9 +73,52 @@ router.post("/createtrip", async (req, res) => {
 });
 
 router.patch("/jointrip/:username", async (req, res) => {
-    // TODO: append user to trip
-    // TODO: append trip to user
-})
+    const { username } = req.params;
+    const { tripID } = req.body;
+
+    if (!tripID) {
+        return res.status(400).json({ error: "Trip ID is required" });
+    }
+
+    try {
+
+        // Fetch user and trip from database
+        const user = await users_collection.findOne({ username });
+        const trip = await collection.findOne({ tripID });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (!trip) {
+            return res.status(404).json({ message: "Trip not found" });
+        }
+
+        // Check if the user is already in the trip
+        const userInTrip = trip.users.includes(username);
+        const tripInUser = user.trips.includes(tripID);
+
+        if (userInTrip && tripInUser) {
+            return res.status(200).json({ message: "You are already in this trip" });
+        }
+
+        // Update both user and trip
+        await users_collection.updateOne(
+            { username },
+            { $addToSet: { trips: tripID } }
+        );
+
+        await collection.updateOne(
+            { tripID },
+            { $addToSet: { users: username } }
+        );
+
+        return res.status(200).json({ message: "Successfully joined the trip" });
+    } catch (error) {
+        console.error("Error joining trip:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 // returns all trip information
 router.get("/tripinfo/:tripID", async (req, res) => {

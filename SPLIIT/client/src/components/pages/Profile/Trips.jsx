@@ -4,6 +4,7 @@ import { Delete, Add } from "@mui/icons-material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import { AuthContext } from "../../classes/AuthContext";
+import defaultImage from "../../assets/defaultTripBackground.png";
 
 const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
     const theme = useTheme();
@@ -58,14 +59,12 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                                             "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
                                         }}
                                     >
-                                        {trip.tripImage && (
-                                            <Box
-                                                component="img"
-                                                src={trip.tripImage}
-                                                alt={trip.tripName}
-                                                sx={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.7)" }}
-                                            />
-                                        )}
+                                        <Box
+                                            component="img"
+                                            src={trip.tripImage ? trip.tripImage : defaultImage}
+                                            alt={trip.tripName}
+                                            sx={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(0.7)" }}
+                                        />
                                         <IconButton
                                             size="small"
                                             onClick={() => onDeleteTrip(tripID, trip.tripName)}

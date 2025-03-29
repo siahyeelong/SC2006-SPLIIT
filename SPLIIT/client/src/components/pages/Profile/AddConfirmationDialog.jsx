@@ -10,15 +10,13 @@ import Grid2 from "@mui/material/Grid2";
 import { Create, GroupAdd } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import JoinTripDialog from "./JoinTripDialog";
-import tripImage from "../../assets/defaultTripBackground.png";
 
 const AddConfirmationDialog = ({
     open,
     onClose,
     onJoinResult,
-    profile, // simlation only
-    setProfile, // simlation only
-    setAddDialogOpen, // simlation only
+    user,
+    setProfile
 }) => {
     const [joinTripDialogOpen, setJoinTripDialogOpen] = useState(false);
     const [tripId, setTripId] = useState("");
@@ -28,47 +26,19 @@ const AddConfirmationDialog = ({
         setJoinTripDialogOpen(true);
     };
 
-    const handleJoinTripSubmit = () => {
+    const handleJoinTripSubmit = async () => {
         const trimmedId = tripId.trim();
 
-        // edit logic after connect backend
-        if (trimmedId !== "test") {
-            console.log(`Joined trip with ${trimmedId}`);
-            onJoinResult({
-                message: `Joined ${trimmedId}`,
-                severity: "success",
-            });
-            handleCloseDialog();
-        } else if (trimmedId === "test") {
-            console.log("Invalid Trip ID");
-            onJoinResult({
-                message: `Invalid Trip ID`,
-                severity: "error",
-            });
-            setTripId("");
-        }
+        const message = await user.joinTrip(trimmedId) // update the user object
+        setProfile((p) => ({ ...p, trips: [...p.trips, trimmedId] })); // update tempProfile to show live changes
+
+        onJoinResult(message)
+        navigate("/profile")
     };
 
     const handleCloseDialog = () => {
         setJoinTripDialogOpen(false);
         setTripId("");
-    };
-
-    // remember comment out after backend
-    const handleExampleAdd = () => {
-        const newTrip = {
-            id: Date.now(),
-            name: `New Trip ${profile.trips.length + 1}`,
-            flag: "🌍",
-            date: new Date().toISOString().split("T")[0],
-            image: tripImage,
-        };
-        setProfile((p) => ({ ...p, trips: [...p.trips, newTrip] }));
-        setAddDialogOpen(false);
-        onJoinResult({
-            message: `Joined ${newTrip.name}`,
-            severity: "success",
-        });
     };
 
     return (

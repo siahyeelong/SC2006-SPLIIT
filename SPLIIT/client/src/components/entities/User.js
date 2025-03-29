@@ -63,6 +63,39 @@ export class User {
         await this.updateInfo("trips", this.trips);
     }
 
+    async joinTrip(tripID) {
+        try {
+            const response = await fetch(`${backendURL}/trips/jointrip/${this.username}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ tripID }),
+            });
+
+            const message = await response.json(); // Always parse JSON response
+
+            if (response.status === 404 || response.status === 400) {
+                return { message: message.message || "An error occurred", severity: "error" };
+            }
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+
+            // Ensure tripID is added to this.trips
+            if (!this.trips.includes(tripID)) {
+                this.trips.push(tripID);
+            }
+
+            return { message: message.message, severity: "success" };
+        } catch (error) {
+            console.error("Failed to join trip:", error);
+            return { message: "Internal server error", severity: "error" };
+        }
+    }
+
+
 
 
     printInfo() {
