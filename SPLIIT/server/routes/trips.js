@@ -132,6 +132,25 @@ router.get("/tripinfo/:tripID", async (req, res) => {
     }
 })
 
+router.patch("/edittrip/:tripID", async (req, res) => {
+    try {
+        const updateField = req.body.updateField;
+        if (updateField === "tripID")
+            throw new Error("SOMEONE TRYNA CHANGE SENSITIVE TRIP PARAMS!!")
+        const query = { tripID: req.params.tripID };
+        const updates = {
+            $set: {
+                [req.body.updateField]: req.body.value
+            },
+        };
+
+        let result = await collection.updateOne(query, updates);
+    } catch (err) {
+        console.error(err.red);
+        res.status(500).send("Error updating record");
+    }
+})
+
 router.get("/test", async (req, res) => {
     res.send("hello from the trips api").status(200);
 })

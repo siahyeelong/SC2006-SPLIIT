@@ -1,7 +1,7 @@
 import { Alert, Portal, Snackbar } from "@mui/material";
 import React from "react";
 
-const SnackbarNotifs = ({ key, open, message, onClose, severity }) => {
+const SnackbarNotifs = ({ open, message, onClose, severity }) => {
     return (
         <Portal>
             <Snackbar
@@ -9,7 +9,6 @@ const SnackbarNotifs = ({ key, open, message, onClose, severity }) => {
                 open={Boolean(open)}
                 autoHideDuration={2000}
                 onClose={onClose}
-                key={key}
             >
                 <Alert
                     severity={severity || "info"}
