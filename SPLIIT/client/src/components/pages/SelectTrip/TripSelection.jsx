@@ -21,7 +21,7 @@ function TripSelection() {
     const colours = tokens(theme.palette.mode);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const { user } = useContext(AuthContext)
+    const { user, setSessionTrip } = useContext(AuthContext)
 
     useEffect(() => {
         async function fetchAllTrips() {
@@ -40,14 +40,9 @@ function TripSelection() {
 
     if (loading) return <Typography>Loading...</Typography>;
 
-    {
-        /* if user does not have a trip created or joined, they will be redirected to create / join a trip */
-    }
-    // if (!loading && allTrips.length === 0) return <Navigate to={"/createtrip"} />;
-
     // when the user selects a trip, it sets the session's trip and redirects user to the log transactions page
     function selectedTrip(trip) {
-        localStorage.setItem("trip", trip.tripID);
+        setSessionTrip(trip) // set the current session's trip
         navigate("/");
     }
 

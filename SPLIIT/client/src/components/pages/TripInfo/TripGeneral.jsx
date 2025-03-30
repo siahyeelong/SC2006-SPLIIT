@@ -12,13 +12,13 @@ import {
 import { ContentCopy, PhotoCamera } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import SnackbarNotifs from "./SnackbarNotifs";
+import defaultImage from "../../assets/defaultTripBackground.png";
 
 const TripGeneral = ({ trip, setTrip }) => {
     const [snackbarState, setSnackbarState] = useState({
         open: false,
         message: "",
         severity: "",
-        key: 0,
     });
     const fileInputRef = useRef(null);
     const theme = useTheme();
@@ -28,12 +28,11 @@ const TripGeneral = ({ trip, setTrip }) => {
             open: true,
             message,
             severity,
-            key: s.key + 1,
         }));
     };
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(trip.id).then(() => {
+        navigator.clipboard.writeText(trip.tripID).then(() => {
             showSnackbar("Trip ID Copied!", "success");
         });
     };
@@ -76,7 +75,7 @@ const TripGeneral = ({ trip, setTrip }) => {
                 const base64String = canvas.toDataURL("image/jpeg", 0.8);
 
                 // Update trip state with the new image
-                setTrip((t) => ({ ...t, image: base64String }));
+                setTrip((t) => ({ ...t, tripImage: base64String }));
 
                 showSnackbar("Image uploaded!", "success");
             };
@@ -93,14 +92,14 @@ const TripGeneral = ({ trip, setTrip }) => {
             >
                 <Box sx={{ flex: 1 }}>
                     <Typography variant="h1" fontWeight="bold" gutterBottom>
-                        {trip.name}
+                        {trip.tripName}
                     </Typography>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Typography variant="body1" fontWeight={500}>
                             Trip ID:
                         </Typography>
                         <Chip
-                            label={trip.id}
+                            label={trip.tripID}
                             variant="filled"
                             sx={{
                                 borderRadius: 2,
@@ -117,13 +116,13 @@ const TripGeneral = ({ trip, setTrip }) => {
                             </IconButton>
                         </Tooltip>
                     </Box>
-                    {trip.description.trim() && (
+                    {trip.tripDescription.trim() && (
                         <Typography
                             variant="body2"
                             color="textSecondary"
                             sx={{ marginTop: 2 }}
                         >
-                            {trip.description.trim()}
+                            {trip.tripDescription.trim()}
                         </Typography>
                     )}
                 </Box>
@@ -140,7 +139,7 @@ const TripGeneral = ({ trip, setTrip }) => {
                 >
                     <CardMedia
                         component="img"
-                        image={trip.image}
+                        image={trip.tripImage ? trip.tripImage : defaultImage}
                         alt="Trip Image"
                         sx={{
                             borderRadius: 2,
@@ -176,7 +175,6 @@ const TripGeneral = ({ trip, setTrip }) => {
             </Stack>
 
             <SnackbarNotifs
-                key={snackbarState.key}
                 open={snackbarState.open}
                 message={snackbarState.message}
                 onClose={handleCloseSnackbar}

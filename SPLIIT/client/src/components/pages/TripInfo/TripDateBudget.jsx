@@ -35,7 +35,7 @@ const TripDateBudget = ({ trip }) => {
                                 From:
                             </Typography>
                             <Typography variant="h6">
-                                {trip.dates[0]}
+                                {trip.startDate}
                             </Typography>
                         </Box>
                         <Box>
@@ -43,7 +43,7 @@ const TripDateBudget = ({ trip }) => {
                                 To:
                             </Typography>
                             <Typography variant="h6">
-                                {trip.dates[1]}
+                                {trip.endDate}
                             </Typography>
                         </Box>
                     </Stack>

@@ -1,11 +1,12 @@
 // TripDetails.jsx
-import React, { useState } from "react";
-import { Box, Paper, Divider, Stack, useTheme } from "@mui/material";
+import React, { useContext, useState } from "react";
+import { Box, Paper, Divider, Stack, useTheme, Typography } from "@mui/material";
 import Header from "../MainUI/Header";
 import TripGeneral from "./TripGeneral";
 import TripMembersDestination from "./TripMembersDestination";
 import TripDateBudget from "./TripDateBudget";
 import tripImage from "../../assets/defaultTripBackground.png"; // adjust the path as needed
+import { AuthContext } from "../../classes/AuthContext";
 
 const MOCK_TRIP = {
     name: "USA 2025",
@@ -22,8 +23,9 @@ const MOCK_TRIP = {
 };
 
 const TripDetails = () => {
-    const [trip, setTrip] = useState(MOCK_TRIP);
     const theme = useTheme();
+    const { trip } = useContext(AuthContext)
+    const [temptrip, setTrip] = useState(trip);
 
     return (
         <>
@@ -33,8 +35,6 @@ const TripDetails = () => {
                     width: "100%",
                     maxWidth: "1500px",
                     mx: "auto",
-                    // px: { xs: 2, sm: 3, md: 4 },
-                    // py: { xs: 2, sm: 3, md: 4 },
                     minHeight: "100vh",
                     bgcolor: "background.default",
                 }}
@@ -45,11 +45,10 @@ const TripDetails = () => {
                         bgcolor: theme.palette.background.default,
                         padding: { xs: 2, sm: 3, md: 4 },
                         borderRadius: 4,
-                        // border: `1.5px solid ${theme.palette.divider}`,
                     }}
                 >
                     {/* General Info and Trip Image */}
-                    <TripGeneral trip={trip} setTrip={setTrip} />
+                    <TripGeneral trip={temptrip} setTrip={setTrip} />
 
                     <Divider
                         sx={{ my: { xs: 3, md: 4 }, border: "0.5px solid" }}
@@ -60,10 +59,10 @@ const TripDetails = () => {
                         spacing={{ xs: 3, md: 4 }}
                     >
                         {/* Group Members and Cities/States */}
-                        <TripMembersDestination trip={trip} />
+                        <TripMembersDestination trip={temptrip} />
 
                         {/* Travel Dates and Financial Details */}
-                        <TripDateBudget trip={trip} />
+                        <TripDateBudget trip={temptrip} />
                     </Stack>
                 </Paper>
             </Box>

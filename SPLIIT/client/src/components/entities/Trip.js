@@ -1,6 +1,7 @@
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 export class Trip {
     constructor(tripInfo) {
-        console.log("trip initialised!")
         this.tripID = tripInfo.tripID
         this.tripName = tripInfo.tripName
         this.tripDescription = tripInfo.tripDescription
@@ -12,9 +13,34 @@ export class Trip {
         this.startDate = tripInfo.startDate
         this.endDate = tripInfo.endDate
         this.users = tripInfo.users
-        this.printInfo()
     }
 
+    async updateInfo(updateField, value) {
+        try {
+            const response = await fetch(`${backendURL}/trips/edittrip/${this.tripID}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ updateField, value }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+
+            const updatedData = await response.json();
+
+            if (updateField in this) {
+                this[updateField] = value;
+            }
+
+            return updatedData;
+        } catch (error) {
+            console.error("Failed to update trip:", error);
+            return null;
+        }
+    }
 
     printInfo() {
         console.log("tripID is:", this.tripID)
@@ -23,4 +49,6 @@ export class Trip {
         console.log("foreignCurrency is:", this.foreignCurrency)
         console.log("localCurrency is:", this.localCurrency)
     }
+
+
 }
