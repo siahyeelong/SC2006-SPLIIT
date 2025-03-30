@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { Check } from "@mui/icons-material";
-import { favColourChoices } from "../Register/favColourChoices"
+import { favColourChoices } from "../Register/favColourChoices";
 
 const ColourPicker = ({ profile, onColourChange }) => {
     const theme = useTheme();
@@ -39,8 +39,8 @@ const ColourPicker = ({ profile, onColourChange }) => {
                         justifyContent="center"
                     >
                         {favColourChoices.map((color) => (
-                            <Grid2 key={color}>
-                                <Tooltip title={color}>
+                            <Grid2 key={color.value}>
+                                <Tooltip title={color.name}>
                                     <Box
                                         sx={{
                                             width: {
@@ -54,16 +54,16 @@ const ColourPicker = ({ profile, onColourChange }) => {
                                                 lg: 56,
                                             },
                                             borderRadius: "50%",
-                                            bgcolor: color,
+                                            bgcolor: color.value,
                                             cursor: "pointer",
                                             border:
                                                 profile.favColour ===
-                                                    color
+                                                color.value
                                                     ? "3px solid"
                                                     : "2px solid transparent",
                                             borderColor: (theme) =>
                                                 profile.favColour ===
-                                                    color
+                                                color.value
                                                     ? theme.palette.primary.main
                                                     : "transparent",
                                             transition: "all 0.2s",
@@ -75,24 +75,23 @@ const ColourPicker = ({ profile, onColourChange }) => {
                                             },
                                         }}
                                         onClick={() => {
-                                            onColourChange(color);
+                                            onColourChange(color.value);
                                         }}
                                     >
-                                        {profile.favColour ===
-                                            color && (
-                                                <Check
-                                                    sx={{
-                                                        position: "absolute",
-                                                        top: "50%",
-                                                        left: "50%",
-                                                        transform:
-                                                            "translate(-50%, -50%)",
-                                                        color: "black",
-                                                        fontSize: "1.5rem",
-                                                        filter: "drop-shadow(0 0 2px rgba(0, 0, 0, 0.5))",
-                                                    }}
-                                                />
-                                            )}
+                                        {profile.favColour === color.value && (
+                                            <Check
+                                                sx={{
+                                                    position: "absolute",
+                                                    top: "50%",
+                                                    left: "50%",
+                                                    transform:
+                                                        "translate(-50%, -50%)",
+                                                    color: "black",
+                                                    fontSize: "1.5rem",
+                                                    filter: "drop-shadow(0 0 2px rgba(0, 0, 0, 0.5))",
+                                                }}
+                                            />
+                                        )}
                                     </Box>
                                 </Tooltip>
                             </Grid2>
