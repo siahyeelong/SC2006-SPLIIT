@@ -4,7 +4,7 @@ import Header from "../MainUI/Header";
 import ProfileInfo from "./ProfileInfo";
 import ColourPicker from "./ColourPicker";
 import Trips from "./Trips";
-import DeletionConfirmationDialog from "./DeletionConfirmationDialog";
+import DeleteTripConfirmationDialog from "./DelTripConfirmationDialog";
 import AddConfirmationDialog from "./AddConfirmationDialog";
 import { AuthContext } from "../../classes/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -25,22 +25,37 @@ function Profile() {
         key: 0,
     });
     const navigate = useNavigate();
-    const [updating, setUpdating] = useState(false)
+    const [updating, setUpdating] = useState(false);
     const backendURL = process.env.REACT_APP_BACKEND_URL;
 
+    // Every time something updated, close current snackbar immediately and open new one after delay
     const showSnackbar = (message, severity) => {
-        !updating && setSnackbarState((s) => ({
-            open: true,
-            message,
-            severity,
-            key: s.key + 1,
-        }));
+        if (!updating) {
+            setSnackbarState((s) => ({ ...s, open: false }));
+            setTimeout(() => {
+                setSnackbarState((s) => ({
+                    open: true,
+                    message,
+                    severity,
+                    key: s.key + 1,
+                }));
+            }, 100);
+        }
     };
 
+    // const showSnackbar = (message, severity) => {
+    //     !updating &&
+    //         setSnackbarState((s) => ({
+    //             open: true,
+    //             message,
+    //             severity,
+    //             key: s.key + 1,
+    //         }));
+    // };
 
     const handleSaveName = () => {
-        user.updateInfo("displayName", tempName) // update the user object
-        tempProfile.displayName = tempName // update tempProfile to show live changes
+        user.updateInfo("displayName", tempName); // update the user object
+        tempProfile.displayName = tempName; // update tempProfile to show live changes
 
         // show confirmation
         showSnackbar("Display name saved!", "success");
@@ -48,8 +63,8 @@ function Profile() {
     };
 
     const handleColourChange = (color) => {
-        user.updateInfo("favColour", color) // update the user object
-        tempProfile.favColour = color // update tempProfile to show live changes
+        user.updateInfo("favColour", color); // update the user object
+        tempProfile.favColour = color; // update tempProfile to show live changes
 
         // show confirmation
         showSnackbar("Favourite colour saved!", "success");
@@ -63,8 +78,10 @@ function Profile() {
     const confirmDelete = () => {
         if (!tripToDelete) return;
 
-        user.deleteTrip(tripToDelete.id) // update the user object
-        tempProfile.trips = tempProfile.trips.filter(id => tripToDelete.id !== id); // update tempProfile to show live changes
+        user.deleteTrip(tripToDelete.id); // update the user object
+        tempProfile.trips = tempProfile.trips.filter(
+            (id) => tripToDelete.id !== id
+        ); // update tempProfile to show live changes
 
         setDeleteDialogOpen(false);
         showSnackbar(`Deleted ${tripToDelete.name}`, "info");
@@ -83,12 +100,9 @@ function Profile() {
         setSnackbarState((s) => ({ ...s, open: false }));
     };
 
-
-
     return (
         <>
-            <Box
-            >
+            <Box>
                 <Header
                     title="Profile"
                     subtitle="Personalise your information"
@@ -119,7 +133,7 @@ function Profile() {
                         onAddTrip={handleAddTrip}
                     />
 
-                    <DeletionConfirmationDialog
+                    <DeleteTripConfirmationDialog
                         open={deleteDialogOpen}
                         onClose={() => setDeleteDialogOpen(false)}
                         onConfirm={confirmDelete}

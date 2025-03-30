@@ -9,8 +9,8 @@ import {
     Typography,
 } from "@mui/material";
 
-const DeletionConfirmationDialog = ({ open, onClose, onConfirm, trip }) => {
-    if (!trip) return
+const DeleteTripConfirmationDialog = ({ open, onClose, onConfirm, trip }) => {
+    if (!trip) return;
     return (
         <Dialog
             open={open}
@@ -74,4 +74,4 @@ const DeletionConfirmationDialog = ({ open, onClose, onConfirm, trip }) => {
     );
 };
 
-export default DeletionConfirmationDialog;
+export default DeleteTripConfirmationDialog;

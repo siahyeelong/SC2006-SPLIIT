@@ -16,7 +16,7 @@ const AddConfirmationDialog = ({
     onClose,
     onJoinResult,
     user,
-    setProfile
+    setProfile,
 }) => {
     const [joinTripDialogOpen, setJoinTripDialogOpen] = useState(false);
     const [tripId, setTripId] = useState("");
@@ -29,11 +29,11 @@ const AddConfirmationDialog = ({
     const handleJoinTripSubmit = async () => {
         const trimmedId = tripId.trim();
 
-        const message = await user.joinTrip(trimmedId) // update the user object
+        const message = await user.joinTrip(trimmedId); // update the user object
         setProfile((p) => ({ ...p, trips: [...p.trips, trimmedId] })); // update tempProfile to show live changes
 
-        onJoinResult(message)
-        navigate("/profile")
+        onJoinResult(message);
+        navigate("/profile");
     };
 
     const handleCloseDialog = () => {
@@ -147,7 +147,7 @@ const AddConfirmationDialog = ({
                         </Grid2>
 
                         {/* for simulation purposes */}
-                        <Grid2
+                        {/* <Grid2
                             xs={12}
                             sm={6}
                             md={4}
@@ -157,7 +157,7 @@ const AddConfirmationDialog = ({
                                 justifyContent: "center",
                             }}
                         >
-                        </Grid2>
+                        </Grid2> */}
                     </Grid2>
                 </DialogContent>
             </Dialog>
