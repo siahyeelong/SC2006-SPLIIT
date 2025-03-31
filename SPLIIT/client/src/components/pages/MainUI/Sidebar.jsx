@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -38,7 +38,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     // Handle automatic collapse on mobile
-    React.useEffect(() => {
+    useEffect(() => {
         if (isMobile) {
             setIsCollapsed(true);
         }
@@ -76,11 +76,20 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
             }}
         >
             <ProSidebar collapsed={isCollapsed}>
-                <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        height: "100%",
+                    }}
+                >
                     <Menu iconShape="square">
                         <MenuItem
                             onClick={() => setIsCollapsed(!isCollapsed)}
-                            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+                            icon={
+                                isCollapsed ? <MenuOutlinedIcon /> : undefined
+                            }
                             style={{
                                 margin: "10px 0 20px 0",
                                 color: colours.grey[100],
@@ -112,7 +121,10 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                                                 setIsCollapsed(!isCollapsed)
                                             }
                                             sx={{
-                                                display: { xs: "none", sm: "flex" },
+                                                display: {
+                                                    xs: "none",
+                                                    sm: "flex",
+                                                },
                                             }}
                                         >
                                             <MenuOutlinedIcon />
@@ -130,16 +142,18 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                             }}
                         >
                             {MenuItems.map((item) =>
-                                (item.icon === null || item.title === "TripInfo") ? undefined : <Item
-                                    key={item.title}
-                                    title={item.title}
-                                    to={item.to}
-                                    icon={item.icon}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                />
+                                item.icon === null ||
+                                item.title === "TripInfo" ? undefined : (
+                                    <Item
+                                        key={item.title}
+                                        title={item.title}
+                                        to={item.to}
+                                        icon={item.icon}
+                                        selected={selected}
+                                        setSelected={setSelected}
+                                    />
+                                )
                             )}
-
                         </Box>
                     </Menu>
                     <Box>
@@ -149,14 +163,21 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                         {MenuItems.map((item) => {
                             if (item.title === "TripInfo") {
                                 return (
-                                    <Box key={item.title}
-                                        paddingLeft={isCollapsed ? undefined : "10%"}
+                                    <Box
+                                        key={item.title}
+                                        paddingLeft={
+                                            isCollapsed ? undefined : "10%"
+                                        }
                                         sx={{
                                             mb: 2,
                                             "& .pro-item-content": {
-                                                fontSize: { xs: "0.9rem", sm: "1rem" },
+                                                fontSize: {
+                                                    xs: "0.9rem",
+                                                    sm: "1rem",
+                                                },
                                             },
-                                        }}>
+                                        }}
+                                    >
                                         <Item
                                             title={item.title}
                                             to={item.to}

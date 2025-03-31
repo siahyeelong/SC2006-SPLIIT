@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { useAuth } from "../../classes/AuthContext";
@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 
 const AuthLayout = () => {
+    const location = useLocation();
     const [isCollapsed, setIsCollapsed] = useState(true);
     const sidebarWidth = isCollapsed ? 80 : 240;
 
@@ -77,7 +78,7 @@ const AuthLayout = () => {
                         zIndex: 1000,
                     }}
                 >
-                    <Outlet />
+                    <Outlet key={location.pathname} />
                 </Box>
             </Box>
         </Box>
