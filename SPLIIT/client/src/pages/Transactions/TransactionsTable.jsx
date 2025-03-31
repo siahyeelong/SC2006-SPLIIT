@@ -7,7 +7,10 @@ import RecipientsCell from "./RecipientsCell";
 import CurrencySwitch from "./CurrencySwitch";
 import PerTransactionDialog from "./PerTransactionDialog";
 import { ReceiptLong } from "@mui/icons-material";
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
 import { AuthContext } from "../../contexts/AuthContext";
+=======
+>>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
 
 function TransactionsTable() {
     const theme = useTheme();

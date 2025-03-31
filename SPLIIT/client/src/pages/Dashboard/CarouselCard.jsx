@@ -11,7 +11,10 @@ import { createSpendingChart } from "../../components/charts/DoughnutChartUtils"
 import DebtTable from "./DebtTable";
 import { SentimentNeutral } from "@mui/icons-material";
 import { formatPrice } from "../../utils/formatPrice";
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
 import { AuthContext } from "../../contexts/AuthContext";
+=======
+>>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/CarouselCard.jsx
 
 function CarouselCard({ ower, matrix }) {
     const transactions = useContext(TransactionsContext);

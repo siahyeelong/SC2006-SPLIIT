@@ -112,7 +112,10 @@ function App() {
                                     }
                                 />
                             </Route>
+<<<<<<< HEAD
                             <Route path="*" element={<NotFound />} />
+=======
+>>>>>>> b6fad7a (Implemented dashboard functions, added refresh)
                         </Routes>
                     </ThemeProvider>
                 </ColorModeContext.Provider>

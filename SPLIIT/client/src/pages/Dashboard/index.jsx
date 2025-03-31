@@ -3,12 +3,20 @@ import { Box, Typography, Button, Stack, useTheme } from "@mui/material";
 import Header from "../../layouts/Header";
 import Carousel from "./Carousel";
 import SimplifiedDebtDialog from "./SimplifiedDebtDialog";
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
 import { useDashboardData } from "../../hooks/useDashboardData";
+=======
+import { useDashboardData } from "./useDashboardData";
+>>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/index.jsx
 
 export const TransactionsContext = createContext([]);
 
 function Dashboard() {
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
     const { transactions, debtMatrix_R, debtMatrix_S, people, error } =
+=======
+    const { transactions, debtMatrix_R, debtMatrix_S, error } =
+>>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/index.jsx
         useDashboardData();
     const [dialogOpen, setDialogOpen] = useState(false);
     const theme = useTheme();
@@ -69,7 +77,10 @@ function Dashboard() {
                                 <Carousel
                                     debtMatrix_R={debtMatrix_R}
                                     debtMatrix_S={debtMatrix_S}
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
                                     people={people}
+=======
+>>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/index.jsx
                                 />
                             </Box>
                         )}
@@ -81,7 +92,10 @@ function Dashboard() {
                 open={dialogOpen}
                 onClose={() => setDialogOpen(false)}
                 transactions={debtMatrix_S} // Pass simplified debt matrix
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
                 people={people}
+=======
+>>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/index.jsx
             />
         </>
     );
