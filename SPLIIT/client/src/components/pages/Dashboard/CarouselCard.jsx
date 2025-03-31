@@ -10,6 +10,7 @@ import AnalyticsDialog from "./AnalyticsDialog";
 import { createSpendingChart } from "./DoughnutChartUtils";
 import DebtTable from "./DebtTable";
 import { SentimentNeutral } from "@mui/icons-material";
+import { formatPrice } from "../../utils/formatPrice";
 
 function CarouselCard({ ower, matrix }) {
     const transactions = useContext(TransactionsContext);
@@ -63,16 +64,6 @@ function CarouselCard({ ower, matrix }) {
             spentPerCategory[transaction.category] += amount;
         }
     });
-
-    function formatPrice(amount) {
-        if (typeof amount !== "number") return "$0.00";
-        return parseFloat(amount).toLocaleString("en-SG", {
-            style: "currency",
-            currency: "SGD",
-            minimumFractionDigits: String(amount).includes(".") ? 2 : 0,
-            maximumFractionDigits: 2,
-        });
-    }
 
     return (
         <Card
@@ -170,6 +161,7 @@ function CarouselCard({ ower, matrix }) {
 
                     {/* Debt Table Integration */}
                     <DebtTable
+                        key={Date.now()}
                         matrix={matrix}
                         ower={ower}
                         formatPrice={formatPrice}

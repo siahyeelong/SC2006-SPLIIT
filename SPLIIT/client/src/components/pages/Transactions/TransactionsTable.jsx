@@ -7,6 +7,7 @@ import { People } from "../../classes/People";
 import RecipientsCell from "./RecipientsCell";
 import CurrencySwitch from "./CurrencySwitch";
 import PerTransactionDialog from "./PerTransactionDialog";
+import { ReceiptLong } from "@mui/icons-material";
 
 function TransactionsTable() {
     const theme = useTheme();
@@ -127,11 +128,44 @@ function TransactionsTable() {
                 <ToCSVButton data={transactions} colours={colours} />
                 <CurrencySwitch onToggle={setShowSGD} />
             </Stack>
+
             {error ? (
                 <Typography color="error" variant="body1">
                     {error}
                 </Typography>
+            ) : transactions.length === 0 ? (
+                // If no transactions are found
+                <Box
+                    sx={{
+                        height: 400,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        bgcolor: colours.primary[400],
+                        borderRadius: 2,
+                        boxShadow: 2,
+                        textAlign: "center",
+                    }}
+                >
+                    <ReceiptLong
+                        sx={{ fontSize: 60, color: colours.grey[300], mb: 2 }}
+                    />
+                    <Typography
+                        variant="h6"
+                        sx={{ color: colours.grey[100], fontWeight: 600 }}
+                    >
+                        No transactions found
+                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={{ color: colours.grey[300], mt: 1 }}
+                    >
+                        Try adding some transactions.
+                    </Typography>
+                </Box>
             ) : (
+                // If transactions found
                 <Box sx={{ height: 550, width: "100%", overflow: "auto" }}>
                     <Box sx={{ minWidth: 1300, height: 550 }}>
                         <DataGrid
@@ -149,17 +183,17 @@ function TransactionsTable() {
                                 setSelectedTransaction(params.row);
                             }}
                             sx={{
-                                bgcolor: colours.primary[400], // Light gray background color for the table
+                                bgcolor: colours.primary[400],
                                 "& .MuiDataGrid-cell": {
-                                    color: colours.grey[100], // Darker text color for cells
+                                    color: colours.grey[100],
                                 },
                                 "& .MuiDataGrid-row:hover": {
-                                    backgroundColor: colours.greenAccent[600], // Row highlight on hover
+                                    backgroundColor: colours.greenAccent[600],
                                     cursor: "pointer",
                                 },
                                 "& .MuiDataGrid-columnHeaders": {
-                                    backgroundColor: colours.primary[600], // Header background color
-                                    color: "#ffffff", // Header text color
+                                    backgroundColor: colours.primary[600],
+                                    color: "#ffffff",
                                 },
                                 fontFamily: theme.typography.body1,
                                 borderColor: colours.grey[400],
