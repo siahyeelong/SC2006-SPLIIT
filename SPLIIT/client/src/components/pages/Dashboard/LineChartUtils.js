@@ -34,7 +34,7 @@ const CHART_CONFIG = {
             x: {
                 type: "category",
                 grid: {
-                    color: "rgba(200, 200, 200, 0.1)", // Subtle grid lines
+                    color: "rgba(200, 200, 200, 0.25)", // Subtle grid lines
                     drawTicks: false,
                 },
                 ticks: {
@@ -63,7 +63,7 @@ const CHART_CONFIG = {
                 },
                 beginAtZero: true,
                 grid: {
-                    color: "rgba(200, 200, 200, 0.1)", // Subtle grid lines
+                    color: "rgba(200, 200, 200, 0.25)", // Subtle grid lines
                     drawBorder: false,
                 },
                 ticks: {
@@ -95,11 +95,11 @@ const CHART_CONFIG = {
 };
 
 // Function to generate random data (for testing or different charts)
-const generateRandomData = (numPoints) => {
-    return Array.from({ length: numPoints }, () =>
-        Math.floor(Math.random() * 100)
-    ); // Random values from 0 to 99
-};
+// const generateRandomData = (numPoints) => {
+//     return Array.from({ length: numPoints }, () =>
+//         Math.floor(Math.random() * 100)
+//     ); // Random values from 0 to 99
+// };
 
 export const createChart = (canvas, transactions, userId) => {
     if (!canvas || !transactions) return null;

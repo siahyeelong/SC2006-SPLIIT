@@ -12,10 +12,27 @@ import {
     useTheme,
 } from "@mui/material";
 import React from "react";
+import { formatPrice } from "../../utils/formatPrice";
+import { CheckCircle } from "@mui/icons-material";
 
-// transaction is placeholder for simplified debt
 function SimplifiedDebtDialog({ open, onClose, transactions }) {
     const theme = useTheme();
+
+    // Transform the debtMatrixS (passed as transactions) into an array of simplified debt items.
+    // Each key in transactions is the payer ("from") and each inner key is the recipient ("to").
+    const simplifiedDebtList = [];
+    if (transactions) {
+        Object.keys(transactions).forEach((from) => {
+            const owes = transactions[from];
+            Object.keys(owes).forEach((to) => {
+                const amount = parseFloat(owes[to]) || 0;
+                // Only include non-zero debts
+                if (amount > 0) {
+                    simplifiedDebtList.push({ from, to, amount });
+                }
+            });
+        });
+    }
 
     return (
         <Dialog
@@ -42,7 +59,7 @@ function SimplifiedDebtDialog({ open, onClose, transactions }) {
                 </Typography>
                 <Divider sx={{ mb: 3, border: "0.5px solid" }} />
 
-                {/* Simplified debt list */}
+                {/* List of simplified debts */}
                 <List
                     dense
                     sx={{
@@ -51,75 +68,95 @@ function SimplifiedDebtDialog({ open, onClose, transactions }) {
                         boxShadow: 1,
                     }}
                 >
-                    {transactions.map((t, index) => (
-                        <ListItem
-                            key={index}
-                            sx={{
-                                py: 2,
-                                px: 3,
-                                borderBottom:
-                                    index !== transactions.length - 1
-                                        ? `1px solid ${theme.palette.divider}`
-                                        : "none",
-                                transition: "background-color 0.2s ease-in-out",
-                                cursor: "pointer",
-                                "&:hover": {
-                                    backgroundColor: theme.palette.action.hover,
-                                },
-                            }}
-                        >
-                            <ListItemText
-                                primary={
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                        }}
-                                    >
-                                        <Typography
-                                            variant="body1"
+                    {simplifiedDebtList.length > 0 ? (
+                        simplifiedDebtList.map((t, index) => (
+                            <ListItem
+                                key={index}
+                                sx={{
+                                    py: 2,
+                                    px: 3,
+                                    borderBottom:
+                                        index !== simplifiedDebtList.length - 1
+                                            ? `1px solid ${theme.palette.divider}`
+                                            : "none",
+                                    transition:
+                                        "background-color 0.2s ease-in-out",
+                                    cursor: "pointer",
+                                    "&:hover": {
+                                        backgroundColor:
+                                            theme.palette.action.hover,
+                                    },
+                                }}
+                            >
+                                <ListItemText
+                                    primary={
+                                        <Box
                                             sx={{
-                                                fontWeight: 600,
-                                                color: theme.palette.error.main,
-                                                minWidth: "80px",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
                                             }}
                                         >
-                                            {t.from}
-                                        </Typography>
-                                        <Typography
-                                            variant="body1"
-                                            sx={{ mx: 1, fontWeight: 600 }}
-                                        >
-                                            →
-                                        </Typography>
-                                        <Typography
-                                            variant="body1"
-                                            sx={{
-                                                fontWeight: 600,
-                                                color: theme.palette.success
-                                                    .main,
-                                                minWidth: "80px",
-                                            }}
-                                        >
-                                            {t.to}
-                                        </Typography>
-                                        <Typography
-                                            variant="body1"
-                                            sx={{
-                                                fontWeight: 700,
-                                                color: theme.palette.text
-                                                    .primary,
-                                                ml: 2,
-                                            }}
-                                        >
-                                            {t.amount}
-                                        </Typography>
-                                    </Box>
-                                }
+                                            <Typography
+                                                variant="body1"
+                                                sx={{
+                                                    fontWeight: 600,
+                                                    color: theme.palette.error
+                                                        .main,
+                                                    minWidth: "80px",
+                                                }}
+                                            >
+                                                {t.from}
+                                            </Typography>
+                                            <Typography
+                                                variant="body1"
+                                                sx={{ mx: 1, fontWeight: 600 }}
+                                            >
+                                                →
+                                            </Typography>
+                                            <Typography
+                                                variant="body1"
+                                                sx={{
+                                                    fontWeight: 600,
+                                                    color: theme.palette.success
+                                                        .main,
+                                                    minWidth: "80px",
+                                                }}
+                                            >
+                                                {t.to}
+                                            </Typography>
+                                            <Typography
+                                                variant="body1"
+                                                sx={{
+                                                    fontWeight: 700,
+                                                    color: theme.palette.text
+                                                        .primary,
+                                                    ml: 2,
+                                                }}
+                                            >
+                                                {formatPrice(t.amount)}
+                                            </Typography>
+                                        </Box>
+                                    }
+                                />
+                            </ListItem>
+                        ))
+                    ) : (
+                        <Box sx={{ textAlign: "center", py: 4 }}>
+                            <CheckCircle
+                                color="success"
+                                sx={{
+                                    fontSize: 60,
+                                }}
                             />
-                        </ListItem>
-                    ))}
+                            <Typography
+                                variant="body1"
+                                sx={{ mt: 1, fontWeight: 600 }}
+                            >
+                                All debts settled
+                            </Typography>
+                        </Box>
+                    )}
                 </List>
 
                 <DialogActions sx={{ justifyContent: "center", pt: 0 }}>

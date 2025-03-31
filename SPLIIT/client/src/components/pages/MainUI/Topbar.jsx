@@ -5,6 +5,7 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import DropdownMenu from "./DropdownMenu";
+import { Refresh } from "@mui/icons-material";
 
 function Topbar() {
     const theme = useTheme();
@@ -16,6 +17,9 @@ function Topbar() {
             <DropdownMenu />
             <Box flexGrow={1} />
             <Box display="flex" justifyContent="flex-end">
+                <IconButton onClick={() => window.location.reload()}>
+                    <Refresh />
+                </IconButton>
                 <IconButton onClick={colourMode.toggleColorMode}>
                     {theme.palette.mode === "dark" ? (
                         <DarkModeOutlinedIcon />
