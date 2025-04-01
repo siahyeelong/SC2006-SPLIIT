@@ -1,7 +1,8 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Header from "../MainUI/Header";
 import TripCreationForm from "./TripCreationForm";
+import JoinTripButton from "./JoinTripButton";
 
 function CreateTrip() {
   return (
@@ -12,6 +13,7 @@ function CreateTrip() {
         alignItems={"center"}
       >
         <Header title={"Create Trip"} subtitle={"Create / Join a trip!"} />
+        <JoinTripButton />
       </Box>
       <TripCreationForm />
     </Box>
