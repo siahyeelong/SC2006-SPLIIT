@@ -16,7 +16,7 @@ const TripMembersDestination = ({ trip }) => {
                         Group Members
                     </Typography>
                     <Stack direction="row" flexWrap="wrap" gap={1}>
-                        {trip.members.map((name, index) => (
+                        {trip.users.map((name, index) => (
                             <Chip
                                 key={index}
                                 label={name}
@@ -41,14 +41,15 @@ const TripMembersDestination = ({ trip }) => {
                         gap={1}
                         alignItems="center"
                     >
-                        {trip.cityOrState.map((placeName, index) => (
+                        {/* TODO */}
+                        {/* {trip.cities.map((placeName, index) => (
                             <Chip
                                 key={index}
                                 label={placeName}
                                 color="info"
                                 variant="filled"
                             />
-                        ))}
+                        ))} */}
                     </Stack>
                 </Box>
             </Stack>

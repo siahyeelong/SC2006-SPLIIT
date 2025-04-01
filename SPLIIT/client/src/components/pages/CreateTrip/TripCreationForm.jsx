@@ -96,9 +96,10 @@ function TripCreationForm() {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             alert("Trip created successfully!");
+
             const { generatedTripID } = await response.json();
-            setTripID(generatedTripID);
-            setSessionTrip(generatedTripID);
+            formData['tripID'] = generatedTripID;
+            setSessionTrip(formData); // create the trip object and set it as the current session's context
             navigate("/");
         } catch (error) {
             console.error("Error creating trip:", error);

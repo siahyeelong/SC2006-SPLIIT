@@ -25,17 +25,7 @@ import {
     Lock,
 } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
-
-const favColourChoices = [
-    "#D1BDFF",
-    "#E2CBF7",
-    "#D6F6FF",
-    "#B3F5BC",
-    "#F9FFB5",
-    "#FFE699",
-    "#FCAE7C",
-    "#FA9189",
-];
+import { favColourChoices } from "./favColourChoices"
 
 function RegisterForm() {
     const { login } = useContext(AuthContext);
@@ -45,14 +35,14 @@ function RegisterForm() {
         username: "",
         password: "",
         displayName: "",
-        favouriteColour: "",
+        favColour: "",
     });
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState({});
     const theme = useTheme();
 
-    const handleColourChange = (e, colour) => {
-        setFormData({ ...formData, favouriteColour: colour });
+    const handleColourChange = (e) => {
+        setFormData({ ...formData, favColour: e.target.value });
     };
 
     const handleChange = (e) => {
@@ -87,8 +77,8 @@ function RegisterForm() {
         if (!formData.displayName.length)
             newErrors.displayName = "Please enter a display name.";
 
-        if (!formData.favouriteColour.length)
-            newErrors.favouriteColour = "Please select a favourite colour.";
+        if (!formData.favColour.length)
+            newErrors.favColour = "Please select a favourite colour.";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -385,7 +375,7 @@ function RegisterForm() {
                 Select your favourite colour
             </Typography>
             <ToggleButtonGroup
-                value={formData.favouriteColour}
+                value={formData.favColour}
                 exclusive
                 onChange={handleColourChange}
                 aria-label="favourite color"
@@ -412,15 +402,15 @@ function RegisterForm() {
                             },
                         }}
                     >
-                        {formData.favouriteColour === colour && (
+                        {formData.favColour === colour && (
                             <CheckIcon sx={{ color: "grey" }} />
                         )}
                     </ToggleButton>
                 ))}
             </ToggleButtonGroup>
-            {errors.favouriteColour && (
+            {errors.favColour && (
                 <Typography color="error" sx={{ mt: 1 }}>
-                    {errors.favouriteColour}
+                    {errors.favColour}
                 </Typography>
             )}
 

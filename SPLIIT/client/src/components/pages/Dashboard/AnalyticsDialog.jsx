@@ -4,64 +4,80 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    Divider,
     Typography,
 } from "@mui/material";
-import React from "react";
-import { MyResponsivePie } from "./MyResponsivePie";
+import React, { useRef } from "react";
+import { createChart } from "./LineChartUtils"; // Ensure this is the correct import path
 
-function AnalyticsDialog({ open, onClose, data }) {
+function AnalyticsDialog({ open, onClose, transactions, userId }) {
+    const chartRef = useRef(null);
+    const chartInstance = useRef(null);
+
     return (
         <Dialog
             open={open}
             onClose={onClose}
             fullWidth
             maxWidth="md"
-            closeAfterTransition={false}
-            sx={{
-                borderRadius: 2,
-                height: { xs: "90vh", sm: "auto" },
+            slotProps={{
+                transition: {
+                    onEntered: () => {
+                        if (chartRef.current && transactions) {
+                            if (chartInstance.current) {
+                                chartInstance.current.destroy();
+                            }
+                            chartInstance.current = createChart(
+                                chartRef.current,
+                                transactions,
+                                userId
+                            );
+                        }
+                    },
+                    onExited: () => {
+                        if (chartInstance.current) {
+                            chartInstance.current.destroy();
+                            chartInstance.current = null;
+                        }
+                    },
+                },
             }}
         >
             <DialogContent
                 sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
                     padding: { xs: 2, sm: 3 },
-                    "&.MuiDialogContent-root": { overflowY: "visible" },
                 }}
             >
                 <Typography
-                    variant="h4"
+                    variant="h3"
                     sx={{
                         fontWeight: 700,
                         textAlign: "center",
-                        mb: 2,
+                        marginBottom: 3,
                     }}
                 >
-                    Spending Graph
+                    Total Spending per Day
                 </Typography>
-                <Divider sx={{ my: { xs: 1, md: 2 }, border: "0.5px solid" }} />
-                {/* Display donut chart */}
+
                 <Box
-                    height={500}
-                    width="100%"
+                    width={"100%"}
+                    height={335}
+                    py={1}
+                    px={1}
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
-                    sx={{
-                        position: "relative",
-                        overflow: "visible",
-                    }}
                 >
-                    <MyResponsivePie data={data} />
+                    <canvas
+                        ref={chartRef}
+                        style={{ width: "100%", height: "100%" }}
+                    ></canvas>
                 </Box>
             </DialogContent>
-            <DialogActions
-                sx={{
-                    justifyContent: "center",
-                    paddingTop: 0,
-                    paddingBottom: 3,
-                }}
-            >
+            <DialogActions sx={{ justifyContent: "center", pb: 3 }}>
                 <Button
                     variant="contained"
                     color="secondary"

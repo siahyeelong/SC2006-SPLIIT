@@ -1,49 +1,21 @@
-import { React, useState, useEffect, createContext } from "react";
+import React, { createContext, useState } from "react";
 import { Box, Typography, Button, Stack, useTheme } from "@mui/material";
 import Header from "../MainUI/Header";
 import Carousel from "./Carousel";
 import SimplifiedDebtDialog from "./SimplifiedDebtDialog";
+import { useDashboardData } from "./useDashboardData";
 
 export const TransactionsContext = createContext([]);
 
 function Dashboard() {
-    const [transactions, setTransactions] = useState([]);
-    const [error, setError] = useState("");
+    const { transactions, debtMatrix_R, debtMatrix_S, error } =
+        useDashboardData();
     const [dialogOpen, setDialogOpen] = useState(false);
     const theme = useTheme();
 
-    function fetchTransactions() {
-        const backendURL = process.env.REACT_APP_BACKEND_URL;
-        fetch(`${backendURL}/transactions/`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setTransactions(data || []);
-            })
-            .catch((error) => {
-                setError(
-                    "Failed to fetch transactions. Please try again later."
-                );
-                console.error("Error fetching data:", error);
-            });
-    }
-
-    useEffect(() => fetchTransactions(), []);
-
     return (
         <>
-            <Box
-            // sx={{
-            //     padding: { xs: 2, sm: 3 },
-            //     maxWidth: { xs: "100%", md: 1200, lg: 1400 },
-            //     margin: "0 auto",
-            //     boxSizing: "border-box",
-            // }}
-            >
+            <Box>
                 <Stack
                     direction="row"
                     justifyContent="space-between"
@@ -52,7 +24,6 @@ function Dashboard() {
                     sx={{ mb: 3 }}
                 >
                     <Header title="Dashboard" subtitle="View analytics" />
-                    {/* Example "Simplify debts" button on the right */}
                     <Button
                         variant="contained"
                         color="info"
@@ -71,7 +42,6 @@ function Dashboard() {
                 </Stack>
             </Box>
 
-            {/* Main Background Container */}
             <Box
                 sx={{
                     backgroundColor: theme.palette.background.default,
@@ -95,18 +65,22 @@ function Dashboard() {
                                 alignContent="center"
                                 sx={{ marginTop: "20px" }}
                             >
-                                <Carousel />
+                                {/* Pass matrices as props */}
+                                <Carousel
+                                    debtMatrix_R={debtMatrix_R}
+                                    debtMatrix_S={debtMatrix_S}
+                                />
                             </Box>
                         )}
                     </TransactionsContext.Provider>
                 </Box>
             </Box>
 
-            {/* <SimplifiedDebtDialog
+            <SimplifiedDebtDialog
                 open={dialogOpen}
                 onClose={() => setDialogOpen(false)}
-                transactions={transactionsData} // placeholder for simplified data
-            /> */}
+                transactions={debtMatrix_S} // Pass simplified debt matrix
+            />
         </>
     );
 }

@@ -9,13 +9,13 @@ import {
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { Check } from "@mui/icons-material";
+import { favColourChoices } from "../Register/favColourChoices";
 
-const ColourPicker = ({ profile, setProfile, onColourChange }) => {
+const ColourPicker = ({ profile, onColourChange }) => {
     const theme = useTheme();
 
     return (
         <Card
-            // variant="outlined"
             sx={{
                 bgcolor: theme.palette.background.default,
                 width: "100%",
@@ -38,7 +38,7 @@ const ColourPicker = ({ profile, setProfile, onColourChange }) => {
                         spacing={{ xs: 1, sm: 2 }}
                         justifyContent="center"
                     >
-                        {profile.colorOptions.map((color) => (
+                        {favColourChoices.map((color) => (
                             <Grid2 key={color.value}>
                                 <Tooltip title={color.name}>
                                     <Box
@@ -57,12 +57,12 @@ const ColourPicker = ({ profile, setProfile, onColourChange }) => {
                                             bgcolor: color.value,
                                             cursor: "pointer",
                                             border:
-                                                profile.favoriteColor ===
+                                                profile.favColour ===
                                                 color.value
                                                     ? "3px solid"
                                                     : "2px solid transparent",
                                             borderColor: (theme) =>
-                                                profile.favoriteColor ===
+                                                profile.favColour ===
                                                 color.value
                                                     ? theme.palette.primary.main
                                                     : "transparent",
@@ -75,15 +75,10 @@ const ColourPicker = ({ profile, setProfile, onColourChange }) => {
                                             },
                                         }}
                                         onClick={() => {
-                                            setProfile((p) => ({
-                                                ...p,
-                                                favoriteColor: color.value,
-                                            }));
-                                            onColourChange();
+                                            onColourChange(color.value);
                                         }}
                                     >
-                                        {profile.favoriteColor ===
-                                            color.value && (
+                                        {profile.favColour === color.value && (
                                             <Check
                                                 sx={{
                                                     position: "absolute",
