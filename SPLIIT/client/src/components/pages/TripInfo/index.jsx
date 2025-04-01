@@ -5,22 +5,7 @@ import Header from "../MainUI/Header";
 import TripGeneral from "./TripGeneral";
 import TripMembersDestination from "./TripMembersDestination";
 import TripDateBudget from "./TripDateBudget";
-import tripImage from "../../assets/defaultTripBackground.png"; // adjust the path as needed
 import { AuthContext } from "../../classes/AuthContext";
-
-const MOCK_TRIP = {
-    name: "USA 2025",
-    id: "A12345678",
-    description:
-        "A detailed trip to the USA in 2025, including visits to multiple cities and key attractions.",
-    image: tripImage,
-    members: ["Antanas", "Olivia", "Lucas", "Ethan", "Sophia", "Jason"],
-    cityOrState: ["Florida", "Ohio", "Los Angeles"],
-    dates: ["1 Jan 2025", "15 Jan 2025"],
-    foreignCurrency: "USD",
-    localCurrency: "SGD",
-    budget: 5000,
-};
 
 const TripDetails = () => {
     const theme = useTheme();

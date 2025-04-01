@@ -11,7 +11,7 @@ export class User {
 
     async getAllTripInfo() {
         try {
-            const response = await fetch(`${backendURL}/trips/getallTrips/${this.username}`);
+            const response = await fetch(`${backendURL}/trips/getAllTrips/${this.username}`);
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
