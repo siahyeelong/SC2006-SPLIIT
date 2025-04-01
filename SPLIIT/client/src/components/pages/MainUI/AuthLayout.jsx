@@ -9,15 +9,15 @@ const AuthLayout = () => {
     const [isCollapsed, setIsCollapsed] = useState(true);
     const sidebarWidth = isCollapsed ? 80 : 240;
 
-    const { user, loading } = useAuth();
+    //const { user, loading } = useAuth();
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    //if (loading) {
+    //    return <div>Loading...</div>;
+    //}
 
-    if (!user) {
-        return <Navigate to="/home" />;
-    }
+    //if (!user) {
+    //    return <Navigate to="/home" />;
+    //}
 
     return (
         <Box sx={{ display: "flex", minHeight: "100vh" }}>
