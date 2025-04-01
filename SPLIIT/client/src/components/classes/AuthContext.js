@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
                 // set current trip
                 res = await axios.get(`${backendURL}/trips/tripinfo/${localStorage.getItem("trip")}`);
-                setTrip(res.data)
+                setTrip(new Trip(res.data))
                 localStorage.setItem("trip", res.data.tripID)
             } catch (error) {
                 if (error.response) {
