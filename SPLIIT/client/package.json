@@ -31,8 +31,12 @@
     "react": "^19.0.0-rc.1",
     "react-bootstrap": "^2.10.7",
     "react-day-picker": "^9.6.4",
+<<<<<<< HEAD
     "react-dom": "^19.0.0-rc.1",
     "react-leaflet": "^5.0.0",
+=======
+    "react-dom": "^18.2.0",
+>>>>>>> d40fa43 (fixed layout of trip creation page)
     "react-markdown": "^10.1.0",
     "react-pro-sidebar": "^0.7.1",
     "react-redux": "^8.0.2",

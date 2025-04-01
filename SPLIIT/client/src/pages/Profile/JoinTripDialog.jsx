@@ -10,13 +10,22 @@ import {
     useTheme,
     useMediaQuery,
 } from "@mui/material";
+<<<<<<< HEAD:SPLIIT/client/src/pages/Profile/JoinTripDialog.jsx
 import { tokens } from "../../theme";
 
 const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
+=======
+import { tokens } from "../../../theme";
+
+const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
+    const theme = useTheme();
+    const colours = tokens(theme.palette.mode)
+>>>>>>> d40fa43 (fixed layout of trip creation page):SPLIIT/client/src/components/pages/Profile/JoinTripDialog.jsx
     const isMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
     const inputRef = useRef(null);
+
 
     useEffect(() => {
         if (open) {
@@ -45,8 +54,13 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
             fullWidth
             disableRestoreFocus
             sx={{
+<<<<<<< HEAD:SPLIIT/client/src/pages/Profile/JoinTripDialog.jsx
                 "& .MuiPaper-root": {
                     background: colours.grey[600],
+=======
+                '& .MuiPaper-root': {
+                    background: colours.grey[600]
+>>>>>>> d40fa43 (fixed layout of trip creation page):SPLIIT/client/src/components/pages/Profile/JoinTripDialog.jsx
                 },
             }}
         >
