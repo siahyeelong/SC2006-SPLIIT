@@ -8,6 +8,7 @@ export class Transaction {
         this.price = transaction.price || "";
         this.currency = transaction.currency || "Unknown";
         this.isLocalCurrency = transaction.isLocalCurrency;
+        this.exchangeRate = transaction.exchangeRate;
         this.description = transaction.description || "";
         this.payer = transaction.payer || "";
         this.tripID = transaction.tripID || "Unknown";

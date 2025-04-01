@@ -1,46 +1,65 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, useTheme, Stack } from "@mui/material";
 import { tokens } from "../../../theme";
 import { DataGrid } from "@mui/x-data-grid";
 import ToCSVButton from "./ToCSVButton";
-import { People } from "../../classes/People";
 import RecipientsCell from "./RecipientsCell";
 import CurrencySwitch from "./CurrencySwitch";
 import PerTransactionDialog from "./PerTransactionDialog";
 import { ReceiptLong } from "@mui/icons-material";
+import { AuthContext } from "../../classes/AuthContext";
 
 function TransactionsTable() {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
 
     const [transactions, setTransactions] = useState([]);
+    const [people, setPeople] = useState([])
     const [pageSize, setPageSize] = useState(10);
-    const [showSGD, setShowSGD] = useState(false);
+    const [showLocalCurrency, setShowLocalCurrency] = useState(false);
     const [showTransactionDialog, setShowTransactionDialog] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState([]);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true)
+    const { trip } = useContext(AuthContext)
 
-    function fetchTransactions() {
-        const backendURL = process.env.REACT_APP_BACKEND_URL;
-        fetch(`${backendURL}/transactions/`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setTransactions(data || []);
-            })
-            .catch((error) => {
-                setError(
-                    "Failed to fetch transactions. Please try again later."
-                );
-                console.error("Error fetching data:", error);
-            });
+    // function to get trip transactions
+    async function fetchTransactions() {
+        setLoading(true)
+        try {
+            const t = await trip.getTransactions()
+            setTransactions(t)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+    // function to get all trip participants
+    const getPeople = async () => {
+        setLoading(true)
+        try {
+            const p = await trip.getParticipants()
+            function mapPeopleByUsername(people) {
+                return people.reduce((acc, person) => {
+                    acc[person.username] = person;
+                    return acc;
+                }, {});
+            }
+            setPeople(mapPeopleByUsername(p))
+        } catch (error) {
+            console.log("error getting people")
+        } finally {
+            setLoading(false)
+        }
     }
 
-    useEffect(() => fetchTransactions(), []);
+    useEffect(() => {
+        getPeople()
+        fetchTransactions()
+    }, []);
+
+    if (loading) return <Typography>Loading...</Typography>
 
     const columns = [
         { field: "id", headerName: "Index", flex: 3, sortable: true },
@@ -64,21 +83,31 @@ function TransactionsTable() {
             },
         },
         {
-            field: showSGD ? "SGD" : "price",
+            field: "price",
             headerName: "Price",
             flex: 10,
             sortable: true,
             filterable: true,
             valueGetter: (params) => parseFloat(params.value),
             valueFormatter: (params) => {
-                return parseFloat(params.value).toLocaleString("en-SG", {
-                    style: "currency",
-                    currency: showSGD
-                        ? "SGD"
-                        : transactions[params.id - 1].currency || "SGD",
-                    minimumFractionDigits: 0, // Show no decimal places if not needed
-                    maximumFractionDigits: 2,
-                });
+                let priceAmt = params.value
+                if (transactions[params.id - 1].isLocalCurrency || showLocalCurrency) { // if transaction record was originally logged in localCurrency, or if user wants to see everything in localCurrency
+                    if (!transactions[params.id - 1].isLocalCurrency) // if the transaction wasnt a localCurrency record, convert it to equivalent localCurrency
+                        priceAmt = priceAmt / transactions[params.id - 1].exchangeRate;
+                    return parseFloat(priceAmt).toLocaleString("en-SG", { // format amount accordingly
+                        style: "currency",
+                        currency: trip.localCurrency,
+                        minimumFractionDigits: 0, // Show no decimal places if not needed
+                        maximumFractionDigits: 2,
+                    })
+                } else {
+                    return parseFloat(priceAmt).toLocaleString("en-SG", { // format amount accordingly
+                        style: "currency",
+                        currency: trip.foreignCurrency,
+                        minimumFractionDigits: 0, // Show no decimal places if not needed
+                        maximumFractionDigits: 2,
+                    })
+                }
             },
         },
         {
@@ -95,7 +124,7 @@ function TransactionsTable() {
             sortable: true,
             filterable: true,
             renderCell: (params) => (
-                <RecipientsCell recipients={params.value || []} />
+                <RecipientsCell recipients={params.value || []} people={people} />
             ),
         },
         {
@@ -111,7 +140,9 @@ function TransactionsTable() {
             flex: 8,
             sortable: true,
             filterable: true,
-            valueGetter: (params) => People[params.value].displayName,
+            valueGetter: (params) => (
+                people[params.value]?.displayName
+            ),
         },
     ];
 
@@ -126,7 +157,7 @@ function TransactionsTable() {
                 sx={{ alignItems: "center", justifyContent: "space-between" }}
             >
                 <ToCSVButton data={transactions} colours={colours} />
-                <CurrencySwitch onToggle={setShowSGD} />
+                <CurrencySwitch onToggle={setShowLocalCurrency} />
             </Stack>
 
             {error ? (
@@ -203,6 +234,7 @@ function TransactionsTable() {
                     <PerTransactionDialog
                         showDialog={showTransactionDialog}
                         transaction={selectedTransaction}
+                        people={people}
                         onClose={() => {
                             fetchTransactions();
                             setShowTransactionDialog(false);
