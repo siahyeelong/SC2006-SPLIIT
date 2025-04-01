@@ -1,11 +1,22 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
-import { 
-    TextField, MenuItem, Button, Box, Typography, 
-    Grid, Card, CardContent 
+import React, { useContext, useState } from "react";
+import {
+    TextField, MenuItem, Button, Box,
+    Grid, Card, CardContent,
+    IconButton,
+    useTheme,
+    Typography,
+    Divider,
+    CardHeader
 } from "@mui/material";
 import { useExchangeRates } from "../../classes/ExchangeRates";
 import { AuthContext } from "../../classes/AuthContext";
 import { useNavigate } from "react-router-dom";
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { tokens } from "../../../theme";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
+import "./DayPickerStyles.css"; // Import custom styles
 
 function TripCreationForm() {
     const formResetState = {
@@ -24,20 +35,82 @@ function TripCreationForm() {
     const [tripID, setTripID] = useState("");
     const { setSessionTrip } = useContext(AuthContext);
     const [formData, setFormData] = useState({ tripImage: '' });
-    const fileInputRef = useRef(null);
     const [errors, setErrors] = useState({});
     const { exchangeRates } = useExchangeRates();
     const navigate = useNavigate();
-    
+    const theme = useTheme();
+    const colours = tokens(theme.palette.mode)
+    const [dateRange, setDateRange] = useState({})
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleBudgetChange = (e) => {
+        const rawValue = e.target.value.replace(/[^0-9.]/g, ""); // Allow only digits and a period
+        if (!/^(\d+(\.\d{0,2})?)?$/.test(rawValue)) return; // Prevents invalid decimal formats
+
+        // Delay or blur event to format the displayed value
+        const formattedValue = formatNumberWithCommas(rawValue); // Keep raw input for better typing experience
+
+        setFormData((prev) => ({
+            ...prev,
+            budget: formattedValue,
+        }));
+    };
+
+    const handleBudgetBlur = (e) => {
+        const numericValue = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
+        const formattedPrice = !isNaN(numericValue)
+            ? numericValue.toLocaleString("en-SG", {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+            })
+            : "";
+        setFormData((prev) => ({ ...prev, budget: formattedPrice }));
+    };
+
+    const formatNumberWithCommas = (value) => {
+        // def can make this optimal but screw this shit man
+        // Remove any non-numeric characters except for the decimal point
+        const numberPart = value.replace(/[^0-9.]/g, "");
+
+        // Separate the integer and decimal parts
+        const [integerPart, decimalPart] = numberPart.split(".");
+
+        // Format the integer part with commas
+        const formattedIntegerPart = integerPart.replace(
+            /\B(?=(\d{3})+(?!\d))/g,
+            ","
+        );
+
+        // If there's a decimal part, ensure it's properly formatted with up to 2 decimal places
+        const formattedDecimalPart = decimalPart
+            ? "." + decimalPart.slice(0, 2) // Limit decimal to 2 places
+            : "";
+
+        // Return the formatted number with or without decimal
+        return numberPart.endsWith(".")
+            ? formattedIntegerPart + "."
+            : formattedIntegerPart + formattedDecimalPart;
+    };
+
+    const handleDateChange = (selectedRange) => {
+        setDateRange(selectedRange);
+        if (selectedRange?.from && selectedRange?.to) {
+            setFormData({
+                ...formData,
+                startDate: selectedRange.from.toLocaleDateString(),
+                endDate: selectedRange.to.toLocaleDateString()
+            })
+        }
+    }
+
     const handleUploadImage = (e) => {
         const file = e.target.files[0];
         if (!file) return;
-    
+
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = (event) => {
@@ -56,13 +129,6 @@ function TripCreationForm() {
                 setFormData({ ...formData, tripImage: base64String });
             };
         };
-    };
-
-    const handleDeleteImage = () => {
-        setFormData({ ...formData, tripImage: '' });
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
     };
 
     const validate = () => {
@@ -110,46 +176,10 @@ function TripCreationForm() {
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-            <Card sx={{ width: "90vw", p: 3, boxShadow: 5 }}>
+        <Box display="flex" flexDirection={'column'} justifyContent="center" alignItems="center" minHeight="100vh">
+            <Card sx={{ width: "90vw", p: 3, borderRadius: 5, boxShadow: 5, backgroundColor: theme.palette.background.default }}>
                 <CardContent>
                     <Grid container spacing={3}>
-                        {/* Trip ID Section */}
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Enter a Trip ID (Optional)"
-                                variant="outlined"
-                                name="tripID"
-                                value={tripID}
-                                onChange={(e) => setTripID(e.target.value)}
-                                InputLabelProps={{ shrink: true }}
-                                sx={{
-                                    mt: 2,
-                                    "& .MuiOutlinedInput-root": {
-                                        "& .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: "white",
-                                        },
-                                    },
-                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "white",
-                                    },
-                                    "& .MuiInputLabel-root": {
-                                        color: "white",
-                                    },
-                                    "& .Mui-focused .MuiInputLabel-root": {
-                                        color: "white",
-                                    },
-                                    "& .MuiInputBase-input": {
-                                        color: "white",
-                                    },
-                                    "& .Mui-focused .MuiInputBase-input": {
-                                        color: "white",
-                                    },
-                                }}
-                            />
-                        </Grid>
-
                         {/* Left Section */}
                         <Grid item xs={12} md={6}>
                             <TextField
@@ -166,23 +196,23 @@ function TripCreationForm() {
                                     mt: 2,
                                     "& .MuiOutlinedInput-root": {
                                         "& .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: "white",
+                                            borderColor: colours.primary[100],
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "white",
+                                        borderColor: colours.primary[100],
                                     },
                                     "& .MuiInputLabel-root": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .Mui-focused .MuiInputLabel-root": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .MuiInputBase-input": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .Mui-focused .MuiInputBase-input": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                 }}
                             />
@@ -200,23 +230,23 @@ function TripCreationForm() {
                                     mt: 2,
                                     "& .MuiOutlinedInput-root": {
                                         "& .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: "white",
+                                            borderColor: colours.primary[100],
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "white",
+                                        borderColor: colours.primary[100],
                                     },
                                     "& .MuiInputLabel-root": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .Mui-focused .MuiInputLabel-root": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .MuiInputBase-input": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .Mui-focused .MuiInputBase-input": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                 }}
                             />
@@ -231,30 +261,30 @@ function TripCreationForm() {
                                         name="foreignCurrency"
                                         value={formData.foreignCurrency}
                                         onChange={handleChange}
-                                        error={!!errors.foreignCurrency}
+                                        error={errors.foreignCurrency}
                                         helperText={errors.foreignCurrency}
                                         required
                                         sx={{
                                             mt: 2,
                                             "& .MuiOutlinedInput-root": {
                                                 "& .MuiOutlinedInput-notchedOutline": {
-                                                    borderColor: "white",
+                                                    borderColor: colours.primary[100],
                                                 },
                                             },
                                             "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                                borderColor: "white",
+                                                borderColor: colours.primary[100],
                                             },
                                             "& .MuiInputLabel-root": {
-                                                color: "white",
+                                                color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputLabel-root": {
-                                                color: "white",
+                                                color: colours.primary[100],
                                             },
                                             "& .MuiInputBase-input": {
-                                                color: "white",
+                                                color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputBase-input": {
-                                                color: "white",
+                                                color: colours.primary[100],
                                             },
                                         }}
                                     >
@@ -280,23 +310,23 @@ function TripCreationForm() {
                                             mt: 2,
                                             "& .MuiOutlinedInput-root": {
                                                 "& .MuiOutlinedInput-notchedOutline": {
-                                                    borderColor: "white",
+                                                    borderColor: colours.primary[100],
                                                 },
                                             },
                                             "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                                borderColor: "white",
+                                                borderColor: colours.primary[100],
                                             },
                                             "& .MuiInputLabel-root": {
-                                                color: "white",
+                                                color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputLabel-root": {
-                                                color: "white",
+                                                color: colours.primary[100],
                                             },
                                             "& .MuiInputBase-input": {
-                                                color: "white",
+                                                color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputBase-input": {
-                                                color: "white",
+                                                color: colours.primary[100],
                                             },
                                         }}
                                     >
@@ -321,144 +351,87 @@ function TripCreationForm() {
                                     mt: 2,
                                     "& .MuiOutlinedInput-root": {
                                         "& .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: "white",
+                                            borderColor: colours.primary[100],
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "white",
+                                        borderColor: colours.primary[100],
                                     },
                                     "& .MuiInputLabel-root": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .Mui-focused .MuiInputLabel-root": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .MuiInputBase-input": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .Mui-focused .MuiInputBase-input": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                 }}
                             />
 
                             <TextField
                                 fullWidth
-                                label="Budget"
+                                label="Budget (in local currency)"
                                 variant="outlined"
                                 name="budget"
                                 value={formData.budget}
-                                onChange={handleChange}
+                                onChange={handleBudgetChange}
+                                onBlur={handleBudgetBlur}
                                 sx={{
                                     mt: 2,
                                     "& .MuiOutlinedInput-root": {
                                         "& .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: "white",
+                                            borderColor: colours.primary[100],
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "white",
+                                        borderColor: colours.primary[100],
                                     },
                                     "& .MuiInputLabel-root": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .Mui-focused .MuiInputLabel-root": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .MuiInputBase-input": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                     "& .Mui-focused .MuiInputBase-input": {
-                                        color: "white",
+                                        color: colours.primary[100],
                                     },
                                 }}
                             />
-
-                            <TextField
-                                fullWidth
-                                type="date"
-                                label="Start Date"
-                                variant="outlined"
-                                name="startDate"
-                                value={formData.startDate}
-                                onChange={handleChange}
-                                sx={{
-                                    mt: 2,
-                                    "& .MuiOutlinedInput-root": {
-                                        "& .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: "white",
-                                        },
-                                    },
-                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "white",
-                                    },
-                                    "& .MuiInputLabel-root": {
-                                        color: "white",
-                                    },
-                                    "& .Mui-focused .MuiInputLabel-root": {
-                                        color: "white",
-                                    },
-                                    "& .MuiInputBase-input": {
-                                        color: "white",
-                                    },
-                                    "& .Mui-focused .MuiInputBase-input": {
-                                        color: "white",
-                                    },
-                                }}
-                                InputLabelProps={{ shrink: true }}
-                            />
-
-                            <TextField
-                                fullWidth
-                                type="date"
-                                label="End Date"
-                                variant="outlined"
-                                name="endDate"
-                                value={formData.endDate}
-                                onChange={handleChange}
-                                sx={{
-                                    mt: 2,
-                                    "& .MuiOutlinedInput-root": {
-                                        "& .MuiOutlinedInput-notchedOutline": {
-                                            borderColor: "white",
-                                        },
-                                    },
-                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "white",
-                                    },
-                                    "& .MuiInputLabel-root": {
-                                        color: "white",
-                                    },
-                                    "& .Mui-focused .MuiInputLabel-root": {
-                                        color: "white",
-                                    },
-                                    "& .MuiInputBase-input": {
-                                        color: "white",
-                                    },
-                                    "& .Mui-focused .MuiInputBase-input": {
-                                        color: "white",
-                                    },
-                                }}
-                                InputLabelProps={{ shrink: true }}
-                            />
+                            <Box p={2}>
+                                <Typography variant="h5">Select departure and arrival dates</Typography>
+                                <DayPicker mode="range" style={{ width: "100%", padding: 5 }} onSelect={handleDateChange}
+                                    selected={dateRange}
+                                    modifiersClassNames={{
+                                        selected: "selected-day",
+                                        range_start: "range-start",
+                                        range_end: "range-end",
+                                        range_middle: "range-middle",
+                                    }}
+                                />
+                            </Box>
 
                             {/* Upload Image Section */}
-                            <Box mt={3}>
-                                <Typography variant="body1">Upload Trip Image</Typography>
-                                <input type="file" accept="image/*" onChange={handleUploadImage} ref={fileInputRef} />
-                                {formData.tripImage && (
-                                    <Box mt={2}>
-                                        <img
-                                            src={formData.tripImage}
-                                            alt="Trip Preview"
-                                            style={{ width: "100%", maxHeight: "200px", objectFit: "cover", borderRadius: "8px" }}
-                                        />
-                                        <button onClick={handleDeleteImage}>
-                                            Delete Uploaded Image
-                                        </button>
-                                    </Box>
-                                )}
-                            </Box>
+                            <Button style={{ margin: 15 }} variant="outlined" color="secondary" component="label" startIcon={<FileUploadIcon />}>
+                                Upload Trip Image
+                                <input type="file" hidden onChange={handleUploadImage} />
+                            </Button>
+                            {formData.tripImage && (
+                                <Box m={2}>
+                                    <img
+                                        src={formData.tripImage}
+                                        alt="Trip Image Preview"
+                                        style={{ width: "30%", objectFit: "cover", borderRadius: 20 }}
+                                    />
+                                    <IconButton onClick={() => setFormData({ ...formData, tripImage: "" })} color="error" sx={{ borderRadius: 5, margin: 5 }}><DeleteIcon /></IconButton>
+                                </Box>
+                            )}
                         </Grid>
                     </Grid>
 
@@ -466,12 +439,15 @@ function TripCreationForm() {
                         Create Trip
                     </Button>
 
-                    <Button fullWidth variant="contained" color="secondary" sx={{ mt: 2 }} href="/selecttrip">
-                        Select Existing Trips
-                    </Button>
                 </CardContent>
             </Card>
-        </Box>
+            <Box display={'flex'} alignItems={'center'} m={4}>
+                <Typography mr={3}>Already have a trip created?</Typography>
+                <Button variant="outlined" color="info" href="/selecttrip">
+                    Select Existing Trips
+                </Button>
+            </Box>
+        </Box >
     );
 }
 
