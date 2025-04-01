@@ -1,5 +1,3 @@
-import Sidebar from "./components/pages/MainUI/Sidebar";
-import Topbar from "./components/pages/MainUI/Topbar";
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route, useLocation } from "react-router-dom";

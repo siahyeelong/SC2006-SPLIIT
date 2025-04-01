@@ -1,5 +1,4 @@
-import { React, useState } from "react";
-import { People } from "../../classes/People";
+import { React, useContext, useEffect, useState } from "react";
 import { Categories } from "../../classes/Categories";
 import Chip from "@mui/material/Chip";
 import {
@@ -7,26 +6,76 @@ import {
     ToggleButton,
     ToggleButtonGroup,
     InputBase,
+    Typography,
 } from "@mui/material";
 import { tokens } from "../../../theme";
 import { useExchangeRates } from "../../classes/ExchangeRates";
+import { AuthContext } from "../../classes/AuthContext";
+import { Transaction } from "../../entities/Transaction";
 
 function LogTransactionForm({ onAdd }) {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
     const { exchangeRates } = useExchangeRates();
+    const { trip } = useContext(AuthContext)
+    const [locationStatus, setLocationStatus] = useState("");
+    const [people, setPeople] = useState(null);
+    const [loading, setLoading] = useState(true);
 
+    // function that gets user's lat and long if enabled
+    const getLocation = () => {
+        if (!navigator.geolocation) {
+            console.log("Geolocation is not supported by this browser.");
+            setLocationStatus("unsupported");
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setLocationStatus({ lat: position.coords.latitude, long: position.coords.longitude });
+            },
+            (error) => {
+                if (error.code === error.PERMISSION_DENIED) {
+                    console.log("User denied the request for Geolocation.");
+                    setLocationStatus("denied");
+                } else {
+                    console.log("Error getting location:", error.message);
+                    setLocationStatus("error");
+                }
+            }
+        );
+    };
+
+    const getPeople = async () => {
+        try {
+            const p = await trip.getParticipants()
+            setPeople(p)
+        } catch (error) {
+            console.log("error getting people")
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        getLocation();
+        getPeople();
+    }, [])
+
+    // default form state
     const formResetState = {
         recipients: [],
         category: "",
         price: "",
-        currency: "SGD",
+        currency: trip.foreignCurrency,
+        isLocalCurrency: false,
         description: "",
         payer: "",
+        tripID: trip.tripID,
+        geolocation: locationStatus,
     };
 
     const [formData, setFormData] = useState(formResetState);
-
     const [errors, setErrors] = useState({});
 
     // Handle chip select change: append / remove recipients from recipients array
@@ -43,7 +92,7 @@ function LogTransactionForm({ onAdd }) {
     const handleCurrencyChange = (event, newCurrency) => {
         if (newCurrency) {
             setFormData((prev) => {
-                return { ...prev, currency: newCurrency };
+                return { ...prev, currency: newCurrency, isLocalCurrency: (newCurrency === trip.localCurrency) };
             });
         }
     };
@@ -52,15 +101,12 @@ function LogTransactionForm({ onAdd }) {
         const rawValue = e.target.value.replace(/[^0-9.]/g, ""); // Allow only digits and a period
         if (!/^(\d+(\.\d{0,2})?)?$/.test(rawValue)) return; // Prevents invalid decimal formats
 
-        const newCurrency = rawValue > exchangeRates["IDR"] ? "IDR" : "SGD";
-
         // Delay or blur event to format the displayed value
         const formattedValue = formatNumberWithCommas(rawValue); // Keep raw input for better typing experience
 
         setFormData((prev) => ({
             ...prev,
             price: formattedValue,
-            currency: newCurrency,
         }));
     };
 
@@ -68,9 +114,9 @@ function LogTransactionForm({ onAdd }) {
         const numericValue = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
         const formattedPrice = !isNaN(numericValue)
             ? numericValue.toLocaleString("en-SG", {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
-              })
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+            })
             : "";
         setFormData((prev) => ({ ...prev, price: formattedPrice }));
     };
@@ -99,6 +145,17 @@ function LogTransactionForm({ onAdd }) {
             ? formattedIntegerPart + "."
             : formattedIntegerPart + formattedDecimalPart;
     };
+
+    // Handle exchange rate hint
+    const exchangeRateHint = () => {
+        const lc = exchangeRates[trip.localCurrency];
+        const fc = exchangeRates[trip.foreignCurrency];
+
+        return lc > fc ?
+            `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${trip.foreignCurrency} 1}`
+            :
+            `${trip.localCurrency} 1 = ${trip.foreignCurrency} ${parseFloat(fc / lc).toFixed(2)}`
+    }
 
     // Handle all other changes by updating the corresponding values
     const handleChange = (e) => {
@@ -130,19 +187,8 @@ function LogTransactionForm({ onAdd }) {
                 // Adjust price back to number format
                 formData.price = formData.price.replace(/[^0-9.]/g, "");
 
-                let response = "";
-                const backendURL = process.env.REACT_APP_BACKEND_URL;
-
-                response = await fetch(`${backendURL}/transactions`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                });
-
-                if (!response.ok)
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                const newTransaction = new Transaction(formData);
+                const response = await newTransaction.submit(); // submit transaction record
 
                 onAdd("Transaction logged successfully!", "success");
             } catch (error) {
@@ -157,7 +203,7 @@ function LogTransactionForm({ onAdd }) {
             }
         }
     }
-
+    if (loading) return <Typography>Loading...</Typography>
     return (
         <form onSubmit={handleSubmit} className="container mt-4 ">
             {/* Chip select input for recipients */}
@@ -165,21 +211,21 @@ function LogTransactionForm({ onAdd }) {
                 <label className="form-label">Who is it for?</label>
                 <br />
                 <div className="chip-group">
-                    {Object.keys(People).map((person) => {
+                    {people.map((person) => {
                         const selected = formData.recipients.includes(person);
                         return (
                             <Chip
                                 key={person}
-                                label={People[person].displayName}
+                                label={person.displayName}
                                 sx={{
                                     color: "#000",
                                     backgroundColor: selected
-                                        ? People[person].favColour
+                                        ? person.favColour
                                         : "#e0e0e0",
                                     margin: "0.25%",
                                     "&:hover": {
                                         backgroundColor:
-                                            People[person].favColour,
+                                            person.favColour,
                                     },
                                 }}
                                 clickable
@@ -189,9 +235,8 @@ function LogTransactionForm({ onAdd }) {
                                         ? () => handleChipSelection(person)
                                         : undefined
                                 }
-                                className={`chip ${
-                                    selected ? "chip-selected" : ""
-                                }`}
+                                className={`chip ${selected ? "chip-selected" : ""
+                                    }`}
                             />
                         );
                     })}
@@ -231,7 +276,14 @@ function LogTransactionForm({ onAdd }) {
             </div>
             {/* Text input for price input */}
             <div className="mb-3">
-                <label className="form-label">Price</label>
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "flex-start"
+                    }}>
+                    <label className="form-label">Price</label>
+                    <Typography ml={2} color="grey"> {exchangeRateHint()} </Typography>
+                </div>
                 <div
                     style={{
                         display: "flex",
@@ -240,6 +292,7 @@ function LogTransactionForm({ onAdd }) {
                         borderRadius: "8px",
                     }}
                 >
+                    {/* Currency button toggle buttons */}
                     <ToggleButtonGroup
                         value={formData.currency}
                         exclusive
@@ -257,11 +310,11 @@ function LogTransactionForm({ onAdd }) {
                             },
                         }}
                     >
-                        <ToggleButton value="SGD" aria-label="SGD" key="SGD">
-                            SGD
+                        <ToggleButton value={trip.localCurrency} key="local">
+                            {trip.localCurrency}
                         </ToggleButton>
-                        <ToggleButton value="IDR" aria-label="IDR" key="IDR">
-                            IDR
+                        <ToggleButton value={trip.foreignCurrency} key="foreign">
+                            {trip.foreignCurrency}
                         </ToggleButton>
                     </ToggleButtonGroup>
                     <InputBase
@@ -316,9 +369,9 @@ function LogTransactionForm({ onAdd }) {
                     <option key="default" value="">
                         Select Payer
                     </option>
-                    {Object.keys(People).map((person) => (
+                    {people.map((person) => (
                         <option value={person} key={person}>
-                            {People[person].displayName}
+                            {person.displayName}
                         </option>
                     ))}
                 </select>

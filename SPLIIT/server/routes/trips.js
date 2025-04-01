@@ -10,8 +10,15 @@ router.get("/getAllTrips/:user", async (req, res) => {
     try {
         let user = req.params.user;
 
-        // Find trips where the 'users' array contains the given user
-        let results = await collection.find({ users: user }).toArray();
+        // Find all trips that the user is in
+        const userInfo = await users_collection.findOne({ username: user });
+        const tripIDs = userInfo.trips
+        // Find all trips with the tripID
+        let results = await Promise.all(
+            tripIDs.map(async (tripID) => {
+                return await collection.findOne({ tripID: tripID });
+            })
+        );
 
         res.status(200).send(results);
     } catch (error) {
