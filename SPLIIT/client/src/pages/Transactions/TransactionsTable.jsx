@@ -2,27 +2,40 @@ import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, useTheme, Stack } from "@mui/material";
 import { tokens } from "../../theme";
 import { DataGrid } from "@mui/x-data-grid";
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
 import ToCSVButton from "../../components/common/ToCSVButton";
+=======
+import ToCSVButton from "./ToCSVButton";
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
 import RecipientsCell from "./RecipientsCell";
 import CurrencySwitch from "./CurrencySwitch";
 import PerTransactionDialog from "./PerTransactionDialog";
 import { ReceiptLong } from "@mui/icons-material";
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
 import { AuthContext } from "../../contexts/AuthContext";
 =======
 >>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+import { AuthContext } from "../../classes/AuthContext";
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
 
 function TransactionsTable() {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
 
     const [transactions, setTransactions] = useState([]);
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
     const [people, setPeople] = useState([]);
+=======
+    const [people, setPeople] = useState([])
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
     const [pageSize, setPageSize] = useState(10);
     const [showLocalCurrency, setShowLocalCurrency] = useState(false);
     const [showTransactionDialog, setShowTransactionDialog] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState([]);
     const [error, setError] = useState(null);
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
     const [loading, setLoading] = useState(true);
     const { trip } = useContext(AuthContext);
 
@@ -36,6 +49,39 @@ function TransactionsTable() {
             console.log(error);
         } finally {
             setLoading(false);
+=======
+    const [loading, setLoading] = useState(true)
+    const { trip } = useContext(AuthContext)
+
+    // function to get trip transactions
+    async function fetchTransactions() {
+        setLoading(true)
+        try {
+            const t = await trip.getTransactions()
+            setTransactions(t)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+    // function to get all trip participants
+    const getPeople = async () => {
+        setLoading(true)
+        try {
+            const p = await trip.getParticipants()
+            function mapPeopleByUsername(people) {
+                return people.reduce((acc, person) => {
+                    acc[person.username] = person;
+                    return acc;
+                }, {});
+            }
+            setPeople(mapPeopleByUsername(p))
+        } catch (error) {
+            console.log("error getting people")
+        } finally {
+            setLoading(false)
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
         }
     }
     // function to get all trip participants
@@ -58,11 +104,19 @@ function TransactionsTable() {
     };
 
     useEffect(() => {
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
         getPeople();
         fetchTransactions();
     }, []);
 
     if (loading) return <Typography>Loading...</Typography>;
+=======
+        getPeople()
+        fetchTransactions()
+    }, []);
+
+    if (loading) return <Typography>Loading...</Typography>
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
 
     const columns = [
         { field: "id", headerName: "Index", flex: 3, sortable: true },
@@ -93,6 +147,7 @@ function TransactionsTable() {
             filterable: true,
             valueGetter: (params) => parseFloat(params.value),
             valueFormatter: (params) => {
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
                 let priceAmt = params.value;
                 if (
                     transactions[params.id - 1].isLocalCurrency ||
@@ -105,19 +160,36 @@ function TransactionsTable() {
                             priceAmt / transactions[params.id - 1].exchangeRate;
                     return parseFloat(priceAmt).toLocaleString("en-SG", {
                         // format amount accordingly
+=======
+                let priceAmt = params.value
+                if (transactions[params.id - 1].isLocalCurrency || showLocalCurrency) { // if transaction record was originally logged in localCurrency, or if user wants to see everything in localCurrency
+                    if (!transactions[params.id - 1].isLocalCurrency) // if the transaction wasnt a localCurrency record, convert it to equivalent localCurrency
+                        priceAmt = priceAmt / transactions[params.id - 1].exchangeRate;
+                    return parseFloat(priceAmt).toLocaleString("en-SG", { // format amount accordingly
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
                         style: "currency",
                         currency: trip.localCurrency,
                         minimumFractionDigits: 0, // Show no decimal places if not needed
                         maximumFractionDigits: 2,
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
                     });
                 } else {
                     return parseFloat(priceAmt).toLocaleString("en-SG", {
                         // format amount accordingly
+=======
+                    })
+                } else {
+                    return parseFloat(priceAmt).toLocaleString("en-SG", { // format amount accordingly
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
                         style: "currency",
                         currency: trip.foreignCurrency,
                         minimumFractionDigits: 0, // Show no decimal places if not needed
                         maximumFractionDigits: 2,
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
                     });
+=======
+                    })
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
                 }
             },
         },
@@ -135,10 +207,14 @@ function TransactionsTable() {
             sortable: true,
             filterable: true,
             renderCell: (params) => (
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
                 <RecipientsCell
                     recipients={params.value || []}
                     people={people}
                 />
+=======
+                <RecipientsCell recipients={params.value || []} people={people} />
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
             ),
         },
         {
@@ -154,7 +230,13 @@ function TransactionsTable() {
             flex: 8,
             sortable: true,
             filterable: true,
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
             valueGetter: (params) => people[params.value]?.displayName,
+=======
+            valueGetter: (params) => (
+                people[params.value]?.displayName
+            ),
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
         },
     ];
 

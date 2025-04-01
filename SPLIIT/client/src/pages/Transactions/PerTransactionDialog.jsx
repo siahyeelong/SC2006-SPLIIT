@@ -8,6 +8,7 @@ import {
     Chip,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
 import { Categories } from "../../constants/Categories";
 import { useExchangeRates } from "../../contexts/ExchangeRates";
 import DeleteTransactionConfirmationDialog from "./DelTransactionConfirmDialog";
@@ -24,11 +25,31 @@ function TransactionCard({ transaction, people }) {
         currency: transaction.isLocalCurrency
             ? trip.localCurrency
             : trip.foreignCurrency,
+=======
+import { Categories } from "../../classes/Categories";
+import { useExchangeRates } from "../../classes/ExchangeRates";
+import DeleteTransactionConfirmationDialog from "./DelTransactionConfirmDialog";
+import SnackbarNotifs from "../TripInfo/SnackbarNotifs";
+import { AuthContext } from "../../classes/AuthContext";
+import MapPreview from "./MapPreview";
+
+function TransactionCard({ transaction, people }) {
+    const { exchangeRates } = useExchangeRates();
+    const { trip } = useContext(AuthContext)
+
+    const price = parseFloat(transaction.price).toLocaleString("en-SG", {
+        style: "currency",
+        currency: transaction.isLocalCurrency ? trip.localCurrency : trip.foreignCurrency,
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
         minimumFractionDigits: 0,
         maximumFractionDigits: 2,
     });
 
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
     if (!people) return <></>;
+=======
+    if (!people) return <></>
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
 
     return (
         <>
@@ -114,7 +135,13 @@ function TransactionCard({ transaction, people }) {
             <Box
                 display={"flex"}
                 alignContent={"center"}
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
                 visibility={transaction.isLocalCurrency ? "hidden" : "visible"}
+=======
+                visibility={
+                    transaction.isLocalCurrency ? "hidden" : "visible"
+                }
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
             >
                 <Box
                     display={"flex"}
@@ -123,9 +150,13 @@ function TransactionCard({ transaction, people }) {
                     p={"10px"}
                     width={"110px"}
                 >
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
                     <Typography fontWeight={"bold"}>
                         Price ({trip.localCurrency}):{" "}
                     </Typography>
+=======
+                    <Typography fontWeight={"bold"}>Price ({trip.localCurrency}): </Typography>
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
                 </Box>
                 <Box
                     display={"flex"}
@@ -134,9 +165,13 @@ function TransactionCard({ transaction, people }) {
                     p={"10px"}
                 >
                     <Typography>
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
                         {parseFloat(
                             transaction.price / transaction.exchangeRate
                         ).toLocaleString("en-SG", {
+=======
+                        {parseFloat(transaction.price / transaction.exchangeRate).toLocaleString("en-SG", {
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
                             style: "currency",
                             currency: trip.localCurrency,
                             minimumFractionDigits: 0, // Show no decimal places if not needed
@@ -149,7 +184,13 @@ function TransactionCard({ transaction, people }) {
             <Box
                 display={"flex"}
                 alignContent={"center"}
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
                 visibility={transaction.isLocalCurrency ? "hidden" : "visible"}
+=======
+                visibility={
+                    transaction.isLocalCurrency ? "hidden" : "visible"
+                }
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
             >
                 <Box
                     display={"flex"}
@@ -166,10 +207,14 @@ function TransactionCard({ transaction, people }) {
                     alignContent={"center"}
                     p={"10px"}
                 >
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
                     <Typography>
                         {trip.localCurrency} 1 = {trip.foreignCurrency}{" "}
                         {parseFloat(transaction.exchangeRate).toFixed(2)}
                     </Typography>
+=======
+                    <Typography>{trip.localCurrency} 1 = {trip.foreignCurrency} {parseFloat(transaction.exchangeRate).toFixed(2)}</Typography>
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
                 </Box>
             </Box>
             {/* Display recipients */}
@@ -206,6 +251,7 @@ function TransactionCard({ transaction, people }) {
                 </Box>
             </Box>
             {/* Display location */}
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
             <Box display={"flex"} justifyContent={"center"} m={2}>
                 {transaction.geolocation && (
                     <MapPreview
@@ -213,6 +259,10 @@ function TransactionCard({ transaction, people }) {
                         lng={transaction.geolocation.long}
                     />
                 )}
+=======
+            <Box display={'flex'} justifyContent={'center'} m={2}>
+                {transaction.geolocation && <MapPreview lat={transaction.geolocation.lat} lng={transaction.geolocation.long} />}
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
             </Box>
 
             {/* Display timestamp as a grey footer */}
@@ -280,10 +330,14 @@ function PerTransactionDialog({ showDialog, transaction, people, onClose }) {
                 maxWidth={false}
             >
                 <DialogContent>
+<<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/PerTransactionDialog.jsx
                     <TransactionCard
                         transaction={transaction}
                         people={people}
                     />
+=======
+                    <TransactionCard transaction={transaction} people={people} />
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/PerTransactionDialog.jsx
                 </DialogContent>
                 <DialogActions>
                     <Button

@@ -9,8 +9,11 @@ import { get_rates } from "./exchange_rates/get_rates.js";
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const router = express.Router();
 let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
+<<<<<<< HEAD
 let users_collection = await db.collection(process.env.USERS_COLLECTION);
 let trips_collection = await db.collection(process.env.TRIPS_COLLECTION);
+=======
+>>>>>>> 634cedd (fixed transactions table and added geographical map)
 
 // This section will help you get a list of all the records.
 router.get("/tripTransactions/:tripID", async (req, res) => {
@@ -25,6 +28,7 @@ router.get("/tripTransactions/:tripID", async (req, res) => {
 
 router.get("/owe/:tripID", async (req, res) => {
     try {
+<<<<<<< HEAD
         const tripID = req.params.tripID;
         // get all transactions relating to the trip
         let transactions = await collection.find({ tripID: tripID }).toArray();
@@ -51,6 +55,11 @@ router.get("/owe/:tripID", async (req, res) => {
             }, {});
         };
         let debts = settle_debt(transactions, mapPeopleByUsername(people));
+=======
+
+        let transactions = await collection.find({}).toArray();
+        let debts = settle_debt(transactions);
+>>>>>>> 634cedd (fixed transactions table and added geographical map)
         res.status(200).send(debts);
     } catch (error) {
         console.log(`get error:\n${error}`.red);

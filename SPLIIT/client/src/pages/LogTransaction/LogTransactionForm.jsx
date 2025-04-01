@@ -106,6 +106,7 @@ function LogTransactionForm({ onAdd }) {
         currency: trip.foreignCurrency,
         isLocalCurrency: false,
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
         exchangeRate: parseFloat(
             exchangeRates[trip.foreignCurrency] /
                 exchangeRates[trip.localCurrency]
@@ -120,6 +121,13 @@ function LogTransactionForm({ onAdd }) {
         tripID: trip.tripID,
         geolocation: locationStatus,
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+        exchangeRate: parseFloat(exchangeRates[trip.foreignCurrency] / exchangeRates[trip.localCurrency]), // foreign : local exchange rate
+        description: "",
+        payer: "",
+        tripID: trip.tripID,
+        geolocation: '',
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
     };
 
     const [formData, setFormData] = useState(formResetState);
@@ -253,10 +261,14 @@ function LogTransactionForm({ onAdd }) {
                 // Adjust price back to number format
                 formData.price = formData.price.replace(/[^0-9.]/g, "");
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
                 formData.geolocation = locationStatus;
 =======
 
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+                formData.geolocation = locationStatus;
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
                 const newTransaction = new Transaction(formData);
                 const response = await newTransaction.submit(); // submit transaction record
 
@@ -287,6 +299,7 @@ function LogTransactionForm({ onAdd }) {
                 <div className="chip-group">
                     {people.map((person) => {
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
                         const selected = formData.recipients.includes(
                             person.username
                         );
@@ -299,6 +312,12 @@ function LogTransactionForm({ onAdd }) {
                             <Chip
                                 key={person}
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+                        const selected = formData.recipients.includes(person.username);
+                        return (
+                            <Chip
+                                key={person.username}
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
                                 label={person.displayName}
                                 sx={{
                                     color: "#000",
@@ -316,6 +335,7 @@ function LogTransactionForm({ onAdd }) {
                                     },
                                 }}
                                 clickable
+<<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
                                 onClick={() =>
                                     handleChipSelection(person.username)
                                 }
@@ -325,6 +345,12 @@ function LogTransactionForm({ onAdd }) {
                                               handleChipSelection(
                                                   person.username
                                               )
+=======
+                                onClick={() => handleChipSelection(person.username)}
+                                onDelete={
+                                    selected
+                                        ? () => handleChipSelection(person.username)
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
                                         : undefined
                                 }
                                 className={`chip ${selected ? "chip-selected" : ""
@@ -481,10 +507,14 @@ function LogTransactionForm({ onAdd }) {
                     </option>
                     {people.map((person) => (
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
                         <option value={person.username} key={person.username}>
 =======
                         <option value={person} key={person}>
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+                        <option value={person.username} key={person.username}>
+>>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
                             {person.displayName}
                         </option>
                     ))}
