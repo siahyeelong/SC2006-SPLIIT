@@ -12,7 +12,11 @@ import Header from "../../layouts/Header";
 import TripGeneral from "./TripGeneral";
 import TripMembersDestination from "./TripMembersDestination";
 import TripDateBudget from "./TripDateBudget";
+<<<<<<< HEAD:SPLIIT/client/src/pages/TripInfo/index.jsx
 import { AuthContext } from "../../contexts/AuthContext";
+=======
+import { AuthContext } from "../../classes/AuthContext";
+>>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/TripInfo/index.jsx
 
 const TripDetails = () => {
     const theme = useTheme();

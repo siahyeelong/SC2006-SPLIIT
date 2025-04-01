@@ -72,7 +72,11 @@ router.post('/googlelogin', async (req, res) => {
         const { email, name, picture, sub: googleId } = payload;
 
         // Check if user exists in database
+<<<<<<< HEAD
         let user = await collection.findOne({ email });
+=======
+        let user = await usersCollection.findOne({ email });
+>>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page)
 
         if (!user) {
             // Create new user
@@ -165,6 +169,7 @@ router.get("/getParticipants/:tripID", async (req, res) => {
 
         // Find all users that are in the trip
         const tripInfo = await trips_collection.findOne({ tripID: tripID });
+<<<<<<< HEAD
         const usernames = tripInfo?.users;
         // Find all information about the user
         let results = await Promise.all(
@@ -175,6 +180,18 @@ router.get("/getParticipants/:tripID", async (req, res) => {
                 delete person._id;
                 delete person.email;
                 return person;
+=======
+        const usernames = tripInfo.users
+        // Find all trips with the tripID
+        let results = await Promise.all(
+            usernames.map(async (username) => {
+                const person = await collection.findOne({ username: username });
+                // remove sensitive information
+                delete person.password
+                delete person._id
+                delete person.email
+                return person
+>>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page)
             })
         );
 
