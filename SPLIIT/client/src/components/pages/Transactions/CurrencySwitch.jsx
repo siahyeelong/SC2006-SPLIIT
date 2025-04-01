@@ -66,7 +66,7 @@ function CurrencySwitch({ onToggle }) {
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
             <Typography fontSize={'medium'} fontWeight={'bold'} color={colours.orangeAccent[400]}>Original logged currency</Typography>
             <AntSwitch checked={checked} onChange={handleSwitch} />
-            <Typography fontSize={'medium'} fontWeight={'bold'} color={colours.orangeAccent[400]}>All SGD</Typography>
+            <Typography fontSize={'medium'} fontWeight={'bold'} color={colours.orangeAccent[400]}>All local currency</Typography>
         </Stack>
     )
 }

@@ -26,7 +26,6 @@ function Profile() {
     });
     const navigate = useNavigate();
     const [updating, setUpdating] = useState(false);
-    const backendURL = process.env.REACT_APP_BACKEND_URL;
 
     // Every time something updated, close current snackbar immediately and open new one after delay
     const showSnackbar = (message, severity) => {
@@ -42,16 +41,6 @@ function Profile() {
             }, 100);
         }
     };
-
-    // const showSnackbar = (message, severity) => {
-    //     !updating &&
-    //         setSnackbarState((s) => ({
-    //             open: true,
-    //             message,
-    //             severity,
-    //             key: s.key + 1,
-    //         }));
-    // };
 
     const handleSaveName = () => {
         user.updateInfo("displayName", tempName); // update the user object

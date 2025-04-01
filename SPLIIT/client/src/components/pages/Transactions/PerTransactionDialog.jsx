@@ -7,25 +7,26 @@ import {
     Button,
     Chip,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Categories } from "../../classes/Categories";
 import { useExchangeRates } from "../../classes/ExchangeRates";
-import { People } from "../../classes/People";
 import DeleteTransactionConfirmationDialog from "./DelTransactionConfirmDialog";
 import SnackbarNotifs from "../TripInfo/SnackbarNotifs";
+import { AuthContext } from "../../classes/AuthContext";
+import MapPreview from "./MapPreview";
 
-function TransactionCard({ transaction }) {
+function TransactionCard({ transaction, people }) {
     const { exchangeRates } = useExchangeRates();
+    const { trip } = useContext(AuthContext)
 
     const price = parseFloat(transaction.price).toLocaleString("en-SG", {
         style: "currency",
-        currency:
-            transaction.currency === "SGD"
-                ? "SGD"
-                : transaction.currency || "SGD",
-        minimumFractionDigits: 0, // Show no decimal places if not needed
+        currency: transaction.isLocalCurrency ? trip.localCurrency : trip.foreignCurrency,
+        minimumFractionDigits: 0,
         maximumFractionDigits: 2,
     });
+
+    if (!people) return <></>
 
     return (
         <>
@@ -55,10 +56,10 @@ function TransactionCard({ transaction }) {
                     {/* display payer */}
                     <Chip
                         key={transaction.payer}
-                        label={People[transaction.payer].displayName}
+                        label={people[transaction.payer]?.displayName}
                         sx={{
                             backgroundColor:
-                                People[transaction.payer].favColour ||
+                                people[transaction.payer]?.favColour ||
                                 "#CCCCCC",
                             color: "#000",
                             fontWeight: "bold",
@@ -112,7 +113,7 @@ function TransactionCard({ transaction }) {
                 display={"flex"}
                 alignContent={"center"}
                 visibility={
-                    transaction.currency === "SGD" ? "hidden" : "visible"
+                    transaction.isLocalCurrency ? "hidden" : "visible"
                 }
             >
                 <Box
@@ -122,7 +123,7 @@ function TransactionCard({ transaction }) {
                     p={"10px"}
                     width={"110px"}
                 >
-                    <Typography fontWeight={"bold"}>Price (SGD): </Typography>
+                    <Typography fontWeight={"bold"}>Price ({trip.localCurrency}): </Typography>
                 </Box>
                 <Box
                     display={"flex"}
@@ -131,9 +132,9 @@ function TransactionCard({ transaction }) {
                     p={"10px"}
                 >
                     <Typography>
-                        {parseFloat(transaction.SGD).toLocaleString("en-SG", {
+                        {parseFloat(transaction.price / transaction.exchangeRate).toLocaleString("en-SG", {
                             style: "currency",
-                            currency: "SGD",
+                            currency: trip.localCurrency,
                             minimumFractionDigits: 0, // Show no decimal places if not needed
                             maximumFractionDigits: 2,
                         })}
@@ -145,7 +146,7 @@ function TransactionCard({ transaction }) {
                 display={"flex"}
                 alignContent={"center"}
                 visibility={
-                    transaction.currency === "SGD" ? "hidden" : "visible"
+                    transaction.isLocalCurrency ? "hidden" : "visible"
                 }
             >
                 <Box
@@ -163,7 +164,7 @@ function TransactionCard({ transaction }) {
                     alignContent={"center"}
                     p={"10px"}
                 >
-                    <Typography>{exchangeRates["IDR"]}</Typography>
+                    <Typography>{trip.localCurrency} 1 = {trip.foreignCurrency} {parseFloat(transaction.exchangeRate).toFixed(2)}</Typography>
                 </Box>
             </Box>
             {/* Display recipients */}
@@ -188,10 +189,10 @@ function TransactionCard({ transaction }) {
                     {transaction.recipients.map((recipient) => (
                         <Chip
                             key={recipient}
-                            label={People[recipient].displayName}
+                            label={people[recipient]?.displayName}
                             sx={{
                                 backgroundColor:
-                                    People[recipient].favColour || "#CCCCCC",
+                                    people[recipient]?.favColour || "#CCCCCC",
                                 color: "#000",
                                 fontWeight: "bold",
                             }}
@@ -199,13 +200,17 @@ function TransactionCard({ transaction }) {
                     ))}
                 </Box>
             </Box>
+            {/* Display location */}
+            <Box display={'flex'} justifyContent={'center'} m={2}>
+                {transaction.geolocation && <MapPreview lat={transaction.geolocation.lat} lng={transaction.geolocation.long} />}
+            </Box>
 
             {/* Display timestamp as a grey footer */}
         </>
     );
 }
 
-function PerTransactionDialog({ showDialog, transaction, onClose }) {
+function PerTransactionDialog({ showDialog, transaction, people, onClose }) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [snackbarState, setSnackbarState] = useState({
         open: false,
@@ -265,7 +270,7 @@ function PerTransactionDialog({ showDialog, transaction, onClose }) {
                 maxWidth={false}
             >
                 <DialogContent>
-                    <TransactionCard transaction={transaction} />
+                    <TransactionCard transaction={transaction} people={people} />
                 </DialogContent>
                 <DialogActions>
                     <Button

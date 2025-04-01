@@ -69,10 +69,11 @@ function LogTransactionForm({ onAdd }) {
         price: "",
         currency: trip.foreignCurrency,
         isLocalCurrency: false,
+        exchangeRate: parseFloat(exchangeRates[trip.foreignCurrency] / exchangeRates[trip.localCurrency]), // foreign : local exchange rate
         description: "",
         payer: "",
         tripID: trip.tripID,
-        geolocation: locationStatus,
+        geolocation: '',
     };
 
     const [formData, setFormData] = useState(formResetState);
@@ -186,7 +187,7 @@ function LogTransactionForm({ onAdd }) {
             try {
                 // Adjust price back to number format
                 formData.price = formData.price.replace(/[^0-9.]/g, "");
-
+                formData.geolocation = locationStatus;
                 const newTransaction = new Transaction(formData);
                 const response = await newTransaction.submit(); // submit transaction record
 
@@ -212,10 +213,10 @@ function LogTransactionForm({ onAdd }) {
                 <br />
                 <div className="chip-group">
                     {people.map((person) => {
-                        const selected = formData.recipients.includes(person);
+                        const selected = formData.recipients.includes(person.username);
                         return (
                             <Chip
-                                key={person}
+                                key={person.username}
                                 label={person.displayName}
                                 sx={{
                                     color: "#000",
@@ -229,10 +230,10 @@ function LogTransactionForm({ onAdd }) {
                                     },
                                 }}
                                 clickable
-                                onClick={() => handleChipSelection(person)}
+                                onClick={() => handleChipSelection(person.username)}
                                 onDelete={
                                     selected
-                                        ? () => handleChipSelection(person)
+                                        ? () => handleChipSelection(person.username)
                                         : undefined
                                 }
                                 className={`chip ${selected ? "chip-selected" : ""
@@ -370,7 +371,7 @@ function LogTransactionForm({ onAdd }) {
                         Select Payer
                     </option>
                     {people.map((person) => (
-                        <option value={person} key={person}>
+                        <option value={person.username} key={person.username}>
                             {person.displayName}
                         </option>
                     ))}

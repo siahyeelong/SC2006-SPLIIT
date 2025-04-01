@@ -60,6 +60,24 @@ export class Trip {
         }
     }
 
+    async getTransactions() {
+        try {
+            const response = await fetch(`${backendURL}/transactions/tripTransactions/${this.tripID}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+            return response.json();
+        } catch (error) {
+            console.error("Failed to get trip transactions:", error);
+            return null;
+        }
+    }
+
     printInfo() {
         console.log("tripID is:", this.tripID)
         console.log("tripName is:", this.tripName)
