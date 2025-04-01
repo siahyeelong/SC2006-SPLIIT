@@ -1,14 +1,7 @@
-import React, { useContext, useState } from "react";
-import {
-    TextField,
-    MenuItem,
-    Button,
-    Box,
-    Typography,
-    Grid,
-    Card,
-    CardContent,
-    useTheme,
+import React, { useContext, useState, useRef, useEffect } from "react";
+import { 
+    TextField, MenuItem, Button, Box, Typography, 
+    Grid, Card, CardContent 
 } from "@mui/material";
 import { useExchangeRates } from "../../classes/ExchangeRates";
 import { AuthContext } from "../../classes/AuthContext";
@@ -30,12 +23,12 @@ function TripCreationForm() {
 
     const [tripID, setTripID] = useState("");
     const { setSessionTrip } = useContext(AuthContext);
-    const [formData, setFormData] = useState(formResetState);
+    const [formData, setFormData] = useState({ tripImage: '' });
+    const fileInputRef = useRef(null);
     const [errors, setErrors] = useState({});
     const { exchangeRates } = useExchangeRates();
     const navigate = useNavigate();
-    const theme = useTheme();
-
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -44,32 +37,44 @@ function TripCreationForm() {
     const handleUploadImage = (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
+    
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => {
-            setFormData({ ...formData, tripImage: reader.result });
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                const size = Math.min(img.width, img.height);
+                const sx = (img.width - size) / 2;
+                const sy = (img.height - size) / 2;
+                canvas.width = 512;
+                canvas.height = 512;
+                ctx.drawImage(img, sx, sy, size, size, 0, 0, 512, 512);
+                const base64String = canvas.toDataURL("image/jpeg", 0.8);
+                setFormData({ ...formData, tripImage: base64String });
+            };
         };
+    };
+
+    const handleDeleteImage = () => {
+        setFormData({ ...formData, tripImage: '' });
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     const validate = () => {
         const newErrors = {};
-        if (!formData.tripName.trim())
-            newErrors.tripName = "Please enter a trip name.";
-        if (!formData.foreignCurrency)
-            newErrors.foreignCurrency = "Please select a foreign currency.";
-        if (!formData.localCurrency)
-            newErrors.localCurrency = "Please select a local currency.";
+        if (!formData.tripName.trim()) newErrors.tripName = "Please enter a trip name.";
+        if (!formData.foreignCurrency) newErrors.foreignCurrency = "Please select a foreign currency.";
+        if (!formData.localCurrency) newErrors.localCurrency = "Please select a local currency.";
         if (formData.foreignCurrency === formData.localCurrency)
-            newErrors.currency =
-                "Foreign and local currency cannot be the same.";
+            newErrors.currency = "Foreign and local currency cannot be the same.";
         if (formData.budget && isNaN(formData.budget.replace(/[^0-9.]/g, "")))
             newErrors.budget = "Budget must be a valid number.";
-        if (
-            formData.startDate &&
-            formData.endDate &&
-            formData.startDate > formData.endDate
-        )
+        if (formData.startDate && formData.endDate && formData.startDate > formData.endDate)
             newErrors.date = "End date must be later than start date.";
 
         setErrors(newErrors);
@@ -88,8 +93,7 @@ function TripCreationForm() {
                 body: JSON.stringify(formData),
             });
 
-            if (!response.ok)
-                throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             alert("Trip created successfully!");
             const { generatedTripID } = await response.json();
@@ -105,24 +109,12 @@ function TripCreationForm() {
     };
 
     return (
-        <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            minHeight="100vh"
-        >
-            <Card
-                sx={{
-                    bgcolor: theme.palette.background.default,
-                    width: "90vw",
-                    p: 3,
-                    boxShadow: 5,
-                }}
-            >
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+            <Card sx={{ width: "90vw", p: 3, boxShadow: 5 }}>
                 <CardContent>
                     <Grid container spacing={3}>
-                        {/* Left Section */}
-                        <Grid item xs={12} md={6}>
+                        {/* Trip ID Section */}
+                        <Grid item xs={12}>
                             <TextField
                                 fullWidth
                                 label="Enter a Trip ID (Optional)"
@@ -131,8 +123,34 @@ function TripCreationForm() {
                                 value={tripID}
                                 onChange={(e) => setTripID(e.target.value)}
                                 InputLabelProps={{ shrink: true }}
+                                sx={{
+                                    mt: 2,
+                                    "& .MuiOutlinedInput-root": {
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                    },
+                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                }}
                             />
+                        </Grid>
 
+                        {/* Left Section */}
+                        <Grid item xs={12} md={6}>
                             <TextField
                                 fullWidth
                                 label="Trip Name"
@@ -143,7 +161,29 @@ function TripCreationForm() {
                                 error={!!errors.tripName}
                                 helperText={errors.tripName}
                                 required
-                                sx={{ mt: 2 }}
+                                sx={{
+                                    mt: 2,
+                                    "& .MuiOutlinedInput-root": {
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                    },
+                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                }}
                             />
 
                             <TextField
@@ -155,7 +195,29 @@ function TripCreationForm() {
                                 onChange={handleChange}
                                 multiline
                                 rows={3}
-                                sx={{ mt: 2 }}
+                                sx={{
+                                    mt: 2,
+                                    "& .MuiOutlinedInput-root": {
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                    },
+                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                }}
                             />
 
                             <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -171,17 +233,33 @@ function TripCreationForm() {
                                         error={!!errors.foreignCurrency}
                                         helperText={errors.foreignCurrency}
                                         required
+                                        sx={{
+                                            mt: 2,
+                                            "& .MuiOutlinedInput-root": {
+                                                "& .MuiOutlinedInput-notchedOutline": {
+                                                    borderColor: "white",
+                                                },
+                                            },
+                                            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                borderColor: "white",
+                                            },
+                                            "& .MuiInputLabel-root": {
+                                                color: "white",
+                                            },
+                                            "& .Mui-focused .MuiInputLabel-root": {
+                                                color: "white",
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                            "& .Mui-focused .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
                                     >
-                                        {Object.keys(exchangeRates).map(
-                                            (currency) => (
-                                                <MenuItem
-                                                    key={currency}
-                                                    value={currency}
-                                                >
-                                                    {currency}
-                                                </MenuItem>
-                                            )
-                                        )}
+                                        {Object.keys(exchangeRates).map((currency) => (
+                                            <MenuItem key={currency} value={currency}>{currency}</MenuItem>
+                                        ))}
                                     </TextField>
                                 </Grid>
 
@@ -197,17 +275,33 @@ function TripCreationForm() {
                                         error={!!errors.currency}
                                         helperText={errors.currency}
                                         required
+                                        sx={{
+                                            mt: 2,
+                                            "& .MuiOutlinedInput-root": {
+                                                "& .MuiOutlinedInput-notchedOutline": {
+                                                    borderColor: "white",
+                                                },
+                                            },
+                                            "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                borderColor: "white",
+                                            },
+                                            "& .MuiInputLabel-root": {
+                                                color: "white",
+                                            },
+                                            "& .Mui-focused .MuiInputLabel-root": {
+                                                color: "white",
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                            "& .Mui-focused .MuiInputBase-input": {
+                                                color: "white",
+                                            },
+                                        }}
                                     >
-                                        {Object.keys(exchangeRates).map(
-                                            (currency) => (
-                                                <MenuItem
-                                                    key={currency}
-                                                    value={currency}
-                                                >
-                                                    {currency}
-                                                </MenuItem>
-                                            )
-                                        )}
+                                        {Object.keys(exchangeRates).map((currency) => (
+                                            <MenuItem key={currency} value={currency}>{currency}</MenuItem>
+                                        ))}
                                     </TextField>
                                 </Grid>
                             </Grid>
@@ -222,6 +316,29 @@ function TripCreationForm() {
                                 name="cities"
                                 value={formData.cities}
                                 onChange={handleChange}
+                                sx={{
+                                    mt: 2,
+                                    "& .MuiOutlinedInput-root": {
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                    },
+                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                }}
                             />
 
                             <TextField
@@ -231,7 +348,29 @@ function TripCreationForm() {
                                 name="budget"
                                 value={formData.budget}
                                 onChange={handleChange}
-                                sx={{ mt: 2 }}
+                                sx={{
+                                    mt: 2,
+                                    "& .MuiOutlinedInput-root": {
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                    },
+                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                }}
                             />
 
                             <TextField
@@ -242,7 +381,29 @@ function TripCreationForm() {
                                 name="startDate"
                                 value={formData.startDate}
                                 onChange={handleChange}
-                                sx={{ mt: 2 }}
+                                sx={{
+                                    mt: 2,
+                                    "& .MuiOutlinedInput-root": {
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                    },
+                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                }}
                                 InputLabelProps={{ shrink: true }}
                             />
 
@@ -254,55 +415,57 @@ function TripCreationForm() {
                                 name="endDate"
                                 value={formData.endDate}
                                 onChange={handleChange}
-                                sx={{ mt: 2 }}
+                                sx={{
+                                    mt: 2,
+                                    "& .MuiOutlinedInput-root": {
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "white",
+                                        },
+                                    },
+                                    "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "white",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputLabel-root": {
+                                        color: "white",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                    "& .Mui-focused .MuiInputBase-input": {
+                                        color: "white",
+                                    },
+                                }}
                                 InputLabelProps={{ shrink: true }}
                             />
 
                             {/* Upload Image Section */}
                             <Box mt={3}>
-                                <Typography variant="body1">
-                                    Upload Trip Image
-                                </Typography>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleUploadImage}
-                                />
+                                <Typography variant="body1">Upload Trip Image</Typography>
+                                <input type="file" accept="image/*" onChange={handleUploadImage} ref={fileInputRef} />
                                 {formData.tripImage && (
                                     <Box mt={2}>
                                         <img
                                             src={formData.tripImage}
                                             alt="Trip Preview"
-                                            style={{
-                                                width: "100%",
-                                                maxHeight: "200px",
-                                                objectFit: "cover",
-                                                borderRadius: "8px",
-                                            }}
+                                            style={{ width: "100%", maxHeight: "200px", objectFit: "cover", borderRadius: "8px" }}
                                         />
+                                        <button onClick={handleDeleteImage}>
+                                            Delete Uploaded Image
+                                        </button>
                                     </Box>
                                 )}
                             </Box>
                         </Grid>
                     </Grid>
 
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="secondary"
-                        sx={{ mt: 3 }}
-                        onClick={handleSubmit}
-                    >
+                    <Button fullWidth variant="contained" color="secondary" sx={{ mt: 3 }} onClick={handleSubmit}>
                         Create Trip
                     </Button>
 
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="secondary"
-                        sx={{ mt: 2 }}
-                        href="/selecttrip"
-                    >
+                    <Button fullWidth variant="contained" color="secondary" sx={{ mt: 2 }} href="/selecttrip">
                         Select Existing Trips
                     </Button>
                 </CardContent>
