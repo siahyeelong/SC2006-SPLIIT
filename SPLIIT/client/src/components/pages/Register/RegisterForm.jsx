@@ -25,7 +25,7 @@ import {
     Lock,
 } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
-import { favColourChoices } from "./favColourChoices"
+import { favColourChoices } from "./favColourChoices";
 
 function RegisterForm() {
     const { login } = useContext(AuthContext);
@@ -140,7 +140,7 @@ function RegisterForm() {
             }}
         >
             {/* Input Fields */}
-            <Grid container spacing={3} direction={'column'}>
+            <Grid container spacing={3} direction={"column"}>
                 {/* Email */}
                 <Grid item xs={12} md={6}>
                     <FormControl
@@ -313,7 +313,7 @@ function RegisterForm() {
                     </FormControl>
                 </Grid>
 
-                <Divider >Personalised fields</Divider>
+                <Divider>Personalised fields</Divider>
 
                 {/* Display Name */}
                 <Grid item xs={12} md={6}>
@@ -386,16 +386,16 @@ function RegisterForm() {
             >
                 {favColourChoices.map((colour) => (
                     <ToggleButton
-                        key={colour}
-                        value={colour}
+                        key={colour.value}
+                        value={colour.value}
                         sx={{
-                            bgcolor: colour,
+                            bgcolor: colour.value,
                             width: 40,
                             height: 40,
                             margin: 0.5,
                             p: 1,
                             "&.Mui-selected, &:hover": {
-                                bgcolor: colour,
+                                bgcolor: colour.value,
                                 borderColor: "gray",
                                 borderWidth: 4,
                                 borderRadius: "10%",
