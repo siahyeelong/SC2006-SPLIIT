@@ -38,9 +38,9 @@ const ColourPicker = ({ profile, onColourChange }) => {
                         spacing={{ xs: 1, sm: 2 }}
                         justifyContent="center"
                     >
-                        {favColourChoices.map((color) => (
-                            <Grid2 key={color.value}>
-                                <Tooltip title={color.name}>
+                        {favColourChoices.map((colour) => (
+                            <Grid2 key={colour.value}>
+                                <Tooltip title={colour.name}>
                                     <Box
                                         sx={{
                                             width: {
@@ -54,16 +54,16 @@ const ColourPicker = ({ profile, onColourChange }) => {
                                                 lg: 56,
                                             },
                                             borderRadius: "50%",
-                                            bgcolor: color.value,
+                                            bgcolor: colour.value,
                                             cursor: "pointer",
                                             border:
                                                 profile.favColour ===
-                                                color.value
+                                                colour.value
                                                     ? "3px solid"
                                                     : "2px solid transparent",
                                             borderColor: (theme) =>
                                                 profile.favColour ===
-                                                color.value
+                                                colour.value
                                                     ? theme.palette.primary.main
                                                     : "transparent",
                                             transition: "all 0.2s",
@@ -75,10 +75,10 @@ const ColourPicker = ({ profile, onColourChange }) => {
                                             },
                                         }}
                                         onClick={() => {
-                                            onColourChange(color.value);
+                                            onColourChange(colour.value);
                                         }}
                                     >
-                                        {profile.favColour === color.value && (
+                                        {profile.favColour === colour.value && (
                                             <Check
                                                 sx={{
                                                     position: "absolute",
