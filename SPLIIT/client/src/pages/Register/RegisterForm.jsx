@@ -25,7 +25,11 @@ import {
     Lock,
 } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
+<<<<<<< HEAD:SPLIIT/client/src/pages/Register/RegisterForm.jsx
 import { favColourChoices } from "../../constants/favColourChoices";
+=======
+import { favColourChoices } from "./favColourChoices";
+>>>>>>> 992b72d (fix colour picker):SPLIIT/client/src/components/pages/Register/RegisterForm.jsx
 
 function RegisterForm() {
     const { login } = useContext(AuthContext);
@@ -386,7 +390,11 @@ function RegisterForm() {
             >
                 {favColourChoices.map((colour) => (
                     <ToggleButton
+<<<<<<< HEAD:SPLIIT/client/src/pages/Register/RegisterForm.jsx
                         key={colour.name}
+=======
+                        key={colour.value}
+>>>>>>> 992b72d (fix colour picker):SPLIIT/client/src/components/pages/Register/RegisterForm.jsx
                         value={colour.value}
                         sx={{
                             bgcolor: colour.value,
