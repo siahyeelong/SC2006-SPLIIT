@@ -18,7 +18,7 @@ const TripDetails = () => {
             <Box
                 sx={{
                     width: "100%",
-                    maxWidth: "1500px",
+                    maxWidth: "800px",
                     mx: "auto",
                     minHeight: "100vh",
                     bgcolor: "background.default",
