@@ -153,7 +153,7 @@ function LogTransactionForm({ onAdd }) {
         const fc = exchangeRates[trip.foreignCurrency];
 
         return lc > fc ?
-            `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${trip.foreignCurrency} 1}`
+            `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${trip.foreignCurrency} 1`
             :
             `${trip.localCurrency} 1 = ${trip.foreignCurrency} ${parseFloat(fc / lc).toFixed(2)}`
     }
