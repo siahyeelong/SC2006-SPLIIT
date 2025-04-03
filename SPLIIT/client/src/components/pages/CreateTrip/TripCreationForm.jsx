@@ -17,6 +17,8 @@ import { tokens } from "../../../theme";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import "./DayPickerStyles.css"; // Import custom styles
+import TripCreatedSuccess from "./TripCreatedSuccess";
+import { Trip } from "../../entities/Trip";
 
 function TripCreationForm() {
     const formResetState = {
@@ -32,15 +34,15 @@ function TripCreationForm() {
         users: [localStorage.getItem("user")],
     };
 
-    const [tripID, setTripID] = useState("");
     const { setSessionTrip } = useContext(AuthContext);
-    const [formData, setFormData] = useState({ tripImage: '' });
+    const [formData, setFormData] = useState(formResetState);
     const [errors, setErrors] = useState({});
     const { exchangeRates } = useExchangeRates();
     const navigate = useNavigate();
     const theme = useTheme();
     const colours = tokens(theme.palette.mode)
     const [dateRange, setDateRange] = useState({})
+    const [createdDialogOpen, setCreatedDialogOpen] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -150,15 +152,13 @@ function TripCreationForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validate()) return;
+        formData.budget = formData.budget.replace(/[^0-9.]/g, "");
 
         try {
-            const backendURL = process.env.REACT_APP_BACKEND_URL;
-            const response = await fetch(`${backendURL}/trips/createtrip`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
+            const newTrip = new Trip(formData);
+            const { generatedTripID } = await newTrip.createTrip();
 
+<<<<<<< HEAD
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
             alert("Trip created successfully!");
@@ -166,17 +166,22 @@ function TripCreationForm() {
             setTripID(generatedTripID);
             setSessionTrip(generatedTripID);
             navigate("/");
+=======
+            formData['tripID'] = generatedTripID;
+            setSessionTrip(formData); // create the trip object and set it as the current session's context
+
+            // Show trip creation success page and bring user back to home when they close the dialog
+            setCreatedDialogOpen(true);
+>>>>>>> da5f9b2 (fixed trip creation page and added success dialog)
         } catch (error) {
             console.error("Error creating trip:", error);
             alert("Something went wrong!");
-        } finally {
-            setFormData(formResetState);
         }
     };
 
     return (
-        <Box display="flex" flexDirection={'column'} justifyContent="center" alignItems="center" minHeight="100vh">
-            <Card sx={{ width: "90vw", p: 3, borderRadius: 5, boxShadow: 5, backgroundColor: theme.palette.background.default }}>
+        <Box display="flex" flexDirection={'column'} justifyContent="center" alignItems="center" minHeight="100vh" >
+            <Card sx={{ width: "70vw", p: 3, borderRadius: 5, boxShadow: 5, backgroundColor: theme.palette.background.default }}>
                 <CardContent>
                     <Grid container spacing={3}>
                         {/* Left Section */}
@@ -426,7 +431,7 @@ function TripCreationForm() {
                                     <img
                                         src={formData.tripImage}
                                         alt="Trip Image Preview"
-                                        style={{ width: "30%", objectFit: "cover", borderRadius: 20 }}
+                                        style={{ width: "50%", objectFit: "cover", borderRadius: 20 }}
                                     />
                                     <IconButton onClick={() => setFormData({ ...formData, tripImage: "" })} color="error" sx={{ borderRadius: 5, margin: 5 }}><DeleteIcon /></IconButton>
                                 </Box>
@@ -446,6 +451,7 @@ function TripCreationForm() {
                     Select Existing Trips
                 </Button>
             </Box>
+            <TripCreatedSuccess open={createdDialogOpen} handleClose={() => { setCreatedDialogOpen(false); navigate("/") }} trip={formData || undefined} />
         </Box >
     );
 }

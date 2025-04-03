@@ -396,6 +396,7 @@ function RegisterForm() {
                     <ToggleButton
 <<<<<<< HEAD:SPLIIT/client/src/pages/Register/RegisterForm.jsx
 <<<<<<< HEAD:SPLIIT/client/src/pages/Register/RegisterForm.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/Register/RegisterForm.jsx
                         key={colour.name}
 =======
                         key={colour.value}
@@ -403,6 +404,9 @@ function RegisterForm() {
 =======
                         key={colour.value}
 >>>>>>> b986875 (fix colour picker):SPLIIT/client/src/components/pages/Register/RegisterForm.jsx
+=======
+                        key={colour.name}
+>>>>>>> da5f9b2 (fixed trip creation page and added success dialog):SPLIIT/client/src/components/pages/Register/RegisterForm.jsx
                         value={colour.value}
                         sx={{
                             bgcolor: colour.value,
