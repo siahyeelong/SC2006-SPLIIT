@@ -8,7 +8,7 @@ import { useDashboardData } from "./useDashboardData";
 export const TransactionsContext = createContext([]);
 
 function Dashboard() {
-    const { transactions, debtMatrix_R, debtMatrix_S, error } =
+    const { transactions, debtMatrix_R, debtMatrix_S, people, error } =
         useDashboardData();
     const [dialogOpen, setDialogOpen] = useState(false);
     const theme = useTheme();
@@ -69,6 +69,7 @@ function Dashboard() {
                                 <Carousel
                                     debtMatrix_R={debtMatrix_R}
                                     debtMatrix_S={debtMatrix_S}
+                                    people={people}
                                 />
                             </Box>
                         )}

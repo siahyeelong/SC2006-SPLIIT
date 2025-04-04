@@ -29,14 +29,14 @@ function CarouselCard({ ower, matrix }) {
 
             // Filter transactions for this specific user
             const userTransactions = transactions.filter((transaction) =>
-                transaction.recipients.includes(ower.identifier)
+                transaction.recipients.includes(ower.username)
             );
 
             // create chart only if there is spending
             if (userTransactions.length > 0) {
                 chartInstanceRef.current = createSpendingChart(
                     chartRef.current,
-                    ower.identifier,
+                    ower.username,
                     userTransactions
                 );
             }
@@ -48,7 +48,7 @@ function CarouselCard({ ower, matrix }) {
                 chartInstanceRef.current = null;
             }
         };
-    }, [ower.identifier, transactions]);
+    }, [ower.username, transactions]);
 
     // Calculate spending per category and total spent
     const spentPerCategory = {};
@@ -57,9 +57,10 @@ function CarouselCard({ ower, matrix }) {
     });
 
     transactions.forEach((transaction) => {
-        if (transaction.recipients.includes(ower.identifier)) {
+        if (transaction.recipients.includes(ower.username)) {
+            const totalLocalAmt = transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate
             const amount =
-                parseFloat(transaction.SGD) / transaction.recipients.length;
+                parseFloat(totalLocalAmt) / transaction.recipients.length;
             totalSpent += amount;
             spentPerCategory[transaction.category] += amount;
         }
@@ -174,7 +175,7 @@ function CarouselCard({ ower, matrix }) {
                 open={showAnalyticsDialog}
                 onClose={() => setShowAnalyticsDialog(false)}
                 transactions={transactions}
-                userId={ower.identifier}
+                userId={ower.username}
             />
         </Card>
     );
