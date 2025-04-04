@@ -11,10 +11,12 @@ import { createSpendingChart } from "./DoughnutChartUtils";
 import DebtTable from "./DebtTable";
 import { SentimentNeutral } from "@mui/icons-material";
 import { formatPrice } from "../../utils/formatPrice";
+import { AuthContext } from "../../classes/AuthContext";
 
 function CarouselCard({ ower, matrix }) {
     const transactions = useContext(TransactionsContext);
     let totalSpent = 0;
+    const { trip } = useContext(AuthContext)
 
     const [showAnalyticsDialog, setShowAnalyticsDialog] = useState(false);
     const chartRef = useRef(null);
@@ -108,7 +110,7 @@ function CarouselCard({ ower, matrix }) {
                             Total Spent:
                         </Typography>
                         <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                            {formatPrice(totalSpent)}
+                            {formatPrice(totalSpent, trip.localCurrency)}
                         </Typography>
                     </Box>
 
