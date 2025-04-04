@@ -1,4 +1,5 @@
 import Chart from "chart.js/auto";
+import { formatPrice } from "../../utils/formatPrice";
 
 export const CATEGORY_COLORS = {
     Food: "hsl(38, 85%, 55%)",
@@ -23,10 +24,7 @@ const CHART_CONFIG = {
                         let label = context.label || "";
                         if (label) label += ": ";
                         if (context.parsed !== null) {
-                            label += new Intl.NumberFormat("en-SG", {
-                                style: "currency",
-                                currency: "SGD",
-                            }).format(context.parsed);
+                            label += formatPrice(context.parsed);
                         }
                         return label;
                     },

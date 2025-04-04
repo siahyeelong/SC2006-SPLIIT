@@ -81,6 +81,7 @@ function Dashboard() {
                 open={dialogOpen}
                 onClose={() => setDialogOpen(false)}
                 transactions={debtMatrix_S} // Pass simplified debt matrix
+                people={people}
             />
         </>
     );

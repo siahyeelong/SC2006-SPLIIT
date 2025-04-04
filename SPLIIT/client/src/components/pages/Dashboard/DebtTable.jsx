@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Box,
     Divider,
@@ -8,13 +8,18 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
-import { People } from "../../classes/People";
+import { useDashboardData } from "./useDashboardData";
+import { AuthContext } from "../../classes/AuthContext";
 
 function DebtTable({ matrix, ower, formatPrice }) {
+    const { people } = useDashboardData()
+    const { trip } = useContext(AuthContext)
+
     // Only show the table if there is any debt to display
-    if (!matrix || !Object.values(matrix).some((amount) => amount > 0)) {
+    if (!matrix || !Object.values(matrix).some((amount) => amount > 0.01)) {
         return null;
     }
+
 
     return (
         <Box>
@@ -38,14 +43,14 @@ function DebtTable({ matrix, ower, formatPrice }) {
                             .filter(
                                 ([owedKey, amount]) =>
                                     amount > 0 &&
-                                    People[owedKey] &&
-                                    owedKey !== ower.identifier
+                                    people[owedKey] &&
+                                    owedKey !== ower.username
                             )
                             .map(([owedKey, amount]) => {
-                                const owedPerson = People[owedKey];
+                                const owedPerson = people[owedKey];
                                 return (
                                     <TableRow
-                                        key={`${ower.identifier}-${owedKey}`}
+                                        key={`${ower.username}-${owedKey}`}
                                         sx={{ maxHeight: "10px" }}
                                     >
                                         <TableCell
@@ -69,10 +74,10 @@ function DebtTable({ matrix, ower, formatPrice }) {
                                                 fontWeight: "bold",
                                             }}
                                         >
-                                            {formatPrice(amount)}
+                                            {formatPrice(amount, trip.localCurrency)}
                                         </TableCell>
                                     </TableRow>
-                                );
+                                )
                             })}
                     </TableBody>
                 </Table>
