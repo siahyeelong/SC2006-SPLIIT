@@ -35,7 +35,7 @@ const TripDateBudget = ({ trip }) => {
                                 From:
                             </Typography>
                             <Typography variant="h6">
-                                {trip.dates[0]}
+                                {trip.startDate}
                             </Typography>
                         </Box>
                         <Box>
@@ -43,7 +43,7 @@ const TripDateBudget = ({ trip }) => {
                                 To:
                             </Typography>
                             <Typography variant="h6">
-                                {trip.dates[1]}
+                                {trip.endDate}
                             </Typography>
                         </Box>
                     </Stack>
@@ -91,7 +91,12 @@ const TripDateBudget = ({ trip }) => {
                         <Typography variant="body2" color="textSecondary">
                             Trip Budget
                         </Typography>
-                        <Typography variant="h6">{`${trip.localCurrency} $${trip.budget} / person`}</Typography>
+                        <Typography variant="h6">{`${trip.localCurrency} 
+                        ${parseFloat(trip.budget).toLocaleString("en-SG", {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                        })} 
+                        / person`}</Typography>
                     </Box>
                 </Box>
             </Stack>

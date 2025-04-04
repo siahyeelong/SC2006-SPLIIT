@@ -1,79 +1,41 @@
-import { React, useState, useEffect } from "react";
+import React from "react";
 import { Box, useTheme, Typography } from "@mui/material";
 import { tokens } from "../../../theme";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CarouselCard from "./CarouselCard";
-import { People } from "../../classes/People";
 
-function Carousel() {
+function Carousel({ debtMatrix_R, debtMatrix_S, people }) {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
 
-    const [debtMatrix_R, setDebtMatrix_R] = useState([]);
-    const [debtMatrix_S, setDebtMatrix_S] = useState([]);
-    const [error, setError] = useState(null);
-
-    function fetchMatrices() {
-        const backendURL = process.env.REACT_APP_BACKEND_URL;
-        fetch(`${backendURL}/transactions/owe`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setDebtMatrix_R(data[1] || []);
-                setDebtMatrix_S(data[2] || []);
-            })
-            .catch((error) => {
-                setError(
-                    "Failed to fetch transactions. Please try again later."
-                );
-                console.error("Error fetching data:", error);
-            });
-    }
-
-    useEffect(() => fetchMatrices(), []);
-
-    const slider_settings = {
-        dots: true,
-        infinite: true,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        vertical: true,
-        verticalSwiping: true,
-        adaptiveHeight: false,
-    };
-
-    if (error) {
+    if (!debtMatrix_R || !debtMatrix_S) {
         return (
             <Typography color="error" variant="h6">
-                {error}
+                Unable to load debt data.
             </Typography>
         );
     }
 
     return (
-        <>
-            {/* You can replace the static Box with a Slider if desired */}
-            <Box
-                className="carousel"
-                display="flex"
-                flexWrap="wrap"
-                justifyContent="center"
-                sx={{ width: "100%", maxWidth: "1500px" }}
-            >
-                {Object.keys(People).map((person) => (
+        <Box
+            className="carousel"
+            display="flex"
+            flexWrap="wrap"
+            justifyContent="center"
+            sx={{ width: "100%", maxWidth: "1500px" }}
+        >
+            {Object.keys(people).map((key) => {
+                const personData = people[key]; // Get the person object
+                return (
                     <CarouselCard
-                        key={person}
-                        ower={People[person]}
-                        matrix={debtMatrix_R[person]}
+                        key={personData.username}
+                        ower={personData}
+                        matrix={debtMatrix_R[personData.username]}
                     />
-                ))}
-            </Box>
-        </>
+                );
+            })}
+        </Box>
     );
 }
 

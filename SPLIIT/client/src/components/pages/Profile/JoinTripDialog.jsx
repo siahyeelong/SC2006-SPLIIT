@@ -10,11 +10,14 @@ import {
     useTheme,
     useMediaQuery,
 } from "@mui/material";
+import { tokens } from "../../../theme";
 
 const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
     const theme = useTheme();
+    const colours = tokens(theme.palette.mode)
     const isMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
     const inputRef = useRef(null);
+
 
     useEffect(() => {
         if (open) {
@@ -42,6 +45,11 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
             maxWidth="sm"
             fullWidth
             disableRestoreFocus
+            sx={{
+                '& .MuiPaper-root': {
+                    background: colours.grey[600]
+                },
+            }}
         >
             <DialogTitle
                 sx={{
@@ -100,6 +108,7 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
                 <Button
                     onClick={onClose}
                     color="error"
+                    variant="outlined"
                     sx={{
                         width: { sm: "auto", xs: "100%" },
                         px: 4,
@@ -110,8 +119,9 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
                 </Button>
                 <Button
                     variant="contained"
-                    onClick={onJoin}
+                    onClick={() => onJoin(tripId)}
                     disabled={!tripId?.trim()} // disable if empty or whitespace
+                    color="secondary"
                     sx={{
                         width: { sm: "auto", xs: "100%" },
                         px: 4,

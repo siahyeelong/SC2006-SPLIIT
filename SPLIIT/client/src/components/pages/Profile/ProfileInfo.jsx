@@ -23,7 +23,6 @@ const ProfileInfo = ({
 
     return (
         <Card
-            // variant="outlined"
             sx={{
                 bgcolor: theme.palette.background.default,
                 width: "100%",
@@ -39,7 +38,7 @@ const ProfileInfo = ({
                 >
                     <Avatar
                         sx={{
-                            bgcolor: profile.favoriteColor,
+                            bgcolor: profile.favColour,
                             width: { xs: 80, sm: 100 },
                             height: { xs: 80, sm: 100 },
                             fontSize: { xs: "2rem", sm: "2.5rem" },
@@ -80,7 +79,7 @@ const ProfileInfo = ({
                                             if (
                                                 e.relatedTarget &&
                                                 e.relatedTarget ===
-                                                    "save-button"
+                                                "save-button"
                                             )
                                                 return;
 
@@ -117,7 +116,7 @@ const ProfileInfo = ({
                             color="text.secondary"
                             textAlign="left"
                         >
-                            {`✈️ Travel Enthusiast\u00A0\u00A0•\u00A0\u00A0${profile.trips.length} Trips`}
+                            {`✈️ Travel Enthusiast\u00A0\u00A0•\u00A0\u00A0${profile.trips.length} ${profile.trips.length === 1 ? "Trip" : "Trips"}`}
                         </Typography>
                     </Stack>
                 </Stack>

@@ -8,12 +8,14 @@ import { get_rates } from "./exchange_rates/get_rates.js";
 // We use it to define our routes.
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const router = express.Router();
+let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
+let users_collection = await db.collection(process.env.USERS_COLLECTION);
+let trips_collection = await db.collection(process.env.TRIPS_COLLECTION);
 
 // This section will help you get a list of all the records.
-router.get("/", async (req, res) => {
+router.get("/tripTransactions/:tripID", async (req, res) => {
     try {
-        let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
-        let results = await collection.find({}).toArray();
+        let results = await collection.find({ tripID: req.params.tripID }).toArray();
         res.send(results).status(200);
     } catch (error) {
         console.log(`get error:\n${error}`.red);
@@ -21,11 +23,34 @@ router.get("/", async (req, res) => {
 });
 
 
-router.get("/owe", async (req, res) => {
+router.get("/owe/:tripID", async (req, res) => {
     try {
-        let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
-        let transactions = await collection.find({}).toArray();
-        let debts = settle_debt(transactions);
+        const tripID = req.params.tripID;
+        // get all transactions relating to the trip
+        let transactions = await collection.find({ tripID: tripID }).toArray();
+        // get all users of the trip
+        const tripInfo = await trips_collection.findOne({ tripID: tripID });
+        // get all user's information 
+        const usernames = tripInfo?.users;
+        // Find all information about the user
+        let people = await Promise.all(
+            usernames?.map(async (username) => {
+                let person = await users_collection.findOne({ username: username });
+                // remove sensitive information
+                delete person.password;
+                delete person._id;
+                delete person.email;
+                delete person.trips
+                return person;
+            })
+        );
+        function mapPeopleByUsername(people) {
+            return people.reduce((acc, person) => {
+                acc[person.username] = person;
+                return acc;
+            }, {});
+        };
+        let debts = settle_debt(transactions, mapPeopleByUsername(people));
         res.status(200).send(debts);
     } catch (error) {
         console.log(`get error:\n${error}`.red);
@@ -46,7 +71,7 @@ router.get("/rates", async (req, res) => {
 // This section will help you get a single record by id
 router.get("/:id", async (req, res) => {
     try {
-        let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
+
         let query = { _id: new ObjectId(req.params.id) };
         let result = await collection.findOne(query);
 
@@ -68,27 +93,6 @@ router.get("/:id", async (req, res) => {
     "payer": "person",
 }
  */
-router.post("/", async (req, res) => {
-    // deprecated version
-    try {
-        let newRecord = {
-            recipients: req.body.recipients,
-            category: req.body.category,
-            price: req.body.price,
-            currency: req.body.currency,
-            SGD: (req.body.currency === 'SGD') ? (req.body.price) : (req.body.price / 11877.96).toFixed(2), // TODO: make a function to get the live rates or the average rates or something
-            description: req.body.description,
-            payer: req.body.payer,
-            timestamp: new Date(),
-        };
-        let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
-        let result = await collection.insertOne(newRecord);
-        res.send(result).status(204);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error adding record");
-    }
-});
 router.post("/newtransaction", async (req, res) => {
     // TODO
     // active version
@@ -106,7 +110,7 @@ router.post("/newtransaction", async (req, res) => {
             tripID: req.body.tripID,
             geolocation: req.body.geolocation,
         };
-        let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
+
         let result = await collection.insertOne(newRecord);
         res.send(result).status(204);
     } catch (err) {
@@ -130,7 +134,7 @@ router.patch("/:id", async (req, res) => {
             },
         };
 
-        let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
+
         let result = await collection.updateOne(query, updates);
         res.status(200).send(result);
     } catch (err) {

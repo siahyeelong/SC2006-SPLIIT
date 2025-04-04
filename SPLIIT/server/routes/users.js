@@ -2,10 +2,11 @@ import express from "express";
 import db from "../db/connection.js";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
+import { ObjectId } from "mongodb";
 
 const router = express.Router();
-const USERS_COLLECTION = process.env.USERS_COLLECTION;
-const collection = await db.collection(USERS_COLLECTION);
+const collection = db.collection(process.env.USERS_COLLECTION);
+const trips_collection = db.collection(process.env.TRIPS_COLLECTION);
 
 const generateAccessToken = (user) =>
     jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "12m" });
@@ -50,7 +51,9 @@ router.post("/login", async (req, res) => {
         maxAge: 34 * 24 * 60 * 60 * 1000,
     });
 
-    res.json({ accessToken, user: username });
+    user.password = ""
+
+    res.json({ accessToken, user: user });
 });
 
 import { OAuth2Client } from 'google-auth-library';
@@ -69,8 +72,7 @@ router.post('/googlelogin', async (req, res) => {
         const { email, name, picture, sub: googleId } = payload;
 
         // Check if user exists in database
-        const usersCollection = await db.collection(process.env.USERS_COLLECTION);
-        let user = await usersCollection.findOne({ email });
+        let user = await collection.findOne({ email });
 
         if (!user) {
             // Create new user
@@ -124,7 +126,6 @@ router.get("/refresh", async (req, res) => {
             }
 
             const { username } = decoded;
-            const collection = await db.collection(USERS_COLLECTION);
             const user = await collection.findOne({ username });
 
             if (!user) {
@@ -134,7 +135,8 @@ router.get("/refresh", async (req, res) => {
             // Generate a new access token
             const accessToken = generateAccessToken({ username });
 
-            res.json({ accessToken, user: username });
+            user.password = ""
+            res.json({ accessToken, user: user });
         });
     } catch (error) {
         console.error("Error in /refresh:", error);
@@ -142,7 +144,65 @@ router.get("/refresh", async (req, res) => {
     }
 });
 
+router.get("/userinfo/:username", async (req, res) => {
+    try {
+        let query = { username: req.params.username };
+        let result = await collection.findOne(query);
+        delete result.password
+        delete result._id
+        delete result.email
+        if (!result) res.send("Not found").status(404);
+        else res.send(result).status(200);
+    } catch (error) {
+        console.log(`get id error:\n${error}`.red);
+        res.send("Not found").status(404);
+    }
+});
 
+router.get("/getParticipants/:tripID", async (req, res) => {
+    try {
+        let tripID = req.params.tripID;
+
+        // Find all users that are in the trip
+        const tripInfo = await trips_collection.findOne({ tripID: tripID });
+        const usernames = tripInfo?.users;
+        // Find all information about the user
+        let results = await Promise.all(
+            usernames?.map(async (username) => {
+                let person = await collection.findOne({ username: username });
+                // remove sensitive information
+                delete person.password;
+                delete person._id;
+                delete person.email;
+                return person;
+            })
+        );
+
+        res.status(200).send(results);
+    } catch (error) {
+        console.error(`Error fetching usernames:\n${error}`);
+        res.status(500).send("Error retrieving participants");
+    }
+});
+
+router.patch("/edituser/:username", async (req, res) => {
+    try {
+        const updateField = req.body.updateField;
+        if (updateField === "password" || updateField === "username")
+            throw new Error("SOMEONE TRYNA CHANGE SENSITIVE USER PARAMS!!")
+        const query = { username: req.params.username };
+        const updates = {
+            $set: {
+                [req.body.updateField]: req.body.value
+            },
+        };
+
+        let result = await collection.updateOne(query, updates);
+    } catch (err) {
+        console.error(err.red);
+        res.status(500).send("Error updating record");
+    }
+})
 
 router.post("/logout", (req, res) => {
     res.clearCookie("refreshToken");
@@ -151,7 +211,7 @@ router.post("/logout", (req, res) => {
 
 // Test API
 router.get("/test", async (req, res) => {
-    res.status(200).send("Hello from the users API");
+    res.send("Hello from the users API").status(200)
 });
 
 export default router;

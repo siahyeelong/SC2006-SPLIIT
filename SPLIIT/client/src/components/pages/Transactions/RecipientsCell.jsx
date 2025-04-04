@@ -1,8 +1,7 @@
 import React from 'react';
 import { Chip, Box } from '@mui/material';
-import { People } from '../../classes/People';
 
-export default function RecipientsCell({ recipients }) {
+export default function RecipientsCell({ recipients, people }) {
     if (!recipients.length) return <></>;
 
     const sortedRecipients = [...recipients].sort((a, b) => a.length - b.length);
@@ -12,18 +11,17 @@ export default function RecipientsCell({ recipients }) {
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center' }}>
             {displayedRecipients.map((recipient) => (
-                <Chip
-                    key={recipient}
-                    label={People[recipient].displayName}
+                < Chip
+                    key={people[recipient]?.username}
+                    label={people[recipient]?.displayName}
                     sx={{
                         padding: '1px 1px',
                         borderRadius: '20px',
-                        backgroundColor: People[recipient].favColour || '#CCCCCC',
+                        backgroundColor: people[recipient]?.favColour || '#CCCCCC',
                         color: '#000',
                         fontWeight: 'bold',
                     }}
-                >
-                </Chip>
+                />
             ))}
             {hiddenCount > 0 && <Box sx={{ fontWeight: 'bold', color: '#888' }}>+ {hiddenCount} more</Box>}
         </Box>

@@ -1,146 +1,313 @@
-import { Dialog, DialogActions, DialogContent, Box, Typography, Button, Chip } from '@mui/material'
-import React from 'react'
-import { Categories } from '../../classes/Categories';
-import { useExchangeRates } from '../../classes/ExchangeRates';
-import { People } from '../../classes/People';
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    Box,
+    Typography,
+    Button,
+    Chip,
+} from "@mui/material";
+import React, { useContext, useState } from "react";
+import { Categories } from "../../classes/Categories";
+import { useExchangeRates } from "../../classes/ExchangeRates";
+import DeleteTransactionConfirmationDialog from "./DelTransactionConfirmDialog";
+import SnackbarNotifs from "../TripInfo/SnackbarNotifs";
+import { AuthContext } from "../../classes/AuthContext";
+import MapPreview from "./MapPreview";
 
-function TransactionCard({ transaction }) {
+function TransactionCard({ transaction, people }) {
     const { exchangeRates } = useExchangeRates();
+    const { trip } = useContext(AuthContext)
 
-    const price = parseFloat(transaction.price).toLocaleString('en-SG', {
-        style: 'currency', currency: (transaction.currency === 'SGD') ? 'SGD' : (transaction.currency || 'SGD'),
-        minimumFractionDigits: 0,  // Show no decimal places if not needed
-        maximumFractionDigits: 2
-    })
+    const price = parseFloat(transaction.price).toLocaleString("en-SG", {
+        style: "currency",
+        currency: transaction.isLocalCurrency ? trip.localCurrency : trip.foreignCurrency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+    });
+
+    if (!people) return <></>
 
     return (
         <>
-            <Box display={'flex'} justifyContent={'space-between'} alignContent={'center'}>
-                <Box display={'flex'} alignItems={'center'}>
-                    <Box p={'10px'}>
+            <Box
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignContent={"center"}
+            >
+                <Box display={"flex"} alignItems={"center"}>
+                    <Box p={"10px"}>
                         {/* Display category icon in the same line */}
                         {Categories[transaction.category].icon}
                     </Box>
-                    <Box p={'10px'}>
+                    <Box p={"10px"}>
                         {/* Display price large */}
-                        <Typography variant='h1'>{price}</Typography>
+                        <Typography variant="h1">{price}</Typography>
                     </Box>
                 </Box>
-                <Box textAlign={'center'} p={'10px'}>
-                    <Typography variant="h6" sx={{ display: 'block' }} p={'5px'}>
+                <Box textAlign={"center"} p={"10px"}>
+                    <Typography
+                        variant="h6"
+                        sx={{ display: "block" }}
+                        p={"5px"}
+                    >
                         Paid by:
                     </Typography>
                     {/* display payer */}
                     <Chip
                         key={transaction.payer}
-                        label={People[transaction.payer].displayName}
+                        label={people[transaction.payer]?.displayName}
                         sx={{
-                            backgroundColor: People[transaction.payer].favColour || '#CCCCCC',
-                            color: '#000',
-                            fontWeight: 'bold',
-                        }} />
+                            backgroundColor:
+                                people[transaction.payer]?.favColour ||
+                                "#CCCCCC",
+                            color: "#000",
+                            fontWeight: "bold",
+                        }}
+                    />
                 </Box>
-            </Box >
+            </Box>
 
             {/* Display Category in text */}
-            < Box display={'flex'} alignContent={'center'} >
-                <Box display={'flex'} justifyContent={'flex-end'} alignContent={'center'} p={'10px'} width={'110px'}>
-                    <Typography fontWeight={'bold'}>Category: </Typography>
+            <Box display={"flex"} alignContent={"center"}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-end"}
+                    alignContent={"center"}
+                    p={"10px"}
+                    width={"110px"}
+                >
+                    <Typography fontWeight={"bold"}>Category: </Typography>
                 </Box>
-                <Box display={'flex'} justifyContent={'flex-start'} alignContent={'center'} p={'10px'}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-start"}
+                    alignContent={"center"}
+                    p={"10px"}
+                >
                     <Typography>{transaction.category}</Typography>
                 </Box>
-            </Box >
+            </Box>
             {/* Display Description */}
-            < Box display={'flex'} alignContent={'center'} >
-                <Box display={'flex'} justifyContent={'flex-end'} alignContent={'center'} p={'10px'} width={'110px'}>
-                    <Typography fontWeight={'bold'}>Description: </Typography>
+            <Box display={"flex"} alignContent={"center"}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-end"}
+                    alignContent={"center"}
+                    p={"10px"}
+                    width={"110px"}
+                >
+                    <Typography fontWeight={"bold"}>Description: </Typography>
                 </Box>
-                <Box display={'flex'} justifyContent={'flex-start'} alignContent={'center'} p={'10px'}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-start"}
+                    alignContent={"center"}
+                    p={"10px"}
+                >
                     <Typography>{transaction.description}</Typography>
                 </Box>
-            </Box >
+            </Box>
             {/* Display amount in SGD if not in original currency */}
-            < Box display={'flex'} alignContent={'center'} visibility={transaction.currency === 'SGD' ? 'hidden' : 'visible'} >
-                <Box display={'flex'} justifyContent={'flex-end'} alignContent={'center'} p={'10px'} width={'110px'}>
-                    <Typography fontWeight={'bold'}>Price (SGD): </Typography>
+            <Box
+                display={"flex"}
+                alignContent={"center"}
+                visibility={
+                    transaction.isLocalCurrency ? "hidden" : "visible"
+                }
+            >
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-end"}
+                    alignContent={"center"}
+                    p={"10px"}
+                    width={"110px"}
+                >
+                    <Typography fontWeight={"bold"}>Price ({trip.localCurrency}): </Typography>
                 </Box>
-                <Box display={'flex'} justifyContent={'flex-start'} alignContent={'center'} p={'10px'}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-start"}
+                    alignContent={"center"}
+                    p={"10px"}
+                >
                     <Typography>
-                        {parseFloat(transaction.SGD).toLocaleString('en-SG', {
-                            style: 'currency', currency: 'SGD',
-                            minimumFractionDigits: 0,  // Show no decimal places if not needed
-                            maximumFractionDigits: 2
+                        {parseFloat(transaction.price / transaction.exchangeRate).toLocaleString("en-SG", {
+                            style: "currency",
+                            currency: trip.localCurrency,
+                            minimumFractionDigits: 0, // Show no decimal places if not needed
+                            maximumFractionDigits: 2,
                         })}
                     </Typography>
                 </Box>
-            </Box >
+            </Box>
             {/* Display exchange rate */}
-            < Box display={'flex'} alignContent={'center'} visibility={transaction.currency === 'SGD' ? 'hidden' : 'visible'} >
-                <Box display={'flex'} justifyContent={'flex-end'} alignContent={'center'} p={'10px'} width={'110px'}>
-                    <Typography fontWeight={'bold'}>Exchange rate: </Typography>
+            <Box
+                display={"flex"}
+                alignContent={"center"}
+                visibility={
+                    transaction.isLocalCurrency ? "hidden" : "visible"
+                }
+            >
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-end"}
+                    alignContent={"center"}
+                    p={"10px"}
+                    width={"110px"}
+                >
+                    <Typography fontWeight={"bold"}>Exchange rate: </Typography>
                 </Box>
-                <Box display={'flex'} justifyContent={'flex-start'} alignContent={'center'} p={'10px'}>
-                    <Typography>{exchangeRates['IDR']}</Typography>
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-start"}
+                    alignContent={"center"}
+                    p={"10px"}
+                >
+                    <Typography>{trip.localCurrency} 1 = {trip.foreignCurrency} {parseFloat(transaction.exchangeRate).toFixed(2)}</Typography>
                 </Box>
-            </Box >
+            </Box>
             {/* Display recipients */}
-            < Box display={'flex'} alignContent={'center'} width={400}>
-                <Box display={'flex'} justifyContent={'flex-end'} alignContent={'center'} p={'10px'} width={'110px'}>
-                    <Typography fontWeight={'bold'}>Recipients: </Typography>
+            <Box display={"flex"} alignContent={"center"} width={400}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-end"}
+                    alignContent={"center"}
+                    p={"10px"}
+                    width={"110px"}
+                >
+                    <Typography fontWeight={"bold"}>Recipients: </Typography>
                 </Box>
-                <Box display={'flex'} justifyContent={'flex-start'} alignContent={'center'} p={'10px'} flexWrap={'wrap'} gap={1}>
+                <Box
+                    display={"flex"}
+                    justifyContent={"flex-start"}
+                    alignContent={"center"}
+                    p={"10px"}
+                    flexWrap={"wrap"}
+                    gap={1}
+                >
                     {transaction.recipients.map((recipient) => (
                         <Chip
                             key={recipient}
-                            label={People[recipient].displayName}
+                            label={people[recipient]?.displayName}
                             sx={{
-                                backgroundColor: People[recipient].favColour || '#CCCCCC',
-                                color: '#000',
-                                fontWeight: 'bold',
+                                backgroundColor:
+                                    people[recipient]?.favColour || "#CCCCCC",
+                                color: "#000",
+                                fontWeight: "bold",
                             }}
                         />
                     ))}
                 </Box>
-            </Box >
+            </Box>
+            {/* Display location */}
+            <Box display={'flex'} justifyContent={'center'} m={2}>
+                {transaction.geolocation && <MapPreview lat={transaction.geolocation.lat} lng={transaction.geolocation.long} />}
+            </Box>
 
             {/* Display timestamp as a grey footer */}
         </>
-    )
+    );
 }
 
-function PerTransactionDialog({ showDialog, transaction, onClose }) {
+function PerTransactionDialog({ showDialog, transaction, people, onClose }) {
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [snackbarState, setSnackbarState] = useState({
+        open: false,
+        message: "",
+        severity: "",
+        key: 0,
+    });
+
+    const showSnackbar = (message, severity) => {
+        setSnackbarState((s) => ({
+            open: true,
+            message,
+            severity,
+            key: s.key + 1,
+        }));
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbarState((s) => ({ ...s, open: false }));
+    };
+
+    const handleConfirmDelete = () => {
+        deleteTransaction(transaction).then(onClose);
+        setDialogOpen(false);
+        showSnackbar("Transaction Deleted", "info");
+    };
+
     async function deleteTransaction(transaction) {
         try {
             let response = "";
             const backendURL = process.env.REACT_APP_BACKEND_URL;
 
-            response = await fetch(`${backendURL}/transactions/${transaction._id}`, { method: "DELETE" });
+            response = await fetch(
+                `${backendURL}/transactions/${transaction._id}`,
+                { method: "DELETE" }
+            );
 
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok)
+                throw new Error(`HTTP error! status: ${response.status}`);
 
-            console.log('Transaction deleted successfully!');
-
+            console.log("Transaction deleted successfully!");
         } catch (error) {
-            console.error("something went wrong with updating a record: ", error);
+            console.error(
+                "something went wrong with updating a record: ",
+                error
+            );
             alert("Something went wrong!");
         }
-
     }
 
     return (
-        <Dialog open={showDialog} onClose={onClose} fullWidth={false} maxWidth={false}>
-            <DialogContent><TransactionCard transaction={transaction} /></DialogContent>
-            <DialogActions>
-                <Button variant='outlined' color='error' onClick={() => { deleteTransaction(transaction).then(onClose); }}>
-                    DELETE
-                </Button>
-                <Button variant='contained' color='secondary' onClick={onClose}>
-                    CLOSE
-                </Button>
-            </DialogActions>
-        </Dialog>
+        <>
+            <Dialog
+                open={showDialog}
+                onClose={onClose}
+                fullWidth={false}
+                maxWidth={false}
+            >
+                <DialogContent>
+                    <TransactionCard transaction={transaction} people={people} />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        variant="outlined"
+                        color="error"
+                        // onClick={() => {
+                        //     deleteTransaction(transaction).then(onClose);
+                        // }}
+                        onClick={() => setDialogOpen(true)}
+                    >
+                        DELETE
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={onClose}
+                    >
+                        CLOSE
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <DeleteTransactionConfirmationDialog
+                open={dialogOpen}
+                onClose={() => setDialogOpen(false)}
+                onConfirm={handleConfirmDelete}
+                transaction={transaction}
+            />
+
+            <SnackbarNotifs
+                open={snackbarState.open}
+                message={snackbarState.message}
+                onClose={handleCloseSnackbar}
+                severity={snackbarState.severity}
+            />
+        </>
     );
 }
 
-export default PerTransactionDialog
+export default PerTransactionDialog;
