@@ -13,10 +13,14 @@ export const TransactionsContext = createContext([]);
 
 function Dashboard() {
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
     const { transactions, debtMatrix_R, debtMatrix_S, people, error } =
 =======
     const { transactions, debtMatrix_R, debtMatrix_S, error } =
 >>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/index.jsx
+=======
+    const { transactions, debtMatrix_R, debtMatrix_S, people, error } =
+>>>>>>> ef56cb7 (fixed dashboard page):SPLIIT/client/src/components/pages/Dashboard/index.jsx
         useDashboardData();
     const [dialogOpen, setDialogOpen] = useState(false);
     const theme = useTheme();
@@ -78,9 +82,13 @@ function Dashboard() {
                                     debtMatrix_R={debtMatrix_R}
                                     debtMatrix_S={debtMatrix_S}
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
                                     people={people}
 =======
 >>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/index.jsx
+=======
+                                    people={people}
+>>>>>>> ef56cb7 (fixed dashboard page):SPLIIT/client/src/components/pages/Dashboard/index.jsx
                                 />
                             </Box>
                         )}

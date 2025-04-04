@@ -10,10 +10,15 @@ import { get_rates } from "./exchange_rates/get_rates.js";
 const router = express.Router();
 let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
 <<<<<<< HEAD
+<<<<<<< HEAD
 let users_collection = await db.collection(process.env.USERS_COLLECTION);
 let trips_collection = await db.collection(process.env.TRIPS_COLLECTION);
 =======
 >>>>>>> 634cedd (fixed transactions table and added geographical map)
+=======
+let users_collection = await db.collection(process.env.USERS_COLLECTION);
+let trips_collection = await db.collection(process.env.TRIPS_COLLECTION);
+>>>>>>> ef56cb7 (fixed dashboard page)
 
 // This section will help you get a list of all the records.
 router.get("/tripTransactions/:tripID", async (req, res) => {
@@ -29,6 +34,9 @@ router.get("/tripTransactions/:tripID", async (req, res) => {
 router.get("/owe/:tripID", async (req, res) => {
     try {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ef56cb7 (fixed dashboard page)
         const tripID = req.params.tripID;
         // get all transactions relating to the trip
         let transactions = await collection.find({ tripID: tripID }).toArray();
@@ -55,11 +63,14 @@ router.get("/owe/:tripID", async (req, res) => {
             }, {});
         };
         let debts = settle_debt(transactions, mapPeopleByUsername(people));
+<<<<<<< HEAD
 =======
 
         let transactions = await collection.find({}).toArray();
         let debts = settle_debt(transactions);
 >>>>>>> 634cedd (fixed transactions table and added geographical map)
+=======
+>>>>>>> ef56cb7 (fixed dashboard page)
         res.status(200).send(debts);
     } catch (error) {
         console.log(`get error:\n${error}`.red);

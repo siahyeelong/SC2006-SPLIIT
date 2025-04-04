@@ -63,9 +63,13 @@ function CarouselCard({ ower, matrix }) {
 
     transactions.forEach((transaction) => {
         if (transaction.recipients.includes(ower.username)) {
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
             const totalLocalAmt = transaction.isLocalCurrency
                 ? transaction.price
                 : transaction.price / transaction.exchangeRate;
+=======
+            const totalLocalAmt = transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate
+>>>>>>> ef56cb7 (fixed dashboard page):SPLIIT/client/src/components/pages/Dashboard/CarouselCard.jsx
             const amount =
                 parseFloat(totalLocalAmt) / transaction.recipients.length;
             totalSpent += amount;

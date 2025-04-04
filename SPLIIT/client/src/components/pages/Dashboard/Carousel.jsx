@@ -4,9 +4,8 @@ import { tokens } from "../../../theme";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CarouselCard from "./CarouselCard";
-import { People } from "../../classes/People";
 
-function Carousel({ debtMatrix_R, debtMatrix_S }) {
+function Carousel({ debtMatrix_R, debtMatrix_S, people }) {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
 
@@ -26,13 +25,13 @@ function Carousel({ debtMatrix_R, debtMatrix_S }) {
             justifyContent="center"
             sx={{ width: "100%", maxWidth: "1500px" }}
         >
-            {Object.keys(People).map((key) => {
-                const personData = People[key]; // Get the person object
+            {Object.keys(people).map((key) => {
+                const personData = people[key]; // Get the person object
                 return (
                     <CarouselCard
-                        key={personData.identifier}
+                        key={personData.username}
                         ower={personData}
-                        matrix={debtMatrix_R[personData.identifier]}
+                        matrix={debtMatrix_R[personData.username]}
                     />
                 );
             })}
