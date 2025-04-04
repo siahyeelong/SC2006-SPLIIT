@@ -11,12 +11,14 @@ import {
     Typography,
     useTheme,
 } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
 import { formatPrice } from "../../utils/formatPrice";
 import { CheckCircle } from "@mui/icons-material";
+import { AuthContext } from "../../classes/AuthContext";
 
-function SimplifiedDebtDialog({ open, onClose, transactions }) {
+function SimplifiedDebtDialog({ open, onClose, transactions, people }) {
     const theme = useTheme();
+    const { trip } = useContext(AuthContext);
 
     // Transform the debtMatrixS (passed as transactions) into an array of simplified debt items.
     // Each key in transactions is the payer ("from") and each inner key is the recipient ("to").
@@ -27,7 +29,7 @@ function SimplifiedDebtDialog({ open, onClose, transactions }) {
             Object.keys(owes).forEach((to) => {
                 const amount = parseFloat(owes[to]) || 0;
                 // Only include non-zero debts
-                if (amount > 0) {
+                if (amount > 0.01) {
                     simplifiedDebtList.push({ from, to, amount });
                 }
             });
@@ -106,7 +108,7 @@ function SimplifiedDebtDialog({ open, onClose, transactions }) {
                                                     minWidth: "80px",
                                                 }}
                                             >
-                                                {t.from}
+                                                {people[t.from].displayName}
                                             </Typography>
                                             <Typography
                                                 variant="body1"
@@ -123,7 +125,7 @@ function SimplifiedDebtDialog({ open, onClose, transactions }) {
                                                     minWidth: "80px",
                                                 }}
                                             >
-                                                {t.to}
+                                                {people[t.to].displayName}
                                             </Typography>
                                             <Typography
                                                 variant="body1"
@@ -134,7 +136,7 @@ function SimplifiedDebtDialog({ open, onClose, transactions }) {
                                                     ml: 2,
                                                 }}
                                             >
-                                                {formatPrice(t.amount)}
+                                                {formatPrice(t.amount, trip.localCurrency)}
                                             </Typography>
                                         </Box>
                                     }
@@ -153,7 +155,7 @@ function SimplifiedDebtDialog({ open, onClose, transactions }) {
                                 variant="body1"
                                 sx={{ mt: 1, fontWeight: 600 }}
                             >
-                                All debts settled
+                                All debt settled
                             </Typography>
                         </Box>
                     )}

@@ -27,14 +27,14 @@ export function useDashboardData() {
         }
 
         async function loadPeople() {
-            setPeople(await trip.getParticipants());
+            const p = (await trip.getParticipants());
             function mapPeopleByUsername(people) {
                 return people.reduce((acc, person) => {
                     acc[person.username] = person;
                     return acc;
                 }, {});
             };
-            mapPeopleByUsername(people)
+            setPeople(mapPeopleByUsername(p))
         }
 
         loadTransactions()

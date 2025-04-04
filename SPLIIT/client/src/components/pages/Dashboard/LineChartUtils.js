@@ -1,4 +1,5 @@
 import Chart from "chart.js/auto";
+import { formatPrice } from "../../utils/formatPrice";
 
 const CHART_CONFIG = {
     type: "line",
@@ -70,7 +71,7 @@ const CHART_CONFIG = {
                     color: "#aaa", // Lighter tick color
                     font: { size: 14, weight: "500" },
                     padding: 10,
-                    callback: (value) => `$${value}`,
+                    callback: (value) => `${formatPrice(value)}`,
                 },
             },
         },
