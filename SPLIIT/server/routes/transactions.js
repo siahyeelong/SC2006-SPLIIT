@@ -9,6 +9,8 @@ import { get_rates } from "./exchange_rates/get_rates.js";
 // The router will be added as a middleware and will take control of requests starting with path /record.
 const router = express.Router();
 let collection = await db.collection(process.env.TRANSACTIONS_COLLECTION);
+let users_collection = await db.collection(process.env.USERS_COLLECTION);
+let trips_collection = await db.collection(process.env.TRIPS_COLLECTION);
 
 // This section will help you get a list of all the records.
 router.get("/tripTransactions/:tripID", async (req, res) => {
@@ -21,11 +23,34 @@ router.get("/tripTransactions/:tripID", async (req, res) => {
 });
 
 
-router.get("/owe", async (req, res) => {
+router.get("/owe/:tripID", async (req, res) => {
     try {
-
-        let transactions = await collection.find({}).toArray();
-        let debts = settle_debt(transactions);
+        const tripID = req.params.tripID;
+        // get all transactions relating to the trip
+        let transactions = await collection.find({ tripID: tripID }).toArray();
+        // get all users of the trip
+        const tripInfo = await trips_collection.findOne({ tripID: tripID });
+        // get all user's information 
+        const usernames = tripInfo?.users;
+        // Find all information about the user
+        let people = await Promise.all(
+            usernames?.map(async (username) => {
+                let person = await users_collection.findOne({ username: username });
+                // remove sensitive information
+                delete person.password;
+                delete person._id;
+                delete person.email;
+                delete person.trips
+                return person;
+            })
+        );
+        function mapPeopleByUsername(people) {
+            return people.reduce((acc, person) => {
+                acc[person.username] = person;
+                return acc;
+            }, {});
+        };
+        let debts = settle_debt(transactions, mapPeopleByUsername(people));
         res.status(200).send(debts);
     } catch (error) {
         console.log(`get error:\n${error}`.red);

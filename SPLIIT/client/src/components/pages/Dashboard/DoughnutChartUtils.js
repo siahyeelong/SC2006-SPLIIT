@@ -49,8 +49,9 @@ export const calculateCategorySpending = (transactions, userId) => {
     const spending = {};
     transactions.forEach((transaction) => {
         if (transaction.recipients.includes(userId)) {
+            const totalLocalAmt = transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate
             const amount =
-                parseFloat(transaction.SGD) / transaction.recipients.length;
+                parseFloat(totalLocalAmt) / transaction.recipients.length;
             spending[transaction.category] =
                 (spending[transaction.category] || 0) + amount;
         }

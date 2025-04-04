@@ -166,7 +166,7 @@ router.get("/getParticipants/:tripID", async (req, res) => {
         // Find all users that are in the trip
         const tripInfo = await trips_collection.findOne({ tripID: tripID });
         const usernames = tripInfo?.users;
-        // Find all trips with the tripID
+        // Find all information about the user
         let results = await Promise.all(
             usernames?.map(async (username) => {
                 let person = await collection.findOne({ username: username });
