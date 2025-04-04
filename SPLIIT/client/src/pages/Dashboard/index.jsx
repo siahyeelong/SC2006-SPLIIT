@@ -101,9 +101,13 @@ function Dashboard() {
                 onClose={() => setDialogOpen(false)}
                 transactions={debtMatrix_S} // Pass simplified debt matrix
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
                 people={people}
 =======
 >>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/index.jsx
+=======
+                people={people}
+>>>>>>> 20d5932 (fixed dashboard page and debt settlement):SPLIIT/client/src/components/pages/Dashboard/index.jsx
             />
         </>
     );

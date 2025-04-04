@@ -12,14 +12,22 @@ import DebtTable from "./DebtTable";
 import { SentimentNeutral } from "@mui/icons-material";
 import { formatPrice } from "../../utils/formatPrice";
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
 import { AuthContext } from "../../contexts/AuthContext";
 =======
 >>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/CarouselCard.jsx
+=======
+import { AuthContext } from "../../classes/AuthContext";
+>>>>>>> 20d5932 (fixed dashboard page and debt settlement):SPLIIT/client/src/components/pages/Dashboard/CarouselCard.jsx
 
 function CarouselCard({ ower, matrix }) {
     const transactions = useContext(TransactionsContext);
     let totalSpent = 0;
+<<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
     const { trip } = useContext(AuthContext);
+=======
+    const { trip } = useContext(AuthContext)
+>>>>>>> 20d5932 (fixed dashboard page and debt settlement):SPLIIT/client/src/components/pages/Dashboard/CarouselCard.jsx
 
     const [showAnalyticsDialog, setShowAnalyticsDialog] = useState(false);
     const chartRef = useRef(null);

@@ -115,11 +115,15 @@ function simplify_debts(debt_matrix, people) {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     while (max(givers) && max(receivers)) { // minimise transactions to cover owers and the owed
 =======
     do { // minimise transactions to cover owers and the owed
         if (!!givers || !!receivers) return debt_matrix_simplified; // if there are no givers or receivers, return 
 >>>>>>> ef56cb7 (fixed dashboard page)
+=======
+    while (max(givers) && max(receivers)) { // minimise transactions to cover owers and the owed
+>>>>>>> 20d5932 (fixed dashboard page and debt settlement)
         // the logic is as such (assuming giver = ower; receiver = owed)
         // - the biggest giver will give the biggest receiver first
         // - scenario 1: giver has not given away all their money yet
@@ -145,10 +149,14 @@ function simplify_debts(debt_matrix, people) {
         }
         debt_matrix_simplified[max_giver][max_receiver] += amt_given // update matrix to show giver gives receiver amt_given
 <<<<<<< HEAD
+<<<<<<< HEAD
     }
 =======
     } while (max(givers) && max(receivers));
 >>>>>>> ef56cb7 (fixed dashboard page)
+=======
+    }
+>>>>>>> 20d5932 (fixed dashboard page and debt settlement)
 
     return debt_matrix_simplified
 }
