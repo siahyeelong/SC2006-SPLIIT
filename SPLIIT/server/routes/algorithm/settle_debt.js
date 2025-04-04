@@ -1,16 +1,13 @@
-import { People } from "./People.js"
-// import { transactions } from "./test_data.js"
-
 /**
  * This function initialises the 2D matrix with respect to all participants in this group
  * 
  * @returns {Object} a 2D array object based on all users with all values initialised to 0
  */
-function initialise_2D_matrix() {
+function initialise_2D_matrix(people) {
     const ret_matrix = {}
-    Object.keys(People).map(px => {
+    Object.keys(people).map(px => {
         ret_matrix[px] = {}
-        Object.keys(People).map(py => {
+        Object.keys(people).map(py => {
             ret_matrix[px][py] = 0
         })
     })
@@ -22,14 +19,15 @@ function initialise_2D_matrix() {
  * @param {Object} transactions The transactions data returned from MongoDB
  * @returns {Object} The 2D array object debt_matrix containing the amount that each person owes
 */
-function generate_raw_matrix(transactions) {
-    const debt_matrix = initialise_2D_matrix() // a 2D array containing the amount. debt_matrix[x][y] = a --> x owes y $a
+function generate_raw_matrix(transactions, people) {
+    const debt_matrix = initialise_2D_matrix(people) // a 2D array containing the amount. debt_matrix[x][y] = a --> x owes y $a
 
     // for each recipient, log how much they owe the payer according to an even-split
     transactions.forEach(transaction => {
         const payer = transaction.payer
         const recipients = transaction.recipients
-        const amount = transaction.SGD / recipients.length
+        const localAmt = transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate
+        const amount = localAmt / recipients.length
 
         recipients.forEach(recipient => {
             if (recipient !== payer)
@@ -46,8 +44,8 @@ function generate_raw_matrix(transactions) {
  * @param {Object} debt_matrix The debt matrix to reduce
  * @returns {Object} debt_matrix_reduced, a reduced version of the debt_matrix
  */
-function reduce_debts(debt_matrix) {
-    const debt_matrix_reduced = initialise_2D_matrix()
+function reduce_debts(debt_matrix, people) {
+    const debt_matrix_reduced = initialise_2D_matrix(people)
     Object.keys(debt_matrix).forEach(px => {
         Object.keys(debt_matrix[px]).forEach(py => {
             if (px !== py) {
@@ -71,14 +69,14 @@ function reduce_debts(debt_matrix) {
  * @param {Object} debt_matrix The debt matrix to simplify. It can take in the reduced matrix too.
  * @returns {Object} debt_matrix_simplified, the simplified version of the debt_matrix
  */
-function simplify_debts(debt_matrix) {
-    const debt_matrix_simplified = initialise_2D_matrix()
+function simplify_debts(debt_matrix, people) {
+    const debt_matrix_simplified = initialise_2D_matrix(people)
 
     // const total_give = [] // total that each person owes 
     // const total_receive = [] // total that each person is expecting to receive
     const equivalent_to_give = [] // combines total_give and total_receive. +ve value indicates overall this person owes some money. -ve value indicates overall this person will be receiving money. 0 means they can be excluded from the simplified transactions, since they neither owe nor are owed money.
     // initialise dictionary to 0 
-    Object.keys(People).map(person => {
+    Object.keys(people).map(person => {
         equivalent_to_give[person] = 0
     })
 
@@ -104,6 +102,7 @@ function simplify_debts(debt_matrix) {
 
     // function that returns the key with the greatest value in a given dictionary
     function max(dict) {
+        if (!dict) return false
         let highestKey = null
         let max = 0
         for (let key in dict) {
@@ -116,7 +115,7 @@ function simplify_debts(debt_matrix) {
     }
 
     do { // minimise transactions to cover owers and the owed
-
+        if (!!givers || !!receivers) return debt_matrix_simplified; // if there are no givers or receivers, return 
         // the logic is as such (assuming giver = ower; receiver = owed)
         // - the biggest giver will give the biggest receiver first
         // - scenario 1: giver has not given away all their money yet
@@ -141,7 +140,6 @@ function simplify_debts(debt_matrix) {
             receivers[max_receiver] = -1 * amt_left // amount left to be received
         }
         debt_matrix_simplified[max_giver][max_receiver] += amt_given // update matrix to show giver gives receiver amt_given
-
     } while (max(givers) && max(receivers));
 
     return debt_matrix_simplified
@@ -185,10 +183,10 @@ function print2DArray(data) {
  * @param {Object} transactions The transactions returned from MongoDB
  * @returns 3 matrices
  */
-export function settle_debt(transactions) {
-    const debt_matrix = generate_raw_matrix(transactions)
-    const debt_matrix_reduced = reduce_debts(debt_matrix)
-    const debt_matrix_simplified = simplify_debts(debt_matrix)
+export function settle_debt(transactions, people) {
+    const debt_matrix = generate_raw_matrix(transactions, people)
+    const debt_matrix_reduced = reduce_debts(debt_matrix, people)
+    const debt_matrix_simplified = simplify_debts(debt_matrix, people)
 
     return [debt_matrix, debt_matrix_reduced, debt_matrix_simplified];
 }

@@ -109,8 +109,9 @@ export const createChart = (canvas, transactions, userId) => {
         if (!transaction.recipients.includes(userId)) return acc;
 
         const date = transaction.timestamp.split("T")[0];
+        const totalLocalAmt = transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate
         const amount =
-            parseFloat(transaction.SGD) / transaction.recipients.length;
+            parseFloat(totalLocalAmt) / transaction.recipients.length;
         acc[date] = (acc[date] || 0) + amount;
         return acc;
     }, {});

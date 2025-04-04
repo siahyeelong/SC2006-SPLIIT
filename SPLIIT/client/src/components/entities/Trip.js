@@ -15,6 +15,23 @@ export class Trip {
         this.users = tripInfo.users
     }
 
+    async createTrip() {
+        try {
+            const response = await fetch(`${backendURL}/trips/createtrip`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(this),
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            return response.json()
+        } catch (error) {
+            console.error("Failed to create trip:", error);
+            return null;
+        }
+    }
+
     async updateInfo(updateField, value) {
         try {
             const response = await fetch(`${backendURL}/trips/edittrip/${this.tripID}`, {
@@ -63,6 +80,24 @@ export class Trip {
     async getTransactions() {
         try {
             const response = await fetch(`${backendURL}/transactions/tripTransactions/${this.tripID}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+            return response.json();
+        } catch (error) {
+            console.error("Failed to get trip transactions:", error);
+            return null;
+        }
+    }
+
+    async getDebtMatrices() {
+        try {
+            const response = await fetch(`${backendURL}/transactions/owe/${this.tripID}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

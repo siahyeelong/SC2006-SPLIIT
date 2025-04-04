@@ -30,7 +30,10 @@ const AddConfirmationDialog = ({
         const trimmedId = tripId.trim();
 
         const message = await user.joinTrip(trimmedId); // update the user object
-        setProfile((p) => ({ ...p, trips: [...p.trips, trimmedId] })); // update tempProfile to show live changes
+        setProfile((p) => ({
+            ...p,
+            trips: p.trips.includes(trimmedId) ? p.trips : [...p.trips, trimmedId]
+        })); // update tempProfile to show live changes
 
         onJoinResult(message);
         navigate("/profile");
@@ -145,19 +148,6 @@ const AddConfirmationDialog = ({
                                 </Typography>
                             </Button>
                         </Grid2>
-
-                        {/* for simulation purposes */}
-                        {/* <Grid2
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            lg={3}
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                            }}
-                        >
-                        </Grid2> */}
                     </Grid2>
                 </DialogContent>
             </Dialog>

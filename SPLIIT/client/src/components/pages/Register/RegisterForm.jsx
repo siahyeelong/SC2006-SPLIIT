@@ -386,7 +386,7 @@ function RegisterForm() {
             >
                 {favColourChoices.map((colour) => (
                     <ToggleButton
-                        key={colour.value}
+                        key={colour.name}
                         value={colour.value}
                         sx={{
                             bgcolor: colour.value,

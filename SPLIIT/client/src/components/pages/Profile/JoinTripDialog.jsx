@@ -119,7 +119,7 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
                 </Button>
                 <Button
                     variant="contained"
-                    onClick={onJoin}
+                    onClick={() => onJoin(tripId)}
                     disabled={!tripId?.trim()} // disable if empty or whitespace
                     color="secondary"
                     sx={{

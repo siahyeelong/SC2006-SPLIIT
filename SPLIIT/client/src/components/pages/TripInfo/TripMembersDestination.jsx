@@ -41,15 +41,9 @@ const TripMembersDestination = ({ trip }) => {
                         gap={1}
                         alignItems="center"
                     >
-                        {/* TODO */}
-                        {/* {trip.cities.map((placeName, index) => (
-                            <Chip
-                                key={index}
-                                label={placeName}
-                                color="info"
-                                variant="filled"
-                            />
-                        ))} */}
+                        <Typography variant="body1" fontWeight={'bold'} p={2}>
+                            {trip.cities}
+                        </Typography>
                     </Stack>
                 </Box>
             </Stack>
