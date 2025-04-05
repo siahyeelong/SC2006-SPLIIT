@@ -1,22 +1,22 @@
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route, useLocation } from "react-router-dom";
-import LandingPage from "./components/pages/LandingPage";
-import Register from "./components/pages/Register";
-import Login from "./components/pages/Login";
-import SelectTrip from "./components/pages/SelectTrip";
-import CreateTrip from "./components/pages/CreateTrip";
-import Profile from "./components/pages/Profile";
-import TripInfo from "./components/pages/TripInfo";
-import LogTransaction from "./components/pages/LogTransaction";
-import Dashboard from "./components/pages/Dashboard";
-import Transactions from "./components/pages/Transactions";
-import AItinerary from "./components/pages/AItinirary";
-import { ExchangeRatesProvider } from "./components/classes/ExchangeRates";
-import { AuthProvider } from "./components/classes/AuthContext";
-import PublicLayout from "./components/pages/MainUI/PublicLayout";
-import AuthLayout from "./components/pages/MainUI/AuthLayout";
-import NotFound from "./components/pages/NotFound";
+import LandingPage from "./pages/LandingPage";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import SelectTrip from "./pages/SelectTrip";
+import CreateTrip from "./pages/CreateTrip";
+import Profile from "./pages/Profile";
+import TripInfo from "./pages/TripInfo";
+import LogTransaction from "./pages/LogTransaction";
+import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
+import AItinerary from "./pages/AItinirary";
+import { ExchangeRatesProvider } from "./contexts/ExchangeRates";
+import { AuthProvider } from "./contexts/AuthContext";
+import PublicLayout from "./layouts/PublicLayout";
+import AuthLayout from "./layouts/AuthLayout";
+import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
 
 function App() {
