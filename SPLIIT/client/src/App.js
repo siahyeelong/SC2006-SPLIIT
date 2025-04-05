@@ -16,6 +16,7 @@ import { ExchangeRatesProvider } from "./components/classes/ExchangeRates";
 import { AuthProvider } from "./components/classes/AuthContext";
 import PublicLayout from "./components/pages/MainUI/PublicLayout";
 import AuthLayout from "./components/pages/MainUI/AuthLayout";
+import NotFound from "./components/pages/NotFound";
 import { useEffect } from "react";
 
 function App() {
@@ -111,6 +112,7 @@ function App() {
                                     }
                                 />
                             </Route>
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
                     </ThemeProvider>
                 </ColorModeContext.Provider>
