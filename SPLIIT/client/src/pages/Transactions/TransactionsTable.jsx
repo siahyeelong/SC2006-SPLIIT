@@ -2,15 +2,20 @@ import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, useTheme, Stack } from "@mui/material";
 import { tokens } from "../../theme";
 import { DataGrid } from "@mui/x-data-grid";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
 import ToCSVButton from "../../components/common/ToCSVButton";
 =======
 import ToCSVButton from "./ToCSVButton";
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+import ToCSVButton from "../../components/common/ToCSVButton";
+>>>>>>> 1227d8d (Restructure folders)
 import RecipientsCell from "./RecipientsCell";
 import CurrencySwitch from "./CurrencySwitch";
 import PerTransactionDialog from "./PerTransactionDialog";
 import { ReceiptLong } from "@mui/icons-material";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
 import { AuthContext } from "../../contexts/AuthContext";
@@ -19,22 +24,30 @@ import { AuthContext } from "../../contexts/AuthContext";
 =======
 import { AuthContext } from "../../classes/AuthContext";
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+import { AuthContext } from "../../contexts/AuthContext";
+>>>>>>> 1227d8d (Restructure folders)
 
 function TransactionsTable() {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
 
     const [transactions, setTransactions] = useState([]);
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
     const [people, setPeople] = useState([]);
 =======
     const [people, setPeople] = useState([])
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+    const [people, setPeople] = useState([]);
+>>>>>>> 1227d8d (Restructure folders)
     const [pageSize, setPageSize] = useState(10);
     const [showLocalCurrency, setShowLocalCurrency] = useState(false);
     const [showTransactionDialog, setShowTransactionDialog] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState([]);
     const [error, setError] = useState(null);
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
     const [loading, setLoading] = useState(true);
     const { trip } = useContext(AuthContext);
@@ -52,34 +65,39 @@ function TransactionsTable() {
 =======
     const [loading, setLoading] = useState(true)
     const { trip } = useContext(AuthContext)
+=======
+    const [loading, setLoading] = useState(true);
+    const { trip } = useContext(AuthContext);
+>>>>>>> 1227d8d (Restructure folders)
 
     // function to get trip transactions
     async function fetchTransactions() {
-        setLoading(true)
+        setLoading(true);
         try {
-            const t = await trip.getTransactions()
-            setTransactions(t)
+            const t = await trip.getTransactions();
+            setTransactions(t);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
     // function to get all trip participants
     const getPeople = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
-            const p = await trip.getParticipants()
+            const p = await trip.getParticipants();
             function mapPeopleByUsername(people) {
                 return people.reduce((acc, person) => {
                     acc[person.username] = person;
                     return acc;
                 }, {});
             }
-            setPeople(mapPeopleByUsername(p))
+            setPeople(mapPeopleByUsername(p));
         } catch (error) {
-            console.log("error getting people")
+            console.log("error getting people");
         } finally {
+<<<<<<< HEAD
             setLoading(false)
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
         }
@@ -117,6 +135,18 @@ function TransactionsTable() {
 
     if (loading) return <Typography>Loading...</Typography>
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getPeople();
+        fetchTransactions();
+    }, []);
+
+    if (loading) return <Typography>Loading...</Typography>;
+>>>>>>> 1227d8d (Restructure folders)
 
     const columns = [
         { field: "id", headerName: "Index", flex: 3, sortable: true },
@@ -147,7 +177,10 @@ function TransactionsTable() {
             filterable: true,
             valueGetter: (params) => parseFloat(params.value),
             valueFormatter: (params) => {
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                 let priceAmt = params.value;
                 if (
                     transactions[params.id - 1].isLocalCurrency ||
@@ -160,6 +193,7 @@ function TransactionsTable() {
                             priceAmt / transactions[params.id - 1].exchangeRate;
                     return parseFloat(priceAmt).toLocaleString("en-SG", {
                         // format amount accordingly
+<<<<<<< HEAD
 =======
                 let priceAmt = params.value
                 if (transactions[params.id - 1].isLocalCurrency || showLocalCurrency) { // if transaction record was originally logged in localCurrency, or if user wants to see everything in localCurrency
@@ -167,10 +201,13 @@ function TransactionsTable() {
                         priceAmt = priceAmt / transactions[params.id - 1].exchangeRate;
                     return parseFloat(priceAmt).toLocaleString("en-SG", { // format amount accordingly
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                         style: "currency",
                         currency: trip.localCurrency,
                         minimumFractionDigits: 0, // Show no decimal places if not needed
                         maximumFractionDigits: 2,
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
                     });
                 } else {
@@ -181,15 +218,25 @@ function TransactionsTable() {
                 } else {
                     return parseFloat(priceAmt).toLocaleString("en-SG", { // format amount accordingly
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+                    });
+                } else {
+                    return parseFloat(priceAmt).toLocaleString("en-SG", {
+                        // format amount accordingly
+>>>>>>> 1227d8d (Restructure folders)
                         style: "currency",
                         currency: trip.foreignCurrency,
                         minimumFractionDigits: 0, // Show no decimal places if not needed
                         maximumFractionDigits: 2,
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
                     });
 =======
                     })
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+                    });
+>>>>>>> 1227d8d (Restructure folders)
                 }
             },
         },
@@ -207,14 +254,20 @@ function TransactionsTable() {
             sortable: true,
             filterable: true,
             renderCell: (params) => (
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                 <RecipientsCell
                     recipients={params.value || []}
                     people={people}
                 />
+<<<<<<< HEAD
 =======
                 <RecipientsCell recipients={params.value || []} people={people} />
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
             ),
         },
         {
@@ -230,6 +283,7 @@ function TransactionsTable() {
             flex: 8,
             sortable: true,
             filterable: true,
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Transactions/TransactionsTable.jsx
             valueGetter: (params) => people[params.value]?.displayName,
 =======
@@ -237,6 +291,9 @@ function TransactionsTable() {
                 people[params.value]?.displayName
             ),
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/Transactions/TransactionsTable.jsx
+=======
+            valueGetter: (params) => people[params.value]?.displayName,
+>>>>>>> 1227d8d (Restructure folders)
         },
     ];
 

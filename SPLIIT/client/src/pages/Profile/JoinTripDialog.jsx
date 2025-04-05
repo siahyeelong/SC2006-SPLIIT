@@ -10,6 +10,7 @@ import {
     useTheme,
     useMediaQuery,
 } from "@mui/material";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Profile/JoinTripDialog.jsx
 import { tokens } from "../../theme";
 
@@ -23,9 +24,15 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode)
 >>>>>>> d40fa43 (fixed layout of trip creation page):SPLIIT/client/src/components/pages/Profile/JoinTripDialog.jsx
+=======
+import { tokens } from "../../theme";
+
+const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
+    const theme = useTheme();
+    const colours = tokens(theme.palette.mode);
+>>>>>>> 1227d8d (Restructure folders)
     const isMediumScreen = useMediaQuery(theme.breakpoints.up("md"));
     const inputRef = useRef(null);
-
 
     useEffect(() => {
         if (open) {
@@ -54,6 +61,7 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
             fullWidth
             disableRestoreFocus
             sx={{
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Profile/JoinTripDialog.jsx
                 "& .MuiPaper-root": {
                     background: colours.grey[600],
@@ -61,6 +69,10 @@ const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
                 '& .MuiPaper-root': {
                     background: colours.grey[600]
 >>>>>>> d40fa43 (fixed layout of trip creation page):SPLIIT/client/src/components/pages/Profile/JoinTripDialog.jsx
+=======
+                "& .MuiPaper-root": {
+                    background: colours.grey[600],
+>>>>>>> 1227d8d (Restructure folders)
                 },
             }}
         >

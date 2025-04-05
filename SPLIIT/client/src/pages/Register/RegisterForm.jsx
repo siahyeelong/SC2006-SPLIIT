@@ -25,6 +25,7 @@ import {
     Lock,
 } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Register/RegisterForm.jsx
 <<<<<<< HEAD:SPLIIT/client/src/pages/Register/RegisterForm.jsx
 import { favColourChoices } from "../../constants/favColourChoices";
@@ -34,6 +35,9 @@ import { favColourChoices } from "./favColourChoices";
 =======
 import { favColourChoices } from "./favColourChoices";
 >>>>>>> b986875 (fix colour picker):SPLIIT/client/src/components/pages/Register/RegisterForm.jsx
+=======
+import { favColourChoices } from "../../constants/favColourChoices";
+>>>>>>> 1227d8d (Restructure folders)
 
 function RegisterForm() {
     const { login } = useContext(AuthContext);

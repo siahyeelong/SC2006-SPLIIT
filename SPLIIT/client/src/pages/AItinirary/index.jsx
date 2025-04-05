@@ -27,6 +27,10 @@ function AItinerary() {
     const [showChat, setShowChat] = useState(false);
 
     // Toolhouse configuration
+<<<<<<< HEAD
+=======
+    const apiKey = "th-fQgdW1yf2PdmiVFDy-IjLqjiDuHM8oqgemw3HVVVvF8";
+>>>>>>> 1227d8d (Restructure folders)
     const chatId = "d252512d-1818-4209-aa07-705f27cd1102";
 
     useEffect(() => {
@@ -83,7 +87,11 @@ function AItinerary() {
                                 p: 3,
                                 textAlign: "center",
                                 bgcolor: isDarkMode
+<<<<<<< HEAD
                                     ? colors.primary[600]
+=======
+                                    ? "background.paper"
+>>>>>>> 1227d8d (Restructure folders)
                                     : "background.paper",
                             }}
                         >
@@ -92,7 +100,11 @@ function AItinerary() {
                             </Typography>
                             <Typography paragraph>
                                 Our AI travel assistant can help you create
+<<<<<<< HEAD
                                 personalised itineraries based on your
+=======
+                                personalized itineraries based on your
+>>>>>>> 1227d8d (Restructure folders)
                                 interests, budget, and preferences.
                             </Typography>
                             <Typography paragraph>
@@ -121,7 +133,13 @@ function AItinerary() {
                     ) : (
                         <Box mt={4}>
                             <ChatInterface
+<<<<<<< HEAD
                                 chatId={chatId}
+=======
+                                apiKey={apiKey}
+                                chatId={chatId}
+                                userId={profile?.username || "guest"}
+>>>>>>> 1227d8d (Restructure folders)
                                 subtitleColor={subtitleColor}
                             />
                             <Box display="flex" justifyContent="center" mt={2}>
@@ -141,7 +159,11 @@ function AItinerary() {
                                         },
                                     }}
                                 >
+<<<<<<< HEAD
                                     End Chat
+=======
+                                    Back to Introduction
+>>>>>>> 1227d8d (Restructure folders)
                                 </Button>
                             </Box>
                         </Box>

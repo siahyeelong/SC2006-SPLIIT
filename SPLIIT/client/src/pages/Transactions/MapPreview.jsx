@@ -2,7 +2,7 @@ import React from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import locationMarker from "../../assets/locationmarker.png"
+import locationMarker from "../../assets/locationMarker.png";
 
 const CustomMarkerIcon = L.icon({
     iconUrl: locationMarker, // Replace with your icon path
@@ -18,7 +18,12 @@ const MapPreview = ({ lat, lng }) => {
         <MapContainer
             center={[lat, lng]}
             zoom={zoomLevel}
-            style={{ width: "300px", height: "300px", borderRadius: "8px", overflow: "hidden" }}
+            style={{
+                width: "300px",
+                height: "300px",
+                borderRadius: "8px",
+                overflow: "hidden",
+            }}
             scrollWheelZoom={false}
             dragging={false}
             zoomControl={false}

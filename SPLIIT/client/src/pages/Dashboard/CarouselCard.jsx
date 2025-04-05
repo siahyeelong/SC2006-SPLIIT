@@ -11,6 +11,7 @@ import { createSpendingChart } from "../../components/charts/DoughnutChartUtils"
 import DebtTable from "./DebtTable";
 import { SentimentNeutral } from "@mui/icons-material";
 import { formatPrice } from "../../utils/formatPrice";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
 import { AuthContext } from "../../contexts/AuthContext";
@@ -19,15 +20,22 @@ import { AuthContext } from "../../contexts/AuthContext";
 =======
 import { AuthContext } from "../../classes/AuthContext";
 >>>>>>> 20d5932 (fixed dashboard page and debt settlement):SPLIIT/client/src/components/pages/Dashboard/CarouselCard.jsx
+=======
+import { AuthContext } from "../../contexts/AuthContext";
+>>>>>>> 1227d8d (Restructure folders)
 
 function CarouselCard({ ower, matrix }) {
     const transactions = useContext(TransactionsContext);
     let totalSpent = 0;
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
     const { trip } = useContext(AuthContext);
 =======
     const { trip } = useContext(AuthContext)
 >>>>>>> 20d5932 (fixed dashboard page and debt settlement):SPLIIT/client/src/components/pages/Dashboard/CarouselCard.jsx
+=======
+    const { trip } = useContext(AuthContext);
+>>>>>>> 1227d8d (Restructure folders)
 
     const [showAnalyticsDialog, setShowAnalyticsDialog] = useState(false);
     const chartRef = useRef(null);
@@ -71,6 +79,7 @@ function CarouselCard({ ower, matrix }) {
 
     transactions.forEach((transaction) => {
         if (transaction.recipients.includes(ower.username)) {
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/CarouselCard.jsx
             const totalLocalAmt = transaction.isLocalCurrency
                 ? transaction.price
@@ -78,6 +87,11 @@ function CarouselCard({ ower, matrix }) {
 =======
             const totalLocalAmt = transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate
 >>>>>>> ef56cb7 (fixed dashboard page):SPLIIT/client/src/components/pages/Dashboard/CarouselCard.jsx
+=======
+            const totalLocalAmt = transaction.isLocalCurrency
+                ? transaction.price
+                : transaction.price / transaction.exchangeRate;
+>>>>>>> 1227d8d (Restructure folders)
             const amount =
                 parseFloat(totalLocalAmt) / transaction.recipients.length;
             totalSpent += amount;

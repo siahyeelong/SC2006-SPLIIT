@@ -1,9 +1,13 @@
 import { React, useContext, useEffect, useState } from "react";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
 import { Categories } from "../../constants/Categories";
 =======
 import { Categories } from "../../classes/Categories";
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+import { Categories } from "../../constants/Categories";
+>>>>>>> 1227d8d (Restructure folders)
 import Chip from "@mui/material/Chip";
 import {
     useTheme,
@@ -12,6 +16,7 @@ import {
     InputBase,
     Typography,
 } from "@mui/material";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
 import { tokens } from "../../theme";
 import { useExchangeRates } from "../../contexts/ExchangeRates";
@@ -21,17 +26,26 @@ import { tokens } from "../../../theme";
 import { useExchangeRates } from "../../classes/ExchangeRates";
 import { AuthContext } from "../../classes/AuthContext";
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+import { tokens } from "../../theme";
+import { useExchangeRates } from "../../contexts/ExchangeRates";
+import { AuthContext } from "../../contexts/AuthContext";
+>>>>>>> 1227d8d (Restructure folders)
 import { Transaction } from "../../entities/Transaction";
 
 function LogTransactionForm({ onAdd }) {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
     const { exchangeRates } = useExchangeRates();
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
     const { trip } = useContext(AuthContext);
 =======
     const { trip } = useContext(AuthContext)
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+    const { trip } = useContext(AuthContext);
+>>>>>>> 1227d8d (Restructure folders)
     const [locationStatus, setLocationStatus] = useState("");
     const [people, setPeople] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -46,14 +60,20 @@ function LogTransactionForm({ onAdd }) {
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                 setLocationStatus({
                     lat: position.coords.latitude,
                     long: position.coords.longitude,
                 });
+<<<<<<< HEAD
 =======
                 setLocationStatus({ lat: position.coords.latitude, long: position.coords.longitude });
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
             },
             (error) => {
                 if (error.code === error.PERMISSION_DENIED) {
@@ -69,6 +89,7 @@ function LogTransactionForm({ onAdd }) {
 
     const getPeople = async () => {
         try {
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
             const p = await trip.getParticipants();
             setPeople(p);
@@ -81,22 +102,34 @@ function LogTransactionForm({ onAdd }) {
 =======
             const p = await trip.getParticipants()
             setPeople(p)
+=======
+            const p = await trip.getParticipants();
+            setPeople(p);
+>>>>>>> 1227d8d (Restructure folders)
         } catch (error) {
-            console.log("error getting people")
+            console.log("error getting people");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
+<<<<<<< HEAD
     }
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+    };
+>>>>>>> 1227d8d (Restructure folders)
 
     useEffect(() => {
         getLocation();
         getPeople();
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
     }, []);
 =======
     }, [])
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+    }, []);
+>>>>>>> 1227d8d (Restructure folders)
 
     // default form state
     const formResetState = {
@@ -105,12 +138,16 @@ function LogTransactionForm({ onAdd }) {
         price: "",
         currency: trip.foreignCurrency,
         isLocalCurrency: false,
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
         exchangeRate: parseFloat(
             exchangeRates[trip.foreignCurrency] /
                 exchangeRates[trip.localCurrency]
         ), // foreign : local exchange rate
+<<<<<<< HEAD
         description: "",
         payer: "",
         tripID: trip.tripID,
@@ -128,6 +165,12 @@ function LogTransactionForm({ onAdd }) {
         tripID: trip.tripID,
         geolocation: '',
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+        description: "",
+        payer: "",
+        tripID: trip.tripID,
+        geolocation: "",
+>>>>>>> 1227d8d (Restructure folders)
     };
 
     const [formData, setFormData] = useState(formResetState);
@@ -147,15 +190,21 @@ function LogTransactionForm({ onAdd }) {
     const handleCurrencyChange = (event, newCurrency) => {
         if (newCurrency) {
             setFormData((prev) => {
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                 return {
                     ...prev,
                     currency: newCurrency,
                     isLocalCurrency: newCurrency === trip.localCurrency,
                 };
+<<<<<<< HEAD
 =======
                 return { ...prev, currency: newCurrency, isLocalCurrency: (newCurrency === trip.localCurrency) };
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
             });
         }
     };
@@ -177,9 +226,9 @@ function LogTransactionForm({ onAdd }) {
         const numericValue = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
         const formattedPrice = !isNaN(numericValue)
             ? numericValue.toLocaleString("en-SG", {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-            })
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+              })
             : "";
         setFormData((prev) => ({ ...prev, price: formattedPrice }));
     };
@@ -214,7 +263,10 @@ function LogTransactionForm({ onAdd }) {
         const lc = exchangeRates[trip.localCurrency];
         const fc = exchangeRates[trip.foreignCurrency];
 
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
         return lc > fc
             ? `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${
                   trip.foreignCurrency
@@ -223,6 +275,7 @@ function LogTransactionForm({ onAdd }) {
                   fc / lc
               ).toFixed(2)}`;
     };
+<<<<<<< HEAD
 =======
         return lc > fc ?
             `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${trip.foreignCurrency} 1`
@@ -230,6 +283,8 @@ function LogTransactionForm({ onAdd }) {
             `${trip.localCurrency} 1 = ${trip.foreignCurrency} ${parseFloat(fc / lc).toFixed(2)}`
     }
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
 
     // Handle all other changes by updating the corresponding values
     const handleChange = (e) => {
@@ -285,11 +340,15 @@ function LogTransactionForm({ onAdd }) {
             }
         }
     }
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
     if (loading) return <Typography>Loading...</Typography>;
 =======
     if (loading) return <Typography>Loading...</Typography>
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+    if (loading) return <Typography>Loading...</Typography>;
+>>>>>>> 1227d8d (Restructure folders)
     return (
         <form onSubmit={handleSubmit} className="container mt-4 ">
             {/* Chip select input for recipients */}
@@ -298,6 +357,7 @@ function LogTransactionForm({ onAdd }) {
                 <br />
                 <div className="chip-group">
                     {people.map((person) => {
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
                         const selected = formData.recipients.includes(
@@ -314,6 +374,11 @@ function LogTransactionForm({ onAdd }) {
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
 =======
                         const selected = formData.recipients.includes(person.username);
+=======
+                        const selected = formData.recipients.includes(
+                            person.username
+                        );
+>>>>>>> 1227d8d (Restructure folders)
                         return (
                             <Chip
                                 key={person.username}
@@ -326,6 +391,7 @@ function LogTransactionForm({ onAdd }) {
                                         : "#e0e0e0",
                                     margin: "0.25%",
                                     "&:hover": {
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
                                         backgroundColor: person.favColour,
 =======
@@ -351,10 +417,26 @@ function LogTransactionForm({ onAdd }) {
                                     selected
                                         ? () => handleChipSelection(person.username)
 >>>>>>> 634cedd (fixed transactions table and added geographical map):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+                                        backgroundColor: person.favColour,
+                                    },
+                                }}
+                                clickable
+                                onClick={() =>
+                                    handleChipSelection(person.username)
+                                }
+                                onDelete={
+                                    selected
+                                        ? () =>
+                                              handleChipSelection(
+                                                  person.username
+                                              )
+>>>>>>> 1227d8d (Restructure folders)
                                         : undefined
                                 }
-                                className={`chip ${selected ? "chip-selected" : ""
-                                    }`}
+                                className={`chip ${
+                                    selected ? "chip-selected" : ""
+                                }`}
                             />
                         );
                     })}
@@ -397,6 +479,7 @@ function LogTransactionForm({ onAdd }) {
                 <div
                     style={{
                         display: "flex",
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
                         alignItems: "flex-start",
                     }}
@@ -412,6 +495,16 @@ function LogTransactionForm({ onAdd }) {
                     <label className="form-label">Price</label>
                     <Typography ml={2} color="grey"> {exchangeRateHint()} </Typography>
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+                        alignItems: "flex-start",
+                    }}
+                >
+                    <label className="form-label">Price</label>
+                    <Typography ml={2} color="grey">
+                        {" "}
+                        {exchangeRateHint()}{" "}
+                    </Typography>
+>>>>>>> 1227d8d (Restructure folders)
                 </div>
                 <div
                     style={{
@@ -442,14 +535,20 @@ function LogTransactionForm({ onAdd }) {
                         <ToggleButton value={trip.localCurrency} key="local">
                             {trip.localCurrency}
                         </ToggleButton>
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                         <ToggleButton
                             value={trip.foreignCurrency}
                             key="foreign"
                         >
+<<<<<<< HEAD
 =======
                         <ToggleButton value={trip.foreignCurrency} key="foreign">
 >>>>>>> f8836b5 (fixed log transaction part. yet to fix dashboard and transactions page):SPLIIT/client/src/components/pages/LogTransaction/LogTransactionForm.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                             {trip.foreignCurrency}
                         </ToggleButton>
                     </ToggleButtonGroup>

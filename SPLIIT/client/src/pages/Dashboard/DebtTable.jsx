@@ -8,6 +8,7 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/DebtTable.jsx
 import { useDashboardData } from "../../hooks/useDashboardData";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -23,12 +24,19 @@ function DebtTable({ matrix, ower, formatPrice }) {
     const { people } = useDashboardData()
     const { trip } = useContext(AuthContext)
 >>>>>>> 20d5932 (fixed dashboard page and debt settlement):SPLIIT/client/src/components/pages/Dashboard/DebtTable.jsx
+=======
+import { useDashboardData } from "../../hooks/useDashboardData";
+import { AuthContext } from "../../contexts/AuthContext";
+
+function DebtTable({ matrix, ower, formatPrice }) {
+    const { people } = useDashboardData();
+    const { trip } = useContext(AuthContext);
+>>>>>>> 1227d8d (Restructure folders)
 
     // Only show the table if there is any debt to display
     if (!matrix || !Object.values(matrix).some((amount) => amount > 0.01)) {
         return null;
     }
-
 
     return (
         <Box>
@@ -83,17 +91,23 @@ function DebtTable({ matrix, ower, formatPrice }) {
                                                 fontWeight: "bold",
                                             }}
                                         >
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/DebtTable.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                                             {formatPrice(
                                                 amount,
                                                 trip.localCurrency
                                             )}
+<<<<<<< HEAD
 =======
                                             {formatPrice(amount, trip.localCurrency)}
 >>>>>>> 20d5932 (fixed dashboard page and debt settlement):SPLIIT/client/src/components/pages/Dashboard/DebtTable.jsx
+=======
+>>>>>>> 1227d8d (Restructure folders)
                                         </TableCell>
                                     </TableRow>
-                                )
+                                );
                             })}
                     </TableBody>
                 </Table>

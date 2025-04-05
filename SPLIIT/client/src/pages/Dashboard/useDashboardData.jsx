@@ -1,6 +1,6 @@
 // useDashboardData.js
 import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../../classes/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 
 export function useDashboardData() {
     const { trip } = useContext(AuthContext);
@@ -8,7 +8,7 @@ export function useDashboardData() {
     const [transactions, setTransactions] = useState([]);
     const [debtMatrix_R, setDebtMatrix_R] = useState({});
     const [debtMatrix_S, setDebtMatrix_S] = useState({});
-    const [people, setPeople] = useState([])
+    const [people, setPeople] = useState([]);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export function useDashboardData() {
             setTransactions(await trip.getTransactions());
         }
 
-        // Fetch debt matrices 
+        // Fetch debt matrices
         async function loadDebtMatrices() {
             const matrices = await trip.getDebtMatrices();
             setDebtMatrix_R(matrices[1]);
@@ -27,19 +27,19 @@ export function useDashboardData() {
         }
 
         async function loadPeople() {
-            const p = (await trip.getParticipants());
+            const p = await trip.getParticipants();
             function mapPeopleByUsername(people) {
                 return people.reduce((acc, person) => {
                     acc[person.username] = person;
                     return acc;
                 }, {});
-            };
-            setPeople(mapPeopleByUsername(p))
+            }
+            setPeople(mapPeopleByUsername(p));
         }
 
-        loadTransactions()
-        loadDebtMatrices()
-        loadPeople()
+        loadTransactions();
+        loadDebtMatrices();
+        loadPeople();
     }, []);
 
     return { transactions, debtMatrix_R, debtMatrix_S, people, error };

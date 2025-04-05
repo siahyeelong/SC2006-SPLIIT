@@ -15,7 +15,11 @@ import {
     sendMessageToAgent,
 } from "../../services/toolhouseService";
 
+<<<<<<< HEAD
 const ChatInterface = ({ chatId, subtitleColor }) => {
+=======
+const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
+>>>>>>> 1227d8d (Restructure folders)
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === "dark";
 
@@ -26,9 +30,13 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
     const [error, setError] = useState(null);
     const [pollingInterval, setPollingInterval] = useState(null);
     const [runStatus, setRunStatus] = useState("");
+<<<<<<< HEAD
     const [isProcessing, setIsProcessing] = useState(false); // New state to track if a response is being processed
     const messagesEndRef = useRef(null);
     const apiKey = process.env.REACT_APP_AITINERARY_API_KEY;
+=======
+    const messagesEndRef = useRef(null);
+>>>>>>> 1227d8d (Restructure folders)
 
     // Auto-scroll to bottom when messages update
     useEffect(() => {
@@ -92,9 +100,12 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
             clearInterval(pollingInterval);
         }
 
+<<<<<<< HEAD
         // Set processing state to true when polling starts
         setIsProcessing(true);
 
+=======
+>>>>>>> 1227d8d (Restructure folders)
         // If this is a new message, add a processing indicator
         if (!isFirstMessage) {
             setMessages((prevMessages) => [
@@ -117,8 +128,11 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                 if (status === "completed" || status === "failed") {
                     clearInterval(interval);
                     setPollingInterval(null);
+<<<<<<< HEAD
                     // Set processing state to false when done
                     setIsProcessing(false);
+=======
+>>>>>>> 1227d8d (Restructure folders)
 
                     // Check for results
                     const results = runData.data?.results || [];
@@ -133,7 +147,11 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                             // Get the latest assistant response
                             const latestResponse =
                                 assistantResponses[
+<<<<<<< HEAD
                                 assistantResponses.length - 1
+=======
+                                    assistantResponses.length - 1
+>>>>>>> 1227d8d (Restructure folders)
                                 ];
 
                             // Extract the content - handle nested structure
@@ -181,7 +199,11 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                                             (msg.content ===
                                                 "Processing your request..." ||
                                                 msg.content ===
+<<<<<<< HEAD
                                                 "Processing your message...")
+=======
+                                                    "Processing your message...")
+>>>>>>> 1227d8d (Restructure folders)
                                         ) {
                                             return {
                                                 role: "assistant",
@@ -219,16 +241,24 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                 } else if (status === "failed") {
                     clearInterval(interval);
                     setPollingInterval(null);
+<<<<<<< HEAD
                     setIsProcessing(false); // Set processing state to false on failure
                     setError("The request failed. Please try again.");
                 }
                 // Keep polling if status is still "in_progress"
+=======
+                    setError("The request failed. Please try again.");
+                }
+>>>>>>> 1227d8d (Restructure folders)
             } catch (err) {
                 console.error("Error polling data:", err);
                 setError("Failed to update conversation. Please try again.");
                 clearInterval(interval);
                 setPollingInterval(null);
+<<<<<<< HEAD
                 setIsProcessing(false); // Set processing state to false on error
+=======
+>>>>>>> 1227d8d (Restructure folders)
             }
         }, 3000); // Poll every 3 seconds
 
@@ -236,7 +266,11 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
     };
 
     const sendMessage = async () => {
+<<<<<<< HEAD
         if (!input.trim() || !runId || isProcessing) return;
+=======
+        if (!input.trim() || !runId) return;
+>>>>>>> 1227d8d (Restructure folders)
 
         // Add user message to UI immediately
         setMessages((prevMessages) => [
@@ -249,6 +283,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
         setError(null);
 
         try {
+<<<<<<< HEAD
             // First check if the run is completed (we can only send messages to completed runs)
             const runData = await getAgentRun(apiKey, runId);
             const status = runData.data?.status || "unknown";
@@ -290,6 +325,16 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
             
             // Put the message back in the input field
             setInput(currentMessage);
+=======
+            // Send message to agent
+            await sendMessageToAgent(apiKey, runId, currentMessage);
+
+            // Restart polling to get the new response
+            startPolling(false); // Pass false to indicate this is not the first message
+        } catch (err) {
+            console.error("Failed to send message:", err);
+            setError("Failed to send message. Please try again.");
+>>>>>>> 1227d8d (Restructure folders)
         } finally {
             setLoading(false);
         }
@@ -302,6 +347,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
         }
     };
 
+<<<<<<< HEAD
     // Helper text for the input field
     const getInputHelperText = () => {
         if (isProcessing) {
@@ -310,6 +356,8 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
         return "";
     };
 
+=======
+>>>>>>> 1227d8d (Restructure folders)
     return (
         <Box sx={{ height: "70vh", display: "flex", flexDirection: "column" }}>
             {/* Chat messages area */}
@@ -372,6 +420,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                     fullWidth
                     multiline
                     maxRows={4}
+<<<<<<< HEAD
                     placeholder={isProcessing ? "Waiting for AI response..." : "Enter your travel plans or questions..."}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -379,6 +428,14 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                     disabled={loading || isProcessing} // Disable when processing
                     variant="outlined"
                     helperText={getInputHelperText()}
+=======
+                    placeholder="Enter your travel plans or questions..."
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    disabled={loading}
+                    variant="outlined"
+>>>>>>> 1227d8d (Restructure folders)
                     sx={{
                         bgcolor: isDarkMode
                             ? "background.paper"
@@ -389,7 +446,11 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                 <Button
                     variant="contained"
                     onClick={sendMessage}
+<<<<<<< HEAD
                     disabled={!input.trim() || loading || isProcessing} // Disable when processing
+=======
+                    disabled={!input.trim() || loading}
+>>>>>>> 1227d8d (Restructure folders)
                     sx={{
                         bgcolor:
                             subtitleColor ||
@@ -400,8 +461,13 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                                     ? `${subtitleColor}CC`
                                     : `${subtitleColor}DD`
                                 : isDarkMode
+<<<<<<< HEAD
                                     ? "primary.dark"
                                     : "primary.dark",
+=======
+                                ? "primary.dark"
+                                : "primary.dark",
+>>>>>>> 1227d8d (Restructure folders)
                         },
                     }}
                 >
@@ -416,4 +482,8 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
     );
 };
 
+<<<<<<< HEAD
 export default ChatInterface;
+=======
+export default ChatInterface;
+>>>>>>> 1227d8d (Restructure folders)

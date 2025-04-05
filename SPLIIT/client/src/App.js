@@ -2,6 +2,9 @@ import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route, useLocation } from "react-router-dom";
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 1227d8d (Restructure folders)
 import LandingPage from "./pages/LandingPage";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -18,6 +21,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import PublicLayout from "./layouts/PublicLayout";
 import AuthLayout from "./layouts/AuthLayout";
 import NotFound from "./pages/NotFound";
+<<<<<<< HEAD
 =======
 import LandingPage from "./components/pages/LandingPage";
 import Register from "./components/pages/Register";
@@ -36,6 +40,8 @@ import PublicLayout from "./components/pages/MainUI/PublicLayout";
 import AuthLayout from "./components/pages/MainUI/AuthLayout";
 import NotFound from "./components/pages/NotFound";
 >>>>>>> 158368e (Add 404 page)
+=======
+>>>>>>> 1227d8d (Restructure folders)
 import { useEffect } from "react";
 
 function App() {

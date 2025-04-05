@@ -3,11 +3,15 @@ import { Box, Typography, Button, Stack, useTheme } from "@mui/material";
 import Header from "../../layouts/Header";
 import Carousel from "./Carousel";
 import SimplifiedDebtDialog from "./SimplifiedDebtDialog";
+<<<<<<< HEAD
 <<<<<<< HEAD:SPLIIT/client/src/pages/Dashboard/index.jsx
 import { useDashboardData } from "../../hooks/useDashboardData";
 =======
 import { useDashboardData } from "./useDashboardData";
 >>>>>>> b6fad7a (Implemented dashboard functions, added refresh):SPLIIT/client/src/components/pages/Dashboard/index.jsx
+=======
+import { useDashboardData } from "../../hooks/useDashboardData";
+>>>>>>> 1227d8d (Restructure folders)
 
 export const TransactionsContext = createContext([]);
 
