@@ -1,5 +1,3 @@
-import Sidebar from "./components/pages/MainUI/Sidebar";
-import Topbar from "./components/pages/MainUI/Topbar";
 import { ColorModeContext, useMode } from "./theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route, useLocation } from "react-router-dom";
@@ -18,6 +16,7 @@ import { ExchangeRatesProvider } from "./components/classes/ExchangeRates";
 import { AuthProvider } from "./components/classes/AuthContext";
 import PublicLayout from "./components/pages/MainUI/PublicLayout";
 import AuthLayout from "./components/pages/MainUI/AuthLayout";
+import NotFound from "./components/pages/NotFound";
 import { useEffect } from "react";
 
 function App() {
@@ -113,6 +112,7 @@ function App() {
                                     }
                                 />
                             </Route>
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
                     </ThemeProvider>
                 </ColorModeContext.Provider>
