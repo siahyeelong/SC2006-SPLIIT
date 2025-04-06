@@ -27,7 +27,6 @@ function AItinerary() {
     const [showChat, setShowChat] = useState(false);
 
     // Toolhouse configuration
-    const apiKey = "th-fQgdW1yf2PdmiVFDy-IjLqjiDuHM8oqgemw3HVVVvF8";
     const chatId = "d252512d-1818-4209-aa07-705f27cd1102";
 
     useEffect(() => {
@@ -84,7 +83,7 @@ function AItinerary() {
                                 p: 3,
                                 textAlign: "center",
                                 bgcolor: isDarkMode
-                                    ? "background.paper"
+                                    ? colors.primary[600]
                                     : "background.paper",
                             }}
                         >
@@ -93,7 +92,7 @@ function AItinerary() {
                             </Typography>
                             <Typography paragraph>
                                 Our AI travel assistant can help you create
-                                personalized itineraries based on your
+                                personalised itineraries based on your
                                 interests, budget, and preferences.
                             </Typography>
                             <Typography paragraph>
@@ -122,9 +121,7 @@ function AItinerary() {
                     ) : (
                         <Box mt={4}>
                             <ChatInterface
-                                apiKey={apiKey}
                                 chatId={chatId}
-                                userId={profile?.username || "guest"}
                                 subtitleColor={subtitleColor}
                             />
                             <Box display="flex" justifyContent="center" mt={2}>
@@ -144,7 +141,7 @@ function AItinerary() {
                                         },
                                     }}
                                 >
-                                    Back to Introduction
+                                    End Chat
                                 </Button>
                             </Box>
                         </Box>

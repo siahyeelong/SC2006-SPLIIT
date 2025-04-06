@@ -50,29 +50,37 @@ export const AuthProvider = ({ children }) => {
 
 
     const login = async (username, password) => {
-        setLoading(true)
+        setLoading(true);
+
         try {
             const res = await axios.post(
                 `${backendURL}/users/login`,
                 { username, password },
-                { withCredentials: true }
+                { withCredentials: true } // This ensures cookies like refreshToken are stored
             );
 
-            setAccessToken(res.data.accessToken);
-            setUser(new User(res.data.user));
-            localStorage.setItem("user", res.data.user.username)
-        } catch (error) {
-            if (error.response) {
-                // Server responded with a status outside the 2xx range
-                if (error.response.status === 401) {
-                    throw new Error("Invalid credentials. Please try again.");
-                } else {
-                    throw new Error("Network error. Please try again later.");
-                }
-            } else {
-                // No response received or other network issue
-                throw new Error("Network error. Please check your connection.");
+            const { accessToken, user } = res.data;
+
+            if (!accessToken || !user) {
+                throw new Error("Unexpected response from server. Please try again.");
             }
+
+            setAccessToken(accessToken);
+            setUser(new User(user));
+            localStorage.setItem("user", user.username);
+
+            return true;
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        throw new Error("Invalid username or password.");
+                    } else if (error.response.status === 500) {
+                        throw new Error("Server error. Please try again later.");
+                    }
+                }
+            }
+            throw new Error("Unable to connect to server. Check your network and try again.");
         } finally {
             setLoading(false);
         }
