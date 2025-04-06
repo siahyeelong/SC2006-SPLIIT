@@ -15,7 +15,7 @@ import {
     sendMessageToAgent,
 } from "../../services/toolhouseService";
 
-const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
+const ChatInterface = ({ chatId, subtitleColor }) => {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === "dark";
 
@@ -27,6 +27,7 @@ const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
     const [pollingInterval, setPollingInterval] = useState(null);
     const [runStatus, setRunStatus] = useState("");
     const messagesEndRef = useRef(null);
+    const apiKey = process.env.REACT_APP_AITINERARY_API_KEY;
 
     // Auto-scroll to bottom when messages update
     useEffect(() => {
@@ -126,7 +127,7 @@ const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
                             // Get the latest assistant response
                             const latestResponse =
                                 assistantResponses[
-                                    assistantResponses.length - 1
+                                assistantResponses.length - 1
                                 ];
 
                             // Extract the content - handle nested structure
@@ -174,7 +175,7 @@ const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
                                             (msg.content ===
                                                 "Processing your request..." ||
                                                 msg.content ===
-                                                    "Processing your message...")
+                                                "Processing your message...")
                                         ) {
                                             return {
                                                 role: "assistant",
@@ -348,8 +349,8 @@ const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
                                     ? `${subtitleColor}CC`
                                     : `${subtitleColor}DD`
                                 : isDarkMode
-                                ? "primary.dark"
-                                : "primary.dark",
+                                    ? "primary.dark"
+                                    : "primary.dark",
                         },
                     }}
                 >
