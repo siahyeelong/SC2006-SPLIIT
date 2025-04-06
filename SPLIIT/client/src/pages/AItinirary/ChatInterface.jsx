@@ -26,6 +26,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
     const [error, setError] = useState(null);
     const [pollingInterval, setPollingInterval] = useState(null);
     const [runStatus, setRunStatus] = useState("");
+    const [isProcessing, setIsProcessing] = useState(false); // New state to track if a response is being processed
     const messagesEndRef = useRef(null);
     const apiKey = process.env.REACT_APP_AITINERARY_API_KEY;
 
@@ -91,6 +92,9 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
             clearInterval(pollingInterval);
         }
 
+        // Set processing state to true when polling starts
+        setIsProcessing(true);
+
         // If this is a new message, add a processing indicator
         if (!isFirstMessage) {
             setMessages((prevMessages) => [
@@ -113,6 +117,8 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                 if (status === "completed" || status === "failed") {
                     clearInterval(interval);
                     setPollingInterval(null);
+                    // Set processing state to false when done
+                    setIsProcessing(false);
 
                     // Check for results
                     const results = runData.data?.results || [];
@@ -213,13 +219,16 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                 } else if (status === "failed") {
                     clearInterval(interval);
                     setPollingInterval(null);
+                    setIsProcessing(false); // Set processing state to false on failure
                     setError("The request failed. Please try again.");
                 }
+                // Keep polling if status is still "in_progress"
             } catch (err) {
                 console.error("Error polling data:", err);
                 setError("Failed to update conversation. Please try again.");
                 clearInterval(interval);
                 setPollingInterval(null);
+                setIsProcessing(false); // Set processing state to false on error
             }
         }, 3000); // Poll every 3 seconds
 
@@ -227,7 +236,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
     };
 
     const sendMessage = async () => {
-        if (!input.trim() || !runId) return;
+        if (!input.trim() || !runId || isProcessing) return;
 
         // Add user message to UI immediately
         setMessages((prevMessages) => [
@@ -240,14 +249,47 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
         setError(null);
 
         try {
-            // Send message to agent
-            await sendMessageToAgent(apiKey, runId, currentMessage);
-
-            // Restart polling to get the new response
-            startPolling(false); // Pass false to indicate this is not the first message
+            // First check if the run is completed (we can only send messages to completed runs)
+            const runData = await getAgentRun(apiKey, runId);
+            const status = runData.data?.status || "unknown";
+            
+            if (status === "completed") {
+                // If completed, send the message
+                await sendMessageToAgent(apiKey, runId, currentMessage);
+                
+                // Restart polling to get the new response
+                startPolling(false); // Pass false to indicate this is not the first message
+            } else if (status === "in_progress") {
+                // Cannot send message to in-progress run
+                setError("Please wait for the AI to finish responding before sending another message.");
+                
+                // Remove the user message we just added
+                setMessages(prevMessages => prevMessages.slice(0, -1));
+                
+                // Put the message back in the input field
+                setInput(currentMessage);
+            } else {
+                // For other statuses, try creating a new run
+                setError("Creating a new conversation since the previous one cannot be continued.");
+                
+                const data = await createAgentRun(apiKey, chatId, {
+                    initialMessage: currentMessage,
+                });
+                
+                setRunId(data.id);
+                
+                // Start polling for the new run
+                startPolling(false);
+            }
         } catch (err) {
             console.error("Failed to send message:", err);
             setError("Failed to send message. Please try again.");
+            
+            // Remove the user message we just added
+            setMessages(prevMessages => prevMessages.slice(0, -1));
+            
+            // Put the message back in the input field
+            setInput(currentMessage);
         } finally {
             setLoading(false);
         }
@@ -258,6 +300,14 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
             e.preventDefault();
             sendMessage();
         }
+    };
+
+    // Helper text for the input field
+    const getInputHelperText = () => {
+        if (isProcessing) {
+            return "Waiting for AI to finish responding...";
+        }
+        return "";
     };
 
     return (
@@ -322,12 +372,13 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                     fullWidth
                     multiline
                     maxRows={4}
-                    placeholder="Enter your travel plans or questions..."
+                    placeholder={isProcessing ? "Waiting for AI response..." : "Enter your travel plans or questions..."}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    disabled={loading}
+                    disabled={loading || isProcessing} // Disable when processing
                     variant="outlined"
+                    helperText={getInputHelperText()}
                     sx={{
                         bgcolor: isDarkMode
                             ? "background.paper"
@@ -338,7 +389,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                 <Button
                     variant="contained"
                     onClick={sendMessage}
-                    disabled={!input.trim() || loading}
+                    disabled={!input.trim() || loading || isProcessing} // Disable when processing
                     sx={{
                         bgcolor:
                             subtitleColor ||
