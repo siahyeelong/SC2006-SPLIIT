@@ -26,6 +26,7 @@ import {
 } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
 import { favColourChoices } from "../../constants/favColourChoices";
+import ColourPicker from "../../components/common/ColourPicker";
 
 function RegisterForm() {
     const { login } = useContext(AuthContext);
@@ -41,8 +42,9 @@ function RegisterForm() {
     const [errors, setErrors] = useState({});
     const theme = useTheme();
 
-    const handleColourChange = (e) => {
-        setFormData({ ...formData, favColour: e.target.value });
+    const handleColourChange = (newColour) => {
+        // setFormData({ ...formData, favColour: e.target.value });
+        setFormData((prev) => ({ ...prev, favColour: newColour }));
     };
 
     const handleChange = (e) => {
@@ -122,7 +124,7 @@ function RegisterForm() {
                 flexDirection: "column",
                 gap: 3,
                 width: "100%",
-                maxWidth: 600, // Increased form width
+                maxWidth: 700, // Increased form width
                 mx: "auto",
                 mt: 2,
                 p: 4,
@@ -374,7 +376,7 @@ function RegisterForm() {
             <Typography sx={{ color: "white", variant: "body1" }}>
                 Select your favourite colour
             </Typography>
-            <ToggleButtonGroup
+            {/* <ToggleButtonGroup
                 value={formData.favColour}
                 exclusive
                 onChange={handleColourChange}
@@ -407,7 +409,11 @@ function RegisterForm() {
                         )}
                     </ToggleButton>
                 ))}
-            </ToggleButtonGroup>
+            </ToggleButtonGroup> */}
+            <ColourPicker
+                profile={formData}
+                onColourChange={handleColourChange}
+            />
             {errors.favColour && (
                 <Typography color="error" sx={{ mt: 1 }}>
                     {errors.favColour}
