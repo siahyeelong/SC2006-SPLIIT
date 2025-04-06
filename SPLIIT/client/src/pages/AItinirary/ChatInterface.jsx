@@ -16,10 +16,14 @@ import {
 } from "../../services/toolhouseService";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const ChatInterface = ({ chatId, subtitleColor }) => {
 =======
 const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
 >>>>>>> 1227d8d (Restructure folders)
+=======
+const ChatInterface = ({ chatId, subtitleColor }) => {
+>>>>>>> 0c27676 (fixed login incorrect password issue)
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === "dark";
 
@@ -34,9 +38,12 @@ const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
     const [isProcessing, setIsProcessing] = useState(false); // New state to track if a response is being processed
     const messagesEndRef = useRef(null);
     const apiKey = process.env.REACT_APP_AITINERARY_API_KEY;
+<<<<<<< HEAD
 =======
     const messagesEndRef = useRef(null);
 >>>>>>> 1227d8d (Restructure folders)
+=======
+>>>>>>> 0c27676 (fixed login incorrect password issue)
 
     // Auto-scroll to bottom when messages update
     useEffect(() => {
@@ -148,10 +155,14 @@ const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
                             const latestResponse =
                                 assistantResponses[
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 assistantResponses.length - 1
 =======
                                     assistantResponses.length - 1
 >>>>>>> 1227d8d (Restructure folders)
+=======
+                                assistantResponses.length - 1
+>>>>>>> 0c27676 (fixed login incorrect password issue)
                                 ];
 
                             // Extract the content - handle nested structure
@@ -200,10 +211,14 @@ const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
                                                 "Processing your request..." ||
                                                 msg.content ===
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                 "Processing your message...")
 =======
                                                     "Processing your message...")
 >>>>>>> 1227d8d (Restructure folders)
+=======
+                                                "Processing your message...")
+>>>>>>> 0c27676 (fixed login incorrect password issue)
                                         ) {
                                             return {
                                                 role: "assistant",
@@ -462,12 +477,17 @@ const ChatInterface = ({ apiKey, chatId, userId, subtitleColor }) => {
                                     : `${subtitleColor}DD`
                                 : isDarkMode
 <<<<<<< HEAD
+<<<<<<< HEAD
                                     ? "primary.dark"
                                     : "primary.dark",
 =======
                                 ? "primary.dark"
                                 : "primary.dark",
 >>>>>>> 1227d8d (Restructure folders)
+=======
+                                    ? "primary.dark"
+                                    : "primary.dark",
+>>>>>>> 0c27676 (fixed login incorrect password issue)
                         },
                     }}
                 >

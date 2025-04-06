@@ -2,6 +2,7 @@
 
 - add a loading screen
 <<<<<<< HEAD
+<<<<<<< HEAD
 - add a link for people to join trip
 - ensure api calls are secure
 
@@ -14,3 +15,8 @@
 =======
 - when user keys in invalid trip ID when joining
 >>>>>>> d40fa43 (fixed layout of trip creation page)
+=======
+- add a link for people to join trip
+- ensure api calls are secure
+
+>>>>>>> 0c27676 (fixed login incorrect password issue)

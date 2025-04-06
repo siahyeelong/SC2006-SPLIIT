@@ -28,9 +28,12 @@ function AItinerary() {
 
     // Toolhouse configuration
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     const apiKey = "th-fQgdW1yf2PdmiVFDy-IjLqjiDuHM8oqgemw3HVVVvF8";
 >>>>>>> 1227d8d (Restructure folders)
+=======
+>>>>>>> 0c27676 (fixed login incorrect password issue)
     const chatId = "d252512d-1818-4209-aa07-705f27cd1102";
 
     useEffect(() => {
@@ -88,10 +91,14 @@ function AItinerary() {
                                 textAlign: "center",
                                 bgcolor: isDarkMode
 <<<<<<< HEAD
+<<<<<<< HEAD
                                     ? colors.primary[600]
 =======
                                     ? "background.paper"
 >>>>>>> 1227d8d (Restructure folders)
+=======
+                                    ? colors.primary[600]
+>>>>>>> 0c27676 (fixed login incorrect password issue)
                                     : "background.paper",
                             }}
                         >
@@ -101,10 +108,14 @@ function AItinerary() {
                             <Typography paragraph>
                                 Our AI travel assistant can help you create
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 personalised itineraries based on your
 =======
                                 personalized itineraries based on your
 >>>>>>> 1227d8d (Restructure folders)
+=======
+                                personalised itineraries based on your
+>>>>>>> 0c27676 (fixed login incorrect password issue)
                                 interests, budget, and preferences.
                             </Typography>
                             <Typography paragraph>
@@ -134,12 +145,16 @@ function AItinerary() {
                         <Box mt={4}>
                             <ChatInterface
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 chatId={chatId}
 =======
                                 apiKey={apiKey}
                                 chatId={chatId}
                                 userId={profile?.username || "guest"}
 >>>>>>> 1227d8d (Restructure folders)
+=======
+                                chatId={chatId}
+>>>>>>> 0c27676 (fixed login incorrect password issue)
                                 subtitleColor={subtitleColor}
                             />
                             <Box display="flex" justifyContent="center" mt={2}>
@@ -160,10 +175,14 @@ function AItinerary() {
                                     }}
                                 >
 <<<<<<< HEAD
+<<<<<<< HEAD
                                     End Chat
 =======
                                     Back to Introduction
 >>>>>>> 1227d8d (Restructure folders)
+=======
+                                    End Chat
+>>>>>>> 0c27676 (fixed login incorrect password issue)
                                 </Button>
                             </Box>
                         </Box>

@@ -13,6 +13,10 @@ const API_BASE_URL = 'https://api.toolhouse.ai/v1';
  * @returns {Promise<Object>} - Data from the created agent run
  */
 export async function createAgentRun(apiKey, chatId, vars = {}) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0c27676 (fixed login incorrect password issue)
   const url = `${API_BASE_URL}/agent-runs`;
   const headers = {
     'Authorization': `Bearer ${apiKey}`,
