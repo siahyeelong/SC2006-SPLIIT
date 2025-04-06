@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import {
     Box,
     Button,
-    Chip,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
     IconButton,
@@ -12,27 +10,34 @@ import {
     Tooltip,
     Typography,
     useTheme,
+    Divider,
+    Chip,
 } from "@mui/material";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import TelegramIcon from "@mui/icons-material/Telegram";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import EmailIcon from "@mui/icons-material/Email";
-import { ContentCopy } from "@mui/icons-material";
+import {
+    WhatsApp,
+    Telegram,
+    Instagram,
+    Email,
+    ContentCopy,
+    Check,
+} from "@mui/icons-material";
 import SnackbarNotifs from "../../components/common/SnackbarNotifs";
 
 function TripCreatedSuccess({ open, handleClose, trip }) {
     const theme = useTheme();
-    const sharingText = `Join my SPLIIT trip with the trip ID ${trip?.tripID}`;
+    const sharingText = `Join my SPLIIT trip "${trip?.tripName}" using ID: ${trip?.tripID}`;
+
     const shareLinks = {
         whatsapp: `https://wa.me/?text=${sharingText}`,
         telegram: `https://t.me/share/url?url=${sharingText}`,
         instagram: `https://www.instagram.com/direct/new/?text=${sharingText}`,
         email: `mailto:?subject=Hello%20World!&body=${sharingText}`,
     };
+
     const [snackbarState, setSnackbarState] = useState({
         open: false,
         message: "",
-        severity: "",
+        severity: "success",
     });
 
     const showSnackbar = (message, severity) => {
@@ -54,90 +59,164 @@ function TripCreatedSuccess({ open, handleClose, trip }) {
     };
 
     return (
-        <Box display={"flex"} justifyContent={"center"}>
-            <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-                <DialogTitle textAlign="center" variant="h3">
-                    "{trip?.tripName}" created!
-                </DialogTitle>
-                <DialogContent>
-                    <Typography textAlign="center" mb={2}>
-                        Share this trip ID with your friends to get them to join
-                    </Typography>
-                    <Box
+        <Box display="flex" justifyContent="center">
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                maxWidth="sm"
+                fullWidth
+                sx={{ borderRadius: 2 }}
+            >
+                <DialogTitle
+                    sx={{
+                        textAlign: "center",
+                        pt: 4,
+                        pb: 2,
+                        position: "relative",
+                    }}
+                >
+                    <Typography
+                        variant="h6"
                         sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: 1,
+                            fontSize: { xs: "1.25rem", md: "2.5rem" },
+                            fontWeight: 600,
+                            mb: 0.5,
                         }}
                     >
-                        <Typography variant="body1" fontWeight={500}>
-                            Trip ID:
+                        Trip Created!
+                    </Typography>
+                    <Typography variant="h5" color="text.primary">
+                        "{trip?.tripName}"
+                    </Typography>
+                </DialogTitle>
+
+                <DialogContent sx={{ px: 4, py: 3 }}>
+                    <Stack spacing={3} alignItems="center">
+                        <Typography
+                            variant="body1"
+                            textAlign="center"
+                            color="text.secondary"
+                        >
+                            Share this ID with your travel companions
                         </Typography>
-                        <Chip
-                            label={trip?.tripID}
-                            variant="filled"
+
+                        <Box
                             sx={{
-                                borderRadius: 2,
-                                border: "1px solid",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: 1.5,
+                                p: 1,
+                                borderRadius: 3,
+                                width: "100%",
+                                maxWidth: 400,
                             }}
-                        />
-                        <Tooltip title="Copy Trip ID" arrow>
-                            <IconButton
-                                onClick={handleCopy}
-                                size="small"
-                                sx={{ color: theme.palette.text.secondary }}
-                            >
-                                <ContentCopy fontSize="small" />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                    <Stack
-                        spacing={2}
-                        direction="row"
-                        alignItems="center"
-                        justifyContent={"center"}
-                    >
-                        <IconButton
-                            href={shareLinks.whatsapp}
-                            target="_blank"
-                            rel="noopener noreferrer"
                         >
-                            <WhatsAppIcon />
-                        </IconButton>
-                        <IconButton
-                            href={shareLinks.telegram}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <TelegramIcon />
-                        </IconButton>
-                        <IconButton
-                            href={shareLinks.instagram}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <InstagramIcon />
-                        </IconButton>
-                        <IconButton
-                            href={shareLinks.email}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <EmailIcon />
-                        </IconButton>
+                            <Chip
+                                label={trip?.tripID}
+                                variant="filled"
+                                sx={{
+                                    fontWeight: 600,
+                                    px: 2,
+                                    py: 1,
+                                    borderRadius: 2,
+                                    border: `1px solid ${theme.palette.divider}`,
+                                }}
+                            />
+                            <Tooltip title={"Copy Trip ID"}>
+                                <IconButton
+                                    onClick={handleCopy}
+                                    sx={{
+                                        bgcolor: theme.palette.action.hover,
+                                        "&:hover": {
+                                            bgcolor:
+                                                theme.palette.action.selected,
+                                        },
+                                    }}
+                                >
+                                    <ContentCopy fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+
+                        <Divider sx={{ width: "100%", my: 1 }}>
+                            Or share via
+                        </Divider>
+
+                        <Stack direction="row" spacing={2}>
+                            {[
+                                {
+                                    icon: <WhatsApp />,
+                                    label: "WhatsApp",
+                                    color: "#25D366",
+                                },
+                                {
+                                    icon: <Telegram />,
+                                    label: "Telegram",
+                                    color: "#0088CC",
+                                },
+                                {
+                                    icon: <Instagram />,
+                                    label: "Instagram",
+                                    color: "#E1306C",
+                                },
+                                {
+                                    icon: <Email />,
+                                    label: "Email",
+                                    color: theme.palette.text.primary,
+                                },
+                            ].map((platform, index) => (
+                                <Tooltip
+                                    key={platform.label}
+                                    title={platform.label}
+                                >
+                                    <IconButton
+                                        href={
+                                            shareLinks[
+                                                Object.keys(shareLinks)[index]
+                                            ]
+                                        }
+                                        target="_blank"
+                                        sx={{
+                                            bgcolor: platform.color + "15",
+                                            color: platform.color,
+                                            "&:hover": {
+                                                bgcolor: platform.color + "25",
+                                                transform: "scale(1.1)",
+                                            },
+                                            transition: "all 0.2s ease",
+                                        }}
+                                    >
+                                        {platform.icon}
+                                    </IconButton>
+                                </Tooltip>
+                            ))}
+                        </Stack>
                     </Stack>
                 </DialogContent>
-                <DialogActions sx={{ justifyContent: "center" }}>
+
+                <Box sx={{ px: 4, pb: 4, textAlign: "center" }}>
                     <Button
                         onClick={handleClose}
-                        color="secondary"
                         variant="contained"
+                        color="success"
+                        size="large"
+                        sx={{
+                            px: 6,
+                            borderRadius: 3,
+                            fontWeight: 700,
+                            textTransform: "none",
+                            "&:hover": {
+                                transform: "translateY(-1px)",
+                            },
+                            transition: "all 0.2s ease",
+                        }}
                     >
-                        Start logging!
+                        Start Logging Expenses
                     </Button>
-                </DialogActions>
+                </Box>
             </Dialog>
+
             <SnackbarNotifs
                 open={snackbarState.open}
                 message={snackbarState.message}
