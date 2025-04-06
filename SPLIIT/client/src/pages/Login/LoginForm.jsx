@@ -76,7 +76,7 @@ function LoginForm() {
                 await login(formData.username, formData.password);
                 navigate("/selecttrip");
             } catch (error) {
-                setErrors({ auth: error });
+                setErrors({ auth: error.message || "Login failed." });
             }
         }
     };
@@ -223,7 +223,7 @@ function LoginForm() {
             </FormControl>
 
             {/* Authentication Error */}
-            {errors.auth && (
+            {errors?.auth && (
                 <Typography color="error" sx={{ mt: 1 }}>
                     {errors.auth}
                 </Typography>
