@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import {
@@ -14,6 +14,8 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MenuItems from "../constants/MenuItems";
 import logo from "../assets/SPLIIT_logo.jpg";
 import { useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import ShowCurTrip from "../components/common/ShowCurTrip";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
     const theme = useTheme();
@@ -36,6 +38,8 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
     const colours = tokens(theme.palette.mode);
     const [selected, setSelected] = useState("logtransaction");
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const navigate = useNavigate();
+    const { trip } = useContext(AuthContext);
 
     // Handle automatic collapse on mobile
     useEffect(() => {
@@ -156,10 +160,12 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                             )}
                         </Box>
                     </Menu>
-                    <Box>
-                        {/* TODO: make the trip picture and name show here */}
-                    </Box>
                     <Menu iconShape="square">
+                        <ShowCurTrip
+                            displayCondition={!isCollapsed}
+                            curTrip={trip}
+                            onClick={() => navigate("/selecttrip")}
+                        />
                         {MenuItems.map((item) => {
                             if (item.title === "TripInfo") {
                                 return (

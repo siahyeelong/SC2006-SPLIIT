@@ -65,7 +65,11 @@ function TripSelection() {
                             borderRadius: 4,
                             boxShadow: 5,
                             backgroundColor: colours.greenAccent[800],
-                            cursor: "pointer",
+                            transition: "all 0.3s",
+                            "&:hover": {
+                                transform: "translateY(-4px)",
+                                cursor: "pointer",
+                            },
                         }}
                         onClick={() => selectedTrip(trip)}
                     >
@@ -94,7 +98,11 @@ function TripSelection() {
                         borderRadius: 4,
                         boxShadow: 5,
                         backgroundColor: colours.greenAccent[600],
-                        cursor: "pointer",
+                        transition: "all 0.3s",
+                        "&:hover": {
+                            transform: "translateY(-4px)",
+                            cursor: "pointer",
+                        },
                     }}
                     onClick={() => navigate("/createtrip")}
                 >

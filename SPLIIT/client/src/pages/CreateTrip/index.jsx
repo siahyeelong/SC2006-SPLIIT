@@ -14,7 +14,7 @@ function CreateTrip() {
             >
                 <Header
                     title={"Create Trip"}
-                    subtitle={"Create / Join a trip!"}
+                    subtitle={"Create Your Trip or Join One Today!"}
                 />
                 <JoinTripButton />
             </Box>
