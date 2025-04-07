@@ -25,13 +25,13 @@ import SnackbarNotifs from "../../components/common/SnackbarNotifs";
 
 function TripCreatedSuccess({ open, handleClose, trip }) {
     const theme = useTheme();
-    const sharingText = `Join my SPLIIT trip "${trip?.tripName}" using ID: ${trip?.tripID}`;
+    const sharingText = `Join my SPLIIT trip "${trip?.tripName}" using ID: ${trip?.tripID}. Haven't used SPLIIT before? Try it out at https://sc2006-spliit.vercel.app today!`;
 
     const shareLinks = {
         whatsapp: `https://wa.me/?text=${sharingText}`,
         telegram: `https://t.me/share/url?url=${sharingText}`,
         instagram: `https://www.instagram.com/direct/new/?text=${sharingText}`,
-        email: `mailto:?subject=Hello%20World!&body=${sharingText}`,
+        email: `mailto:?subject=Join%20Me!&body=${sharingText}`,
     };
 
     const [snackbarState, setSnackbarState] = useState({
@@ -173,7 +173,7 @@ function TripCreatedSuccess({ open, handleClose, trip }) {
                                     <IconButton
                                         href={
                                             shareLinks[
-                                                Object.keys(shareLinks)[index]
+                                            Object.keys(shareLinks)[index]
                                             ]
                                         }
                                         target="_blank"
