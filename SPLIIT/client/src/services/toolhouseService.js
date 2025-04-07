@@ -13,16 +13,16 @@ const API_BASE_URL = 'https://api.toolhouse.ai/v1';
  * @returns {Promise<Object>} - Data from the created agent run
  */
 export async function createAgentRun(apiKey, chatId, vars = {}) {
-
   const url = `${API_BASE_URL}/agent-runs`;
   const headers = {
     'Authorization': `Bearer ${apiKey}`,
     'Content-Type': 'application/json',
   };
 
+  // Just use the standard parameters without extra fields
   const body = JSON.stringify({
     chat_id: chatId,
-    vars: vars,
+    vars: vars
   });
 
   try {
