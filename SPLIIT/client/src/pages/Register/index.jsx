@@ -16,6 +16,7 @@ function Register() {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start", // Align content to the top
+                pb: 2,
             }}
         >
             {/* Header */}
