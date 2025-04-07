@@ -7,7 +7,7 @@ import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const Message = ({ message }) => {
   const isUser = message.role === 'user';
-  
+
   return (
     <Box
       sx={{
@@ -22,7 +22,7 @@ const Message = ({ message }) => {
           <AssistantIcon />
         </Avatar>
       )}
-      
+
       <Box
         sx={{
           maxWidth: '70%',
@@ -67,7 +67,7 @@ const Message = ({ message }) => {
           </ReactMarkdown>
         )}
       </Box>
-      
+
       {isUser && (
         <Avatar sx={{ bgcolor: 'secondary.main' }}>
           <PersonIcon />

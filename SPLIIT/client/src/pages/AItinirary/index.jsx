@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
     Box,
     Button,
@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import Header from "../../layouts/Header";
 import ChatInterface from "./ChatInterface";
-import axios from "axios";
 import { tokens } from "../../theme";
 
 function AItinerary() {
@@ -22,35 +21,11 @@ function AItinerary() {
         ? colors.greenAccent[400]
         : colors.greenAccent[400];
 
-    const [profile, setProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [showChat, setShowChat] = useState(false);
 
     // Toolhouse configuration
     const chatId = "d252512d-1818-4209-aa07-705f27cd1102";
-
-    useEffect(() => {
-        // Fetch user profile on component mount
-        fetchUserProfile();
-    }, []);
-
-    async function fetchUserProfile() {
-        const backendURL = process.env.REACT_APP_BACKEND_URL;
-
-        try {
-            // This would normally check for an existing session
-            const res = await axios.post(
-                `${backendURL}/users/login`,
-                { username: "yeelong", password: "password123" },
-                { withCredentials: true }
-            );
-            setProfile(res.data.user);
-        } catch (error) {
-            console.error("Failed to fetch user profile:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
 
     const handleStartPlanning = () => {
         setShowChat(true);
