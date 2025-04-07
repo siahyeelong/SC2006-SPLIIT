@@ -55,14 +55,14 @@ const TripGeneral = ({ trip, setTrip }) => {
         reader.onload = (event) => {
             const img = new Image();
             img.src = event.target.result;
-            img.onload = () => {
+            img.onload = async () => {
                 const canvas = document.createElement("canvas");
                 const ctx = canvas.getContext("2d");
 
                 // Determine the square crop size (smallest dimension)
                 const size = Math.min(img.width, img.height);
-                const sx = (img.width - size) / 2; // Crop start X
-                const sy = (img.height - size) / 2; // Crop start Y
+                const sx = (img.width - size) / 2;
+                const sy = (img.height - size) / 2;
 
                 // Set canvas size to 512x512
                 canvas.width = 512;
@@ -76,8 +76,34 @@ const TripGeneral = ({ trip, setTrip }) => {
 
                 // Update trip state with the new image
                 setTrip((t) => ({ ...t, tripImage: base64String }));
-
                 showSnackbar("Image uploaded!", "success");
+
+                // Update backend (using the correct endpoint and payload)
+                try {
+                    const response = await fetch(
+                        `${process.env.REACT_APP_BACKEND_URL}/trips/edittrip/${trip.tripID}`,
+                        {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                updateField: "tripImage",
+                                value: base64String,
+                            }),
+                        }
+                    );
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(
+                            `Failed to update trip image: ${response.status} ${errorText}`
+                        );
+                    }
+                    // Optionally handle the response data here
+                } catch (error) {
+                    console.error("Error updating trip image:", error);
+                    showSnackbar("Failed to save image", "error");
+                }
             };
         };
     };
