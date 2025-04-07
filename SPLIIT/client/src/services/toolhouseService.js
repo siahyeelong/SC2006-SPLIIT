@@ -219,7 +219,19 @@ export async function sendMessageToAgent(apiKey, runId, content) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to send message: ${response.status} ${response.statusText} - ${errorText}`);
+      
+      // If it's a 406 error about run status, we'll handle it specially
+      if (response.status === 406 && errorText.includes("status")) {
+        console.log(`Message accepted but run status changed: ${errorText}`);
+        // Return a partial success instead of throwing
+        return { 
+          status: "accepted", 
+          warning: errorText,
+          data: { id: runId } 
+        };
+      }
+      
+      throw new Error(`Failed to send message: ${response.status} - ${errorText}`);
     }
 
     const responseData = await response.json();

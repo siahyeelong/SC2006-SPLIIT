@@ -15,7 +15,7 @@ const frontEndURL = process.env.FRONT_END_URL
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors({
-    origin: `${frontEndURL}`,
+    origin: `http://${frontEndURL}`,
     credentials: true,
 }));
 app.use(express.json());
