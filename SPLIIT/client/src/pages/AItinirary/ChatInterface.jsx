@@ -265,14 +265,18 @@ Begin by acknowledging that you've received these trip details and are ready to 
                                     } else if (typeof result1.content === "string") {
                                         assistantMessage = result1.content;
                                     }
+
+                                    // Instead of setting the message UI, just log that we found it
+                                    console.log("Found initial greeting (not displaying in UI)");
+                                    // Don't set the message in UI here
                                     
-                                    // Update UI with the assistant's message
-                                    if (assistantMessage && isMountedRef.current) {
-                                        setMessages([
-                                            { role: "assistant", content: assistantMessage }
-                                        ]);
-                                        console.log("Set assistant message in UI");
-                                    }
+                                    // // Update UI with the assistant's message
+                                    // if (assistantMessage && isMountedRef.current) {
+                                    //     setMessages([
+                                    //         { role: "assistant", content: assistantMessage }
+                                    //     ]);
+                                    //     console.log("Set assistant message in UI");
+                                    // }
                                 }
                                 
                                 // Only proceed after we've seen a stable Result 1 for 3 cycles
@@ -290,16 +294,21 @@ Begin by acknowledging that you've received these trip details and are ready to 
                                             // Generate trip details
                                             const tripDetailsMessage = generateTripDetailsMessage();
                                             
-                                            // Add trip details to UI
-                                            setMessages(prev => [
-                                                ...prev,
-                                                { role: "user", content: tripDetailsMessage }
-                                            ]);
+                                            // // Add trip details to UI
+                                            // setMessages(prev => [
+                                            //     ...prev,
+                                            //     { role: "user", content: tripDetailsMessage }
+                                            // ]);
                                             
-                                            // Add processing indicator
-                                            setMessages(prev => [
-                                                ...prev,
-                                                { role: "assistant", content: "Processing your trip details..." }
+                                            // // Add processing indicator
+                                            // setMessages(prev => [
+                                            //     ...prev,
+                                            //     { role: "assistant", content: "Processing your trip details..." }
+                                            // ]);
+
+                                            // Just show a loading indicator instead
+                                            setMessages([
+                                                { role: "assistant", content: "Creating your personalized travel itinerary..." }
                                             ]);
                                             
                                             // Send the message directly
@@ -342,18 +351,26 @@ Begin by acknowledging that you've received these trip details and are ready to 
                                                                     responseContent = latestResponse.content;
                                                                 }
                                                                 
-                                                                // Update UI - replace processing message with actual response
+                                                                // // Update UI - replace processing message with actual response
+                                                                // if (responseContent && isMountedRef.current) {
+                                                                //     setMessages(prev => {
+                                                                //         return prev.map(msg => {
+                                                                //             if (msg.role === "assistant" && 
+                                                                //                 msg.content === "Processing your trip details...") {
+                                                                //                 return { role: "assistant", content: responseContent };
+                                                                //             }
+                                                                //             return msg;
+                                                                //         });
+                                                                //     });
+                                                                //     console.log("Updated UI with response to trip details");
+                                                                //     setLoading(false);
+                                                                // }
+                                                                // Show ONLY this final response in the UI
                                                                 if (responseContent && isMountedRef.current) {
-                                                                    setMessages(prev => {
-                                                                        return prev.map(msg => {
-                                                                            if (msg.role === "assistant" && 
-                                                                                msg.content === "Processing your trip details...") {
-                                                                                return { role: "assistant", content: responseContent };
-                                                                            }
-                                                                            return msg;
-                                                                        });
-                                                                    });
-                                                                    console.log("Updated UI with response to trip details");
+                                                                    setMessages([
+                                                                        { role: "assistant", content: responseContent }
+                                                                    ]);
+                                                                    console.log("Showing final itinerary in UI");
                                                                     setLoading(false);
                                                                 }
                                                             }
