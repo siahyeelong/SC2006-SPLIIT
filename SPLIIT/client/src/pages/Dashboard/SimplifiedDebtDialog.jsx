@@ -108,7 +108,9 @@ function SimplifiedDebtDialog({ open, onClose, transactions, people }) {
                                                     minWidth: "80px",
                                                 }}
                                             >
-                                                {people[t.from].displayName}
+                                                {people[t.from]
+                                                    ? people[t.from].displayName
+                                                    : t.from}
                                             </Typography>
                                             <Typography
                                                 variant="body1"
@@ -125,7 +127,9 @@ function SimplifiedDebtDialog({ open, onClose, transactions, people }) {
                                                     minWidth: "80px",
                                                 }}
                                             >
-                                                {people[t.to].displayName}
+                                                {people[t.to]
+                                                    ? people[t.to].displayName
+                                                    : t.to}
                                             </Typography>
                                             <Typography
                                                 variant="body1"

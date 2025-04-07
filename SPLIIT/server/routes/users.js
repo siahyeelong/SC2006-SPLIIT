@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../db/connection.js";
-import jwt from "jsonwebtoken"
-import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import { ObjectId } from "mongodb";
 
 const router = express.Router();
@@ -18,7 +18,8 @@ router.post("/createuser", async (req, res) => {
     const { email, username, password, displayName, favColour } = req.body;
 
     const existingUser = await collection.findOne({ username });
-    if (existingUser) return res.status(400).json({ message: "Username already exists" });
+    if (existingUser)
+        return res.status(400).json({ message: "Username already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     let newRecord = {
@@ -51,14 +52,14 @@ router.post("/login", async (req, res) => {
         maxAge: 34 * 24 * 60 * 60 * 1000,
     });
 
-    user.password = ""
+    user.password = "";
 
     res.json({ accessToken, user: user });
 });
 
-import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-router.post('/googlelogin', async (req, res) => {
+router.post("/googlelogin", async (req, res) => {
     try {
         const { credential } = req.body;
 
@@ -91,7 +92,7 @@ router.post('/googlelogin', async (req, res) => {
         }
 
         // Generate JWT token
-        const username = user.username
+        const username = user.username;
         const refreshToken = generateRefreshToken({ username });
 
         // Set cookie
@@ -108,8 +109,11 @@ router.post('/googlelogin', async (req, res) => {
             user: username,
         });
     } catch (error) {
-        console.error('Google auth error:', error);
-        res.status(500).json({ message: 'Authentication failed', error: error.message });
+        console.error("Google auth error:", error);
+        res.status(500).json({
+            message: "Authentication failed",
+            error: error.message,
+        });
     }
 });
 
@@ -117,27 +121,35 @@ router.get("/refresh", async (req, res) => {
     try {
         const refreshToken = req.cookies.refreshToken;
         if (!refreshToken) {
-            return res.status(401).json({ message: "Not authenticated: No refresh token." });
+            return res
+                .status(401)
+                .json({ message: "Not authenticated: No refresh token." });
         }
 
-        jwt.verify(refreshToken, process.env.REFRESH_SECRET, async (err, decoded) => {
-            if (err) {
-                return res.status(403).json({ message: "Invalid refresh token." });
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_SECRET,
+            async (err, decoded) => {
+                if (err) {
+                    return res
+                        .status(403)
+                        .json({ message: "Invalid refresh token." });
+                }
+
+                const { username } = decoded;
+                const user = await collection.findOne({ username });
+
+                if (!user) {
+                    return res.status(403).json({ message: "User not found." });
+                }
+
+                // Generate a new access token
+                const accessToken = generateAccessToken({ username });
+
+                user.password = "";
+                res.json({ accessToken, user: user });
             }
-
-            const { username } = decoded;
-            const user = await collection.findOne({ username });
-
-            if (!user) {
-                return res.status(403).json({ message: "User not found." });
-            }
-
-            // Generate a new access token
-            const accessToken = generateAccessToken({ username });
-
-            user.password = ""
-            res.json({ accessToken, user: user });
-        });
+        );
     } catch (error) {
         console.error("Error in /refresh:", error);
         res.status(500).json({ message: "Internal server error." });
@@ -148,9 +160,9 @@ router.get("/userinfo/:username", async (req, res) => {
     try {
         let query = { username: req.params.username };
         let result = await collection.findOne(query);
-        delete result.password
-        delete result._id
-        delete result.email
+        delete result.password;
+        delete result._id;
+        delete result.email;
         if (!result) res.send("Not found").status(404);
         else res.send(result).status(200);
     } catch (error) {
@@ -165,7 +177,7 @@ router.get("/getParticipants/:tripID", async (req, res) => {
 
         // Find all users that are in the trip
         const tripInfo = await trips_collection.findOne({ tripID: tripID });
-        const usernames = tripInfo?.users;
+        const usernames = tripInfo?.users || [];
         // Find all information about the user
         let results = await Promise.all(
             usernames?.map(async (username) => {
@@ -182,6 +194,7 @@ router.get("/getParticipants/:tripID", async (req, res) => {
     } catch (error) {
         console.error(`Error fetching usernames:\n${error}`);
         res.status(500).send("Error retrieving participants");
+        res.status(200).send([]);
     }
 });
 
@@ -189,11 +202,11 @@ router.patch("/edituser/:username", async (req, res) => {
     try {
         const updateField = req.body.updateField;
         if (updateField === "password" || updateField === "username")
-            throw new Error("SOMEONE TRYNA CHANGE SENSITIVE USER PARAMS!!")
+            throw new Error("SOMEONE TRYNA CHANGE SENSITIVE USER PARAMS!!");
         const query = { username: req.params.username };
         const updates = {
             $set: {
-                [req.body.updateField]: req.body.value
+                [req.body.updateField]: req.body.value,
             },
         };
 
@@ -202,7 +215,7 @@ router.patch("/edituser/:username", async (req, res) => {
         console.error(err.red);
         res.status(500).send("Error updating record");
     }
-})
+});
 
 router.post("/logout", (req, res) => {
     res.clearCookie("refreshToken");
@@ -211,7 +224,7 @@ router.post("/logout", (req, res) => {
 
 // Test API
 router.get("/test", async (req, res) => {
-    res.send("Hello from the users API").status(200)
+    res.send("Hello from the users API").status(200);
 });
 
 export default router;

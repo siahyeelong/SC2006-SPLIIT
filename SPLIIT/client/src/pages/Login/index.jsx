@@ -16,6 +16,7 @@ function Login() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                pb: 2,
             }}
         >
             {/* Header */}
