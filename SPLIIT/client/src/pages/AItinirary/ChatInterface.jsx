@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
     Box,
     TextField,
@@ -14,10 +14,12 @@ import {
     getAgentRun,
     sendMessageToAgent,
 } from "../../services/toolhouseService";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const ChatInterface = ({ chatId, subtitleColor }) => {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === "dark";
+    const { trip } = useContext(AuthContext);
 
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
@@ -26,117 +28,465 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
     const [error, setError] = useState(null);
     const [pollingInterval, setPollingInterval] = useState(null);
     const [runStatus, setRunStatus] = useState("");
-    const [isProcessing, setIsProcessing] = useState(false); // New state to track if a response is being processed
+    const [sentTripDetails, setSentTripDetails] = useState(false);
+    
     const messagesEndRef = useRef(null);
+    const initialCheckIntervalRef = useRef(null);
+    const result1CountRef = useRef(0);
+    const sendingTripDetailsRef = useRef(false);
+    const hasInitializedRef = useRef(false);
+    const isMountedRef = useRef(true);
+    
     const apiKey = process.env.REACT_APP_AITINERARY_API_KEY;
+
+    useEffect(() => {
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
 
     // Auto-scroll to bottom when messages update
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    // Setup polling for messages when runId changes
+    // Cleanup all intervals on unmount
     useEffect(() => {
-        if (runId) {
-            startPolling();
-        }
-
         return () => {
-            // Cleanup polling on unmount
             if (pollingInterval) {
                 clearInterval(pollingInterval);
             }
+            if (initialCheckIntervalRef.current) {
+                clearInterval(initialCheckIntervalRef.current);
+                initialCheckIntervalRef.current = null;
+            }
         };
-    }, [runId]);
+    }, [pollingInterval]);
 
-    // Initialize the agent when component mounts
     useEffect(() => {
-        // Initialize the agent immediately
-        initializeAgent();
+        if (!hasInitializedRef.current) {
+            console.log("Initializing agent for the first time");
+            hasInitializedRef.current = true;
+            initializeAgent();
+        }
     }, []);
 
-    // New function to initialize the agent without requiring user input
+    useEffect(() => {
+        return () => {
+          // Reset the sending flag when component unmounts
+          sendingTripDetailsRef.current = false;
+        };
+      }, []);
+
+    // Function to generate trip details message
+    const generateTripDetailsMessage = () => {
+        if (trip) {
+            const startDate = new Date(trip.startDate).toLocaleDateString();
+            const endDate = new Date(trip.endDate).toLocaleDateString();
+            const durationDays = Math.ceil(
+                (new Date(trip.endDate) - new Date(trip.startDate)) / (1000 * 60 * 60 * 24)
+            ) + 1;
+            const destinations = trip.cities;
+            const budget = `${trip.budget} ${trip.localCurrency}`;
+            const numPeople = trip.users.length;
+
+            return `You are a travel planning assistant that helps create personalized, detailed itineraries.
+
+TRIP DETAILS:
+- Destination: ${destinations}
+- Travel dates: ${startDate} to ${endDate} (${durationDays} days)
+- Budget per person: ${budget}
+- Number of travelers: ${numPeople}
+
+IMMEDIATE ACTION REQUIRED:
+Based only on the information above, generate a complete itinerary for the entire ${durationDays}-day trip. Don't ask for additional information before providing this full itinerary. Include specific attractions, restaurants, and accommodations with estimated costs and times for each day.
+
+After providing the complete itinerary, you may then ask if the user would like to refine or adjust any aspects of the plan.
+
+YOUR CAPABILITIES:
+1. Recommend specific destinations based on user preferences and interests
+2. Create realistic day-by-day itineraries with time-specific activities
+3. Suggest accommodations, restaurants, and activities with price ranges
+4. Provide budget estimates for all components of the trip
+5. Include local transportation options and logistics between activities
+
+IMPORTANT CONSIDERATIONS:
+- TIMING: Consider realistic travel times, arrival times, and average visit durations
+- GEOGRAPHY: Group activities by proximity - plan activities within the same region each day
+- PACING: Include rest breaks and downtime; don't overpack each day
+- LOGISTICS: Recommend transportation between locations (public transit, walking, rideshare)
+- HOURS OF OPERATION: Only suggest attractions and restaurants when they're actually open
+- DAILY END TIME: Unless the final item is a night event, ensure travelers return to accommodations before midnight
+- LOCAL CONTEXT: Consider weather patterns, seasonal events, and potential crowds for the travel dates
+- BUDGET MANAGEMENT: Distribute expenses evenly throughout the trip
+
+FORMAT REQUIREMENTS:
+- Use clear hierarchical headings (day numbers, morning/afternoon/evening)
+- Create structured lists for activities with bullet points
+- Include estimated times, durations, and costs where applicable
+- Use emphasis (bold/italic) for important information and highlights
+- Format using Markdown for readability and structure
+
+Begin by acknowledging that you've received these trip details and are ready to help the traveler plan their perfect itinerary.`;
+        } else {
+            return "I need help planning a trip. Can you ask me for details about my destination, dates, and preferences?";
+        }
+    };
+
+    // Function to send trip details automatically
+    const sendTripDetails = async () => {
+        // Add detailed logging to diagnose the issue
+        console.log("sendTripDetails called with:", {
+            sentTripDetails, 
+            runId: runId || "missing",
+            isMounted: isMountedRef.current,
+            tripAvailable: !!trip
+        });
+        
+        if (sentTripDetails || !runId || !isMountedRef.current) {
+            console.log("Skipping sendTripDetails due to:", {
+                alreadySent: sentTripDetails, 
+                noRunId: !runId,
+                notMounted: !isMountedRef.current
+            });
+            return;
+        }
+    
+        console.log("Sending trip details automatically");
+        const tripDetailsMessage = generateTripDetailsMessage();
+        console.log("Generated trip details message of length:", tripDetailsMessage.length);
+    
+        try {
+            // Add message to UI first
+            setMessages(prev => [...prev, { role: "user", content: tripDetailsMessage }]);
+            console.log("Added trip details to UI");
+    
+            // Send to API
+            console.log(`Sending trip details to API for run: ${runId}`);
+            await sendMessageToAgent(apiKey, runId, tripDetailsMessage);
+            console.log("Trip details sent successfully to API");
+            
+            setSentTripDetails(true);
+    
+            // Add processing indicator
+            setMessages(prev => [...prev, { role: "assistant", content: "Processing your trip details..." }]);
+            console.log("Added processing indicator to UI");
+            
+            // Start polling for response
+            console.log("Starting polling for trip details response");
+            startPolling(false);
+        } catch (err) {
+            console.error("Failed to send trip details:", err);
+            if (isMountedRef.current) {
+                setError("Failed to send trip details. Please try again.");
+                setLoading(false);
+            }
+        }
+    };
+
+    // Function to initialize the agent
     const initializeAgent = async () => {
+        // First, cleanup any existing state
+        if (pollingInterval) {
+            clearInterval(pollingInterval);
+            setPollingInterval(null);
+        }
+        
+        if (initialCheckIntervalRef.current) {
+            clearInterval(initialCheckIntervalRef.current);
+            initialCheckIntervalRef.current = null;
+        }
+        
+        if (!isMountedRef.current) return;
+        
         setLoading(true);
         setError(null);
+        setSentTripDetails(false);
 
         try {
-            // Create a new agent run with welcome message
-            const data = await createAgentRun(apiKey, chatId, {
-                initialMessage:
-                    "Hello, I'd like help planning a travel itinerary",
-            });
+            console.log("Creating new agent run");
+            // Create a new agent run
+            const data = await createAgentRun(apiKey, chatId, {});
+            
+            if (!isMountedRef.current) return;
 
-            // Store the run ID for future messages
+            console.log(`Agent run created with ID: ${data.id}`);
+            // Store the run ID
             setRunId(data.id);
 
-            // Add a welcome message to the UI
+            // Show initial loading message
             setMessages([
                 {
                     role: "assistant",
-                    content:
-                        "Welcome to AItinerary! I'm your AI travel planning assistant. How can I help you plan your trip today?",
-                },
+                    content: "Initializing your AI travel planner..."
+                }
             ]);
+
+            // Wait for initial default response
+            const checkInitialResponse = () => {
+                // Clear any existing interval first
+                if (initialCheckIntervalRef.current) {
+                    clearInterval(initialCheckIntervalRef.current);
+                }
+                
+                // Track this new interval
+                initialCheckIntervalRef.current = setInterval(async () => {
+                    if (!data.id || !isMountedRef.current) {
+                        clearInterval(initialCheckIntervalRef.current);
+                        initialCheckIntervalRef.current = null;
+                        return;
+                    }
+            
+                    try {
+                        // Get run status and results
+                        const runData = await getAgentRun(apiKey, data.id);
+                        console.log("Checking for stable Result 1...");
+                        
+                        // First check if both conditions are met: have 2+ results AND status is completed
+                        if (runData.data?.results && runData.data.results.length >= 2 && 
+                            runData.data?.status === "completed") {
+                            
+                            // Then check if Result 1 is from the assistant
+                            const result1 = runData.data.results[1];
+                            if (result1.role === "assistant") {
+                                // Increment our stability counter
+                                result1CountRef.current += 1;
+                                console.log(`Stable Result 1 seen ${result1CountRef.current} times`);
+                                
+                                // If this is the first time, extract and show the message
+                                if (result1CountRef.current === 1) {
+                                    let assistantMessage = "";
+                                    if (Array.isArray(result1.content) && result1.content.length > 0) {
+                                        if (result1.content[0].text) {
+                                            assistantMessage = result1.content[0].text;
+                                        }
+                                    } else if (typeof result1.content === "string") {
+                                        assistantMessage = result1.content;
+                                    }
+
+                                    // Instead of setting the message UI, just log that we found it
+                                    console.log("Found initial greeting (not displaying in UI)");
+                                    // Don't set the message in UI here
+                                    
+                                    // // Update UI with the assistant's message
+                                    // if (assistantMessage && isMountedRef.current) {
+                                    //     setMessages([
+                                    //         { role: "assistant", content: assistantMessage }
+                                    //     ]);
+                                    //     console.log("Set assistant message in UI");
+                                    // }
+                                }
+                                
+                                // Only proceed after we've seen a stable Result 1 for 3 cycles
+                                if (result1CountRef.current >= 3) {
+                                    // Clear the interval - we're ready to send
+                                    clearInterval(initialCheckIntervalRef.current);
+                                    initialCheckIntervalRef.current = null;
+                                    console.log("Result 1 stable for 3 cycles, now sending trip details");
+                                    
+                                    // Only send if we haven't already
+                                    if (!sendingTripDetailsRef.current) {
+                                        sendingTripDetailsRef.current = true;
+                                        
+                                        try {
+                                            // Generate trip details
+                                            const tripDetailsMessage = generateTripDetailsMessage();
+                                            
+                                            // // Add trip details to UI
+                                            // setMessages(prev => [
+                                            //     ...prev,
+                                            //     { role: "user", content: tripDetailsMessage }
+                                            // ]);
+                                            
+                                            // // Add processing indicator
+                                            // setMessages(prev => [
+                                            //     ...prev,
+                                            //     { role: "assistant", content: "Processing your trip details..." }
+                                            // ]);
+
+                                            // Just show a loading indicator instead
+                                            setMessages([
+                                                { role: "assistant", content: "Creating your personalized travel itinerary..." }
+                                            ]);
+                                            
+                                            // Send the message directly
+                                            console.log(`Sending trip details to run ID: ${data.id}`);
+                                            await sendMessageToAgent(apiKey, data.id, tripDetailsMessage);
+                                            console.log("Trip details sent successfully");
+                                            setSentTripDetails(true);
+                                            
+                                            // Start regular message polling
+                                            const tripPollInterval = setInterval(async () => {
+                                                if (!isMountedRef.current) {
+                                                    clearInterval(tripPollInterval);
+                                                    return;
+                                                }
+                                                
+                                                try {
+                                                    const pollData = await getAgentRun(apiKey, data.id);
+                                                    console.log("Polling for trip details response...");
+                                                    
+                                                    // If run completed, process results
+                                                    if (pollData.data?.status === "completed") {
+                                                        clearInterval(tripPollInterval);
+                                                        
+                                                        // Check if we have a new response
+                                                        if (pollData.data?.results && pollData.data.results.length > 2) {
+                                                            const newResponses = pollData.data.results.slice(2);
+                                                            const assistantResponses = newResponses.filter(r => r.role === "assistant");
+                                                            
+                                                            if (assistantResponses.length > 0) {
+                                                                // Get the latest response
+                                                                const latestResponse = assistantResponses[assistantResponses.length - 1];
+                                                                let responseContent = "";
+                                                                
+                                                                // Extract text content
+                                                                if (Array.isArray(latestResponse.content) && latestResponse.content.length > 0) {
+                                                                    if (latestResponse.content[0].text) {
+                                                                        responseContent = latestResponse.content[0].text;
+                                                                    }
+                                                                } else if (typeof latestResponse.content === "string") {
+                                                                    responseContent = latestResponse.content;
+                                                                }
+                                                                
+                                                                // // Update UI - replace processing message with actual response
+                                                                // if (responseContent && isMountedRef.current) {
+                                                                //     setMessages(prev => {
+                                                                //         return prev.map(msg => {
+                                                                //             if (msg.role === "assistant" && 
+                                                                //                 msg.content === "Processing your trip details...") {
+                                                                //                 return { role: "assistant", content: responseContent };
+                                                                //             }
+                                                                //             return msg;
+                                                                //         });
+                                                                //     });
+                                                                //     console.log("Updated UI with response to trip details");
+                                                                //     setLoading(false);
+                                                                // }
+                                                                // Show ONLY this final response in the UI
+                                                                if (responseContent && isMountedRef.current) {
+                                                                    setMessages([
+                                                                        { role: "assistant", content: responseContent }
+                                                                    ]);
+                                                                    console.log("Showing final itinerary in UI");
+                                                                    setLoading(false);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                } catch (err) {
+                                                    console.error("Error polling for trip details response:", err);
+                                                }
+                                            }, 3000);
+                                        } catch (err) {
+                                            console.error("Error sending trip details:", err);
+                                            if (isMountedRef.current) {
+                                                setError("Failed to send trip details. Please try again.");
+                                                setLoading(false);
+                                                sendingTripDetailsRef.current = false;
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Reset counter if we don't see Result 1 from assistant
+                                result1CountRef.current = 0;
+                            }
+                        } else {
+                            // Reset counter if conditions not met
+                            result1CountRef.current = 0;
+                        }
+                    } catch (err) {
+                        console.error("Error checking initial response:", err);
+                        // Keep the interval running unless component unmounted
+                        if (!isMountedRef.current) {
+                            clearInterval(initialCheckIntervalRef.current);
+                            initialCheckIntervalRef.current = null;
+                        }
+                    }
+                }, 2000); // Check every 2 seconds
+            };
+            // Start checking for initial response
+            checkInitialResponse();
         } catch (err) {
             console.error("Failed to initialize agent:", err);
+            
+            if (!isMountedRef.current) return;
+            
             setError("Failed to start the travel assistant. Please try again.");
-        } finally {
             setLoading(false);
         }
     };
 
+    // Start or restart polling for responses
     const startPolling = (isFirstMessage = true) => {
+        console.log(`Starting polling (isFirstMessage: ${isFirstMessage})`);
+        
         // Clear any existing interval
         if (pollingInterval) {
             clearInterval(pollingInterval);
         }
 
-        // Set processing state to true when polling starts
-        setIsProcessing(true);
-
-        // If this is a new message, add a processing indicator
+        // If this is a following message, add a processing indicator if not already present
         if (!isFirstMessage) {
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { role: "assistant", content: "Processing your message..." },
-            ]);
+            const hasProcessingMessage = messages.some(
+                msg => msg.role === "assistant" && 
+                (msg.content === "Processing your message..." || 
+                 msg.content === "Processing your trip details...")
+            );
+            
+            if (!hasProcessingMessage && isMountedRef.current) {
+                setMessages(prevMessages => [
+                    ...prevMessages,
+                    { role: "assistant", content: "Processing your message..." }
+                ]);
+            }
         }
 
         // Create a new polling interval
         const interval = setInterval(async () => {
+            if (!runId || !isMountedRef.current) {
+                clearInterval(interval);
+                setPollingInterval(null);
+                console.log("Stopping polling: runId missing or component unmounted");
+                return;
+            }
+    
             try {
                 // Get run status
+                console.log(`Polling for run status: ${runId}`);
                 const runData = await getAgentRun(apiKey, runId);
                 const status = runData.data?.status || "unknown";
+                
+                if (!isMountedRef.current) {
+                    clearInterval(interval);
+                    console.log("Component unmounted during polling, clearing interval");
+                    return;
+                }
+                
                 setRunStatus(status);
-
                 console.log("Current run status:", status);
 
-                // If the run is completed or failed, get the results
+                // If the run is completed, get the results
                 if (status === "completed" || status === "failed") {
                     clearInterval(interval);
                     setPollingInterval(null);
-                    // Set processing state to false when done
-                    setIsProcessing(false);
 
                     // Check for results
                     const results = runData.data?.results || [];
 
                     if (results.length > 0) {
-                        // Find the assistant's response (look for role === 'assistant')
+                        // Find the assistant's response
                         const assistantResponses = results.filter(
-                            (result) => result.role === "assistant"
+                            result => result.role === "assistant"
                         );
 
                         if (assistantResponses.length > 0) {
                             // Get the latest assistant response
-                            const latestResponse =
-                                assistantResponses[
-                                assistantResponses.length - 1
-                                ];
+                            const latestResponse = assistantResponses[assistantResponses.length - 1];
 
-                            // Extract the content - handle nested structure
+                            // Extract the content
                             let responseContent = "";
 
                             if (latestResponse.content) {
@@ -145,8 +495,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                                     latestResponse.content.length > 0
                                 ) {
                                     // Content is an array - common in Toolhouse API
-                                    const contentItem =
-                                        latestResponse.content[0];
+                                    const contentItem = latestResponse.content[0];
 
                                     if (contentItem.text) {
                                         // Structure is { content: [{ text: "...", type: "text" }] }
@@ -158,140 +507,108 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                                                 ? contentItem
                                                 : JSON.stringify(contentItem);
                                     }
-                                } else if (
-                                    typeof latestResponse.content === "string"
-                                ) {
+                                } else if (typeof latestResponse.content === "string") {
                                     // Content is already a string
                                     responseContent = latestResponse.content;
                                 } else {
                                     // Content is some other structure, convert to string
-                                    responseContent = JSON.stringify(
-                                        latestResponse.content
-                                    );
+                                    responseContent = JSON.stringify(latestResponse.content);
                                 }
                             }
 
-                            // Update the messages array
-                            setMessages((prevMessages) => {
-                                // If this is a follow-up message, replace the "Processing..." message
-                                if (!isFirstMessage) {
-                                    return prevMessages.map((msg) => {
-                                        if (
-                                            msg.role === "assistant" &&
-                                            (msg.content ===
-                                                "Processing your request..." ||
-                                                msg.content ===
-                                                "Processing your message...")
-                                        ) {
-                                            return {
-                                                role: "assistant",
-                                                content: responseContent,
-                                            };
-                                        }
-                                        return msg;
-                                    });
+                            if (!isMountedRef.current) return;
+
+                            // Update the messages array - replace processing message with actual response
+                            setMessages(prevMessages => {
+                                const newMessages = [...prevMessages];
+                                
+                                // Find if we have a processing message to replace
+                                const processingIndex = newMessages.findIndex(
+                                    msg => msg.role === "assistant" && 
+                                    (msg.content === "Processing your request..." ||
+                                     msg.content === "Processing your message..." ||
+                                     msg.content === "Processing your trip details...")
+                                );
+                                
+                                if (processingIndex !== -1) {
+                                    // Replace the processing message
+                                    newMessages[processingIndex] = {
+                                        role: "assistant",
+                                        content: responseContent
+                                    };
                                 } else {
-                                    // For first message, just add the response
-                                    return [
-                                        ...prevMessages,
-                                        {
-                                            role: "assistant",
-                                            content: responseContent,
-                                        },
-                                    ];
+                                    // No processing message found, just add the response
+                                    newMessages.push({
+                                        role: "assistant",
+                                        content: responseContent
+                                    });
                                 }
+                                
+                                return newMessages;
                             });
                         } else {
-                            // No assistant response found, try other approaches
-                            console.error(
-                                "No assistant responses found in results"
-                            );
-                            setError(
-                                "No response found from the AI assistant. Please try again."
-                            );
+                            // No assistant response found
+                            console.error("No assistant responses found in results");
+                            
+                            if (!isMountedRef.current) return;
+                            
+                            setError("No response found from the AI assistant. Please try again.");
                         }
                     } else {
                         // No results found
-                        setError(
-                            "No response received from the AI assistant. Please try again."
-                        );
+                        if (!isMountedRef.current) return;
+                        
+                        setError("No response received from the AI assistant. Please try again.");
                     }
-                } else if (status === "failed") {
-                    clearInterval(interval);
-                    setPollingInterval(null);
-                    setIsProcessing(false); // Set processing state to false on failure
-                    setError("The request failed. Please try again.");
+
+                    // Set loading to false after processing
+                    if (isMountedRef.current) {
+                        setLoading(false);
+                    }
                 }
-                // Keep polling if status is still "in_progress"
             } catch (err) {
                 console.error("Error polling data:", err);
+                
+                if (!isMountedRef.current) return;
+                
                 setError("Failed to update conversation. Please try again.");
                 clearInterval(interval);
                 setPollingInterval(null);
-                setIsProcessing(false); // Set processing state to false on error
+                setLoading(false);
             }
         }, 3000); // Poll every 3 seconds
 
         setPollingInterval(interval);
     };
 
+    // Function to send a user message
     const sendMessage = async () => {
-        if (!input.trim() || !runId || isProcessing) return;
+        if (!input.trim() || !runId) return;
 
         // Add user message to UI immediately
-        setMessages((prevMessages) => [
+        setMessages(prevMessages => [
             ...prevMessages,
-            { role: "user", content: input },
+            { role: "user", content: input }
         ]);
+        
         const currentMessage = input;
         setInput("");
         setLoading(true);
         setError(null);
 
         try {
-            // First check if the run is completed (we can only send messages to completed runs)
-            const runData = await getAgentRun(apiKey, runId);
-            const status = runData.data?.status || "unknown";
+            // Send message to agent
+            await sendMessageToAgent(apiKey, runId, currentMessage);
 
-            if (status === "completed") {
-                // If completed, send the message
-                await sendMessageToAgent(apiKey, runId, currentMessage);
-
-                // Restart polling to get the new response
-                startPolling(false); // Pass false to indicate this is not the first message
-            } else if (status === "in_progress") {
-                // Cannot send message to in-progress run
-                setError("Please wait for the AI to finish responding before sending another message.");
-
-                // Remove the user message we just added
-                setMessages(prevMessages => prevMessages.slice(0, -1));
-
-                // Put the message back in the input field
-                setInput(currentMessage);
-            } else {
-                // For other statuses, try creating a new run
-                setError("Creating a new conversation since the previous one cannot be continued.");
-
-                const data = await createAgentRun(apiKey, chatId, {
-                    initialMessage: currentMessage,
-                });
-
-                setRunId(data.id);
-
-                // Start polling for the new run
-                startPolling(false);
-            }
+            // Start polling for the response
+            startPolling(false);
         } catch (err) {
             console.error("Failed to send message:", err);
-            setError("Failed to send message. Please try again.");
-
-            // Remove the user message we just added
-            setMessages(prevMessages => prevMessages.slice(0, -1));
-
-            // Put the message back in the input field
-            setInput(currentMessage);
-        } finally {
-            setLoading(false);
+            
+            if (isMountedRef.current) {
+                setError("Failed to send message. Please try again.");
+                setLoading(false);
+            }
         }
     };
 
@@ -302,14 +619,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
         }
     };
 
-    // Helper text for the input field
-    const getInputHelperText = () => {
-        if (isProcessing) {
-            return "Waiting for AI to finish responding...";
-        }
-        return "";
-    };
-
+    // The rest of your UI code remains the same
     return (
         <Box sx={{ height: "70vh", display: "flex", flexDirection: "column" }}>
             {/* Chat messages area */}
@@ -372,13 +682,12 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                     fullWidth
                     multiline
                     maxRows={4}
-                    placeholder={isProcessing ? "Waiting for AI response..." : "Enter your travel plans or questions..."}
+                    placeholder="Enter your travel plans or questions..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    disabled={loading || isProcessing} // Disable when processing
+                    disabled={loading}
                     variant="outlined"
-                    helperText={getInputHelperText()}
                     sx={{
                         bgcolor: isDarkMode
                             ? "background.paper"
@@ -389,7 +698,7 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
                 <Button
                     variant="contained"
                     onClick={sendMessage}
-                    disabled={!input.trim() || loading || isProcessing} // Disable when processing
+                    disabled={!input.trim() || loading}
                     sx={{
                         bgcolor:
                             subtitleColor ||
