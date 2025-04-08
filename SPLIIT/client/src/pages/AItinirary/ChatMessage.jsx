@@ -1,5 +1,3 @@
-// C:\Users\user\Documents\1. Programs\SC2006-SPLIIT\SPLIIT\client\src\components\pages\AItinirary\ChatMessage.jsx
-
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Box, Typography, Avatar, useTheme } from "@mui/material";
@@ -50,8 +48,8 @@ const ChatMessage = ({ message }) => {
                             ? "primary.dark"
                             : subtitleColor
                         : isDarkMode
-                        ? "background.paper"
-                        : "background.paper",
+                            ? "background.paper"
+                            : "background.paper",
                     borderRadius: 2,
                     boxShadow: 1,
                     color: isUser
