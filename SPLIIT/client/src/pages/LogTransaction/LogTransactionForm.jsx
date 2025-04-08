@@ -19,7 +19,7 @@ function LogTransactionForm({ onAdd }) {
     const { exchangeRates } = useExchangeRates();
     const { trip } = useContext(AuthContext);
     const [locationStatus, setLocationStatus] = useState("");
-    const [people, setPeople] = useState(null);
+    const [people, setPeople] = useState([]);
     const [loading, setLoading] = useState(true);
 
     // function that gets user's lat and long if enabled
@@ -52,9 +52,10 @@ function LogTransactionForm({ onAdd }) {
     const getPeople = async () => {
         try {
             const p = await trip.getParticipants();
-            setPeople(p);
+            setPeople(p || []);
         } catch (error) {
             console.log("error getting people");
+            setPeople([]);
         } finally {
             setLoading(false);
         }
@@ -225,7 +226,7 @@ function LogTransactionForm({ onAdd }) {
                 <label className="form-label">Who is it for?</label>
                 <br />
                 <div className="chip-group">
-                    {people.map((person) => {
+                    {people?.map((person) => {
                         const selected = formData.recipients.includes(
                             person.username
                         );
@@ -397,7 +398,7 @@ function LogTransactionForm({ onAdd }) {
                     <option key="default" value="">
                         Select Payer
                     </option>
-                    {people.map((person) => (
+                    {people?.map((person) => (
                         <option value={person.username} key={person.username}>
                             {person.displayName}
                         </option>

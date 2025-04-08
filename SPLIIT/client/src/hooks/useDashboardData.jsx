@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 
 export function useDashboardData() {
-    const { trip } = useContext(AuthContext);
+    const { trip, user } = useContext(AuthContext);
 
     const [transactions, setTransactions] = useState([]);
     const [debtMatrix_R, setDebtMatrix_R] = useState({});
@@ -40,7 +40,7 @@ export function useDashboardData() {
         loadTransactions();
         loadDebtMatrices();
         loadPeople();
-    }, []);
+    }, [trip, user]);
 
     return { transactions, debtMatrix_R, debtMatrix_S, people, error };
 }

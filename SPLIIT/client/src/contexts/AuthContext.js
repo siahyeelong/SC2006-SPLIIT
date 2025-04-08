@@ -13,38 +13,38 @@ export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const refresh = async () => {
-            try {
-                let res = await axios.get(`${backendURL}/users/refresh`, { withCredentials: true });
-                setAccessToken(res.data.accessToken);
-                // set current user
-                setUser(new User(res.data.user));
-                localStorage.setItem("user", res.data.user.username)
+    const refresh = async () => {
+        try {
+            let res = await axios.get(`${backendURL}/users/refresh`, { withCredentials: true });
+            setAccessToken(res.data.accessToken);
+            // set current user
+            setUser(new User(res.data.user));
+            localStorage.setItem("user", res.data.user.username)
 
-                // set current trip
-                res = await axios.get(`${backendURL}/trips/tripinfo/${localStorage.getItem("trip")}`);
-                setTrip(new Trip(res.data))
-                localStorage.setItem("trip", res.data.tripID)
-            } catch (error) {
-                if (error.response) {
-                    if (error.response.status === 401) {
-                        console.log("Not authenticated: No refresh token.");
-                    } else if (error.response.status === 403) {
-                        console.log("Invalid refresh token or user not found.");
-                    } else {
-                        console.log("Unexpected server error:", error.response.status);
-                    }
+            // set current trip
+            res = await axios.get(`${backendURL}/trips/tripinfo/${localStorage.getItem("trip")}`);
+            setTrip(new Trip(res.data))
+            localStorage.setItem("trip", res.data.tripID)
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 401) {
+                    console.log("Not authenticated: No refresh token.");
+                } else if (error.response.status === 403) {
+                    console.log("Invalid refresh token or user not found.");
                 } else {
-                    console.log("Network error or server unreachable.");
+                    console.log("Unexpected server error:", error.response.status);
                 }
-                setUser(null);
-                localStorage.removeItem("user")
-            } finally {
-                setLoading(false);
+            } else {
+                console.log("Network error or server unreachable.");
             }
-        };
+            setUser(null);
+            localStorage.removeItem("user")
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         refresh();
     }, []);
 
@@ -86,9 +86,10 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const googleLogin = (username, token) => {
+    const googleLogin = async (username, token) => {
         setAccessToken(token);
         localStorage.setItem("user", username);
+        await refresh();
     }
 
     const setSessionTrip = (theTrip) => {
@@ -111,7 +112,7 @@ export const AuthProvider = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={{ user, trip, accessToken, login, logout, loading, setSessionTrip, googleLogin }}>
+        <AuthContext.Provider value={{ user, trip, accessToken, login, logout, loading, refresh, setSessionTrip, googleLogin }}>
             {children}
         </AuthContext.Provider>
     );

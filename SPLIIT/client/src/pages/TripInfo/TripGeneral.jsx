@@ -77,6 +77,9 @@ const TripGeneral = ({ trip, setTrip }) => {
                 // Update trip state with the new image
                 setTrip((t) => ({ ...t, tripImage: base64String }));
                 showSnackbar("Image uploaded!", "success");
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2200);
 
                 // Update backend (using the correct endpoint and payload)
                 try {
@@ -142,7 +145,7 @@ const TripGeneral = ({ trip, setTrip }) => {
                             </IconButton>
                         </Tooltip>
                     </Box>
-                    {trip.tripDescription.trim() && (
+                    {trip?.tripDescription?.trim() && (
                         <Typography
                             variant="body2"
                             color="textSecondary"

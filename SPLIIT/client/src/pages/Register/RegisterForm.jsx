@@ -373,9 +373,9 @@ function RegisterForm() {
             </Grid>
 
             {/* Favourite Colour Selection */}
-            <Typography sx={{ color: "white", variant: "body1" }}>
+            {/* <Typography sx={{ color: "white", variant: "body1" }}>
                 Select your favourite colour
-            </Typography>
+            </Typography> */}
             {/* <ToggleButtonGroup
                 value={formData.favColour}
                 exclusive

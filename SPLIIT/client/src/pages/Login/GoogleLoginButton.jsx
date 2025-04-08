@@ -65,8 +65,7 @@ function GoogleLoginButton() {
         console.log("Google credential response received");
         try {
             const apiResponse = await fetch(
-                `${
-                    process.env.REACT_APP_API_URL || "http://localhost:5050"
+                `${process.env.REACT_APP_BACKEND_URL || "http://localhost:5050"
                 }/users/googlelogin`,
                 {
                     method: "POST",
@@ -80,7 +79,7 @@ function GoogleLoginButton() {
 
             if (apiResponse.ok) {
                 const data = await apiResponse.json();
-                googleLogin(data.user, data.token);
+                await googleLogin(data.user, data.token);
                 navigate("/selecttrip");
             } else {
                 console.error("Google login failed");

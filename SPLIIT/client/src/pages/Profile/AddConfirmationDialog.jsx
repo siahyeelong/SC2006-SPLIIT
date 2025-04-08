@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -10,6 +10,7 @@ import Grid2 from "@mui/material/Grid2";
 import { Create, GroupAdd } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import JoinTripDialog from "./JoinTripDialog";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const AddConfirmationDialog = ({
     open,
@@ -21,6 +22,7 @@ const AddConfirmationDialog = ({
     const [joinTripDialogOpen, setJoinTripDialogOpen] = useState(false);
     const [tripId, setTripId] = useState("");
     const navigate = useNavigate();
+    const { refresh } = useContext(AuthContext)
 
     const handleClickJoinTrip = () => {
         setJoinTripDialogOpen(true);
@@ -34,6 +36,13 @@ const AddConfirmationDialog = ({
             ...p,
             trips: p.trips.includes(trimmedId) ? p.trips : [...p.trips, trimmedId]
         })); // update tempProfile to show live changes
+
+        if (message.severity === "success") {
+            localStorage.setItem("trip", trimmedId);
+            setJoinTripDialogOpen(false);
+            onClose();
+            refresh();
+        }
 
         onJoinResult(message);
         navigate("/profile");
