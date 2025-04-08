@@ -14,12 +14,22 @@ import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import { AuthContext } from "../../contexts/AuthContext";
 import defaultImage from "../../assets/defaultTripBackground.png";
+import SnackbarNotifs from "../../components/common/SnackbarNotifs";
 
 const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
     const theme = useTheme();
-    const { user } = useContext(AuthContext);
+    const { user, refresh } = useContext(AuthContext);
     const [tripDetails, setTripDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [snackbarState, setSnackbarState] = useState({
+        open: false,
+        message: "",
+        severity: "",
+        key: 0,
+    });
+    const handleCloseSnackbar = () => {
+        setSnackbarState((s) => ({ ...s, open: false }));
+    };
 
     useEffect(() => {
         const fetchTrips = async () => {
@@ -41,6 +51,18 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
 
         fetchTrips();
     }, [user]);
+
+    const showSnackbar = (message, severity) => {
+        setSnackbarState((s) => ({ ...s, open: false }));
+        setTimeout(() => {
+            setSnackbarState((s) => ({
+                open: true,
+                message,
+                severity,
+                key: s.key + 1,
+            }));
+        }, 100);
+    };
 
     if (loading) return <Typography>Loading...</Typography>;
 
@@ -112,12 +134,22 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                                                     ? trip.tripImage
                                                     : defaultImage
                                             }
+                                            onClick={() => {
+                                                localStorage.setItem("trip", trip.tripID);
+                                                refresh();
+                                                showSnackbar(`Switched to ${trip.tripName}!`, 'success')
+                                            }}
                                             alt={trip.tripName}
                                             sx={{
                                                 width: "100%",
                                                 height: "100%",
                                                 objectFit: "cover",
                                                 filter: "brightness(0.7)",
+                                                cursor: "pointer",
+                                                transition: "filter 0.3s ease",
+                                                "&:hover": {
+                                                    filter: "brightness(1)",
+                                                },
                                             }}
                                         />
                                         <IconButton
@@ -204,6 +236,13 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                     </Grid2>
                 </Grid2>
             </CardContent>
+            <SnackbarNotifs
+                open={snackbarState.open}
+                message={snackbarState.message}
+                onClose={handleCloseSnackbar}
+                severity={snackbarState.severity}
+                sx={{ position: "fixed", zIndex: 9999 }}
+            />
         </Card>
     );
 };

@@ -65,23 +65,6 @@ export class Trip {
         }
     }
 
-    // async getParticipants() {
-    //     try {
-    //         const response = await fetch(`${backendURL}/users/getParticipants/${this.tripID}`, {
-    //             method: "GET",
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error(`Error: ${response.status} - ${response.statusText}`);
-    //         }
-    //         return response.json();
-    //     } catch (error) {
-    //         console.error("Failed to get trip participants:", error);
-    //         return null;
-    //     }
-    // }
     async getParticipants() {
         try {
             const response = await fetch(
