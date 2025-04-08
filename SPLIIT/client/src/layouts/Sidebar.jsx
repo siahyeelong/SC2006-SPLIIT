@@ -48,11 +48,6 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
         }
     }, [isMobile, setIsCollapsed]);
 
-    // troubleshooting
-    useEffect(() => {
-        console.log(`current trip: ${trip.tripID}`);
-    });
-
     return (
         <Box
             sx={{
@@ -159,7 +154,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                             >
                                 {MenuItems.map((item) =>
                                     item.icon === null ||
-                                    item.title === "TripInfo" ? undefined : (
+                                        item.title === "TripInfo" ? undefined : (
                                         <Item
                                             key={item.title}
                                             title={item.title}
