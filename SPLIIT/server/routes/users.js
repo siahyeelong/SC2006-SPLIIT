@@ -2,7 +2,6 @@ import express from "express";
 import db from "../db/connection.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { ObjectId } from "mongodb";
 
 const router = express.Router();
 const collection = db.collection(process.env.USERS_COLLECTION);
@@ -81,12 +80,12 @@ router.post("/googlelogin", async (req, res) => {
                 email: email,
                 username: email,
                 displayName: name,
-                favoriteColor: "#3498db", // Default color
+                favColour: "#D1BDFF", // Default color
                 googleId,
                 trips: [],
             };
 
-            const result = await usersCollection.insertOne(newUser);
+            const result = await collection.insertOne(newUser);
             user = newUser;
             user._id = result.insertedId;
         }

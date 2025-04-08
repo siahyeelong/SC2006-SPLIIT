@@ -1,19 +1,33 @@
 import React from 'react'
 import { Button } from '@mui/material';
 
-function ToCSVButton({ data, colours }) {
+function ToCSVButton({ data, colours, tripName }) {
 
     const handleExport = () => {
+        const escapeCSV = (value) => {
+            if (typeof value === "string") {
+                // Escape double quotes by doubling them
+                const escaped = value.replace(/"/g, '""');
+                // Wrap in double quotes if contains comma, newline, or quote
+                if (escaped.search(/("|,|\n)/g) >= 0) {
+                    return `"${escaped}"`;
+                }
+                return escaped;
+            }
+            return value;
+        };
+
         const csvContent = [
             ['Index', 'Date', 'Time', 'Price', 'Category', 'Recipients', 'Description', 'Payer'],
             ...data.map((transaction, index) => [
                 index + 1,
-                new Date(transaction.timestamp).toLocaleString(),
+                new Date(transaction.timestamp).toLocaleDateString(),
+                new Date(transaction.timestamp).toLocaleTimeString(),
                 transaction.price,
                 transaction.category,
                 (transaction.recipients || []).join('; '),
-                (transaction.description || ''),
-                (transaction.payer || '')
+                escapeCSV(transaction.description || ''),
+                escapeCSV(transaction.payer || '')
             ])
         ].map(row => row.join(',')).join('\n');
 
@@ -21,7 +35,7 @@ function ToCSVButton({ data, colours }) {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.setAttribute('href', url);
-        link.setAttribute('download', 'transactions.csv');
+        link.setAttribute('download', `${tripName}.csv`);
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();

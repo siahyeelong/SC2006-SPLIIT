@@ -7,8 +7,6 @@ import {
     InputAdornment,
     InputLabel,
     Typography,
-    ToggleButtonGroup,
-    ToggleButton,
     Grid2 as Grid,
     useTheme,
     Card,
@@ -24,8 +22,6 @@ import {
     Person,
     Lock,
 } from "@mui/icons-material";
-import CheckIcon from "@mui/icons-material/Check";
-import { favColourChoices } from "../../constants/favColourChoices";
 import ColourPicker from "../../components/common/ColourPicker";
 
 function RegisterForm() {
@@ -371,45 +367,6 @@ function RegisterForm() {
                     </FormControl>
                 </Grid>
             </Grid>
-
-            {/* Favourite Colour Selection */}
-            {/* <Typography sx={{ color: "white", variant: "body1" }}>
-                Select your favourite colour
-            </Typography> */}
-            {/* <ToggleButtonGroup
-                value={formData.favColour}
-                exclusive
-                onChange={handleColourChange}
-                aria-label="favourite color"
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                }}
-            >
-                {favColourChoices.map((colour) => (
-                    <ToggleButton
-                        key={colour.name}
-                        value={colour.value}
-                        sx={{
-                            bgcolor: colour.value,
-                            width: 40,
-                            height: 40,
-                            margin: 0.5,
-                            p: 1,
-                            "&.Mui-selected, &:hover": {
-                                bgcolor: colour.value,
-                                borderColor: "gray",
-                                borderWidth: 4,
-                                borderRadius: "10%",
-                            },
-                        }}
-                    >
-                        {formData.favColour === colour.value && (
-                            <CheckIcon sx={{ color: "grey" }} />
-                        )}
-                    </ToggleButton>
-                ))}
-            </ToggleButtonGroup> */}
             <ColourPicker
                 profile={formData}
                 onColourChange={handleColourChange}

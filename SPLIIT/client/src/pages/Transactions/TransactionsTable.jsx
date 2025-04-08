@@ -165,7 +165,7 @@ function TransactionsTable() {
                 direction="row"
                 sx={{ alignItems: "center", justifyContent: "space-between" }}
             >
-                <ToCSVButton data={transactions} colours={colours} />
+                <ToCSVButton data={transactions} colours={colours} tripName={trip.tripName} />
                 <CurrencySwitch onToggle={setShowLocalCurrency} />
             </Stack>
 

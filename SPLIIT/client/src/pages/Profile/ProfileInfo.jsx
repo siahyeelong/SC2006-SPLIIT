@@ -116,7 +116,7 @@ const ProfileInfo = ({
                             color="text.secondary"
                             textAlign="left"
                         >
-                            {`✈️ Travel Enthusiast\u00A0\u00A0•\u00A0\u00A0${profile.trips.length} ${profile.trips.length === 1 ? "Trip" : "Trips"}`}
+                            {`@${profile.username}\u00A0\u00A0•\u00A0\u00A0${profile.trips.length} ${profile.trips.length === 1 ? "Trip" : "Trips"}`}
                         </Typography>
                     </Stack>
                 </Stack>
