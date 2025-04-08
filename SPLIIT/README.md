@@ -52,6 +52,7 @@ It would be pretty silly to actually transact that amount between the 3 friends,
 
 So what can we do about this to simplify the transactions further such that a minimum number of transactions need to be made? Initially, I drew out the problem as graphs, and tried to eliminate cycles, but I realise I was just overcomplicating things. Let me break it down for you:
 
-![breakdown](./images/breakdown.gif)
+(TODO)
+<!-- ![breakdown](./images/breakdown.gif) -->
 
 Within a contained environment, i.e. the original group of 5, transactions will be made among one another. 

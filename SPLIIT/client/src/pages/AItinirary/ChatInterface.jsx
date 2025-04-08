@@ -29,14 +29,14 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
     const [pollingInterval, setPollingInterval] = useState(null);
     const [runStatus, setRunStatus] = useState("");
     const [sentTripDetails, setSentTripDetails] = useState(false);
-    
+
     const messagesEndRef = useRef(null);
     const initialCheckIntervalRef = useRef(null);
     const result1CountRef = useRef(0);
     const sendingTripDetailsRef = useRef(false);
     const hasInitializedRef = useRef(false);
     const isMountedRef = useRef(true);
-    
+
     const apiKey = process.env.REACT_APP_AITINERARY_API_KEY;
 
     useEffect(() => {
@@ -74,14 +74,15 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
 
     useEffect(() => {
         return () => {
-          // Reset the sending flag when component unmounts
-          sendingTripDetailsRef.current = false;
+            // Reset the sending flag when component unmounts
+            sendingTripDetailsRef.current = false;
         };
-      }, []);
+    }, []);
 
     // Function to generate trip details message
     const generateTripDetailsMessage = () => {
         if (trip) {
+            const tripName = trip.tripName
             const startDate = new Date(trip.startDate).toLocaleDateString();
             const endDate = new Date(trip.endDate).toLocaleDateString();
             const durationDays = Math.ceil(
@@ -94,9 +95,10 @@ const ChatInterface = ({ chatId, subtitleColor }) => {
             return `You are a travel planning assistant that helps create personalized, detailed itineraries.
 
 TRIP DETAILS:
+- Trip name: ${tripName}
 - Destination: ${destinations}
 - Travel dates: ${startDate} to ${endDate} (${durationDays} days)
-- Budget per person: ${budget}
+- Budget per person: ${trip.localCurrency} ${budget}
 - Number of travelers: ${numPeople}
 
 IMMEDIATE ACTION REQUIRED:
@@ -138,41 +140,41 @@ Begin by acknowledging that you've received these trip details and are ready to 
     const sendTripDetails = async () => {
         // Add detailed logging to diagnose the issue
         console.log("sendTripDetails called with:", {
-            sentTripDetails, 
+            sentTripDetails,
             runId: runId || "missing",
             isMounted: isMountedRef.current,
             tripAvailable: !!trip
         });
-        
+
         if (sentTripDetails || !runId || !isMountedRef.current) {
             console.log("Skipping sendTripDetails due to:", {
-                alreadySent: sentTripDetails, 
+                alreadySent: sentTripDetails,
                 noRunId: !runId,
                 notMounted: !isMountedRef.current
             });
             return;
         }
-    
+
         console.log("Sending trip details automatically");
         const tripDetailsMessage = generateTripDetailsMessage();
         console.log("Generated trip details message of length:", tripDetailsMessage.length);
-    
+
         try {
             // Add message to UI first
             setMessages(prev => [...prev, { role: "user", content: tripDetailsMessage }]);
             console.log("Added trip details to UI");
-    
+
             // Send to API
             console.log(`Sending trip details to API for run: ${runId}`);
             await sendMessageToAgent(apiKey, runId, tripDetailsMessage);
             console.log("Trip details sent successfully to API");
-            
+
             setSentTripDetails(true);
-    
+
             // Add processing indicator
             setMessages(prev => [...prev, { role: "assistant", content: "Processing your trip details..." }]);
             console.log("Added processing indicator to UI");
-            
+
             // Start polling for response
             console.log("Starting polling for trip details response");
             startPolling(false);
@@ -192,14 +194,14 @@ Begin by acknowledging that you've received these trip details and are ready to 
             clearInterval(pollingInterval);
             setPollingInterval(null);
         }
-        
+
         if (initialCheckIntervalRef.current) {
             clearInterval(initialCheckIntervalRef.current);
             initialCheckIntervalRef.current = null;
         }
-        
+
         if (!isMountedRef.current) return;
-        
+
         setLoading(true);
         setError(null);
         setSentTripDetails(false);
@@ -208,7 +210,7 @@ Begin by acknowledging that you've received these trip details and are ready to 
             console.log("Creating new agent run");
             // Create a new agent run
             const data = await createAgentRun(apiKey, chatId, {});
-            
+
             if (!isMountedRef.current) return;
 
             console.log(`Agent run created with ID: ${data.id}`);
@@ -229,7 +231,7 @@ Begin by acknowledging that you've received these trip details and are ready to 
                 if (initialCheckIntervalRef.current) {
                     clearInterval(initialCheckIntervalRef.current);
                 }
-                
+
                 // Track this new interval
                 initialCheckIntervalRef.current = setInterval(async () => {
                     if (!data.id || !isMountedRef.current) {
@@ -237,23 +239,23 @@ Begin by acknowledging that you've received these trip details and are ready to 
                         initialCheckIntervalRef.current = null;
                         return;
                     }
-            
+
                     try {
                         // Get run status and results
                         const runData = await getAgentRun(apiKey, data.id);
                         console.log("Checking for stable Result 1...");
-                        
+
                         // First check if both conditions are met: have 2+ results AND status is completed
-                        if (runData.data?.results && runData.data.results.length >= 2 && 
+                        if (runData.data?.results && runData.data.results.length >= 2 &&
                             runData.data?.status === "completed") {
-                            
+
                             // Then check if Result 1 is from the assistant
                             const result1 = runData.data.results[1];
                             if (result1.role === "assistant") {
                                 // Increment our stability counter
                                 result1CountRef.current += 1;
                                 console.log(`Stable Result 1 seen ${result1CountRef.current} times`);
-                                
+
                                 // If this is the first time, extract and show the message
                                 if (result1CountRef.current === 1) {
                                     let assistantMessage = "";
@@ -268,7 +270,7 @@ Begin by acknowledging that you've received these trip details and are ready to 
                                     // Instead of setting the message UI, just log that we found it
                                     console.log("Found initial greeting (not displaying in UI)");
                                     // Don't set the message in UI here
-                                    
+
                                     // // Update UI with the assistant's message
                                     // if (assistantMessage && isMountedRef.current) {
                                     //     setMessages([
@@ -277,28 +279,28 @@ Begin by acknowledging that you've received these trip details and are ready to 
                                     //     console.log("Set assistant message in UI");
                                     // }
                                 }
-                                
+
                                 // Only proceed after we've seen a stable Result 1 for 3 cycles
                                 if (result1CountRef.current >= 3) {
                                     // Clear the interval - we're ready to send
                                     clearInterval(initialCheckIntervalRef.current);
                                     initialCheckIntervalRef.current = null;
                                     console.log("Result 1 stable for 3 cycles, now sending trip details");
-                                    
+
                                     // Only send if we haven't already
                                     if (!sendingTripDetailsRef.current) {
                                         sendingTripDetailsRef.current = true;
-                                        
+
                                         try {
                                             // Generate trip details
                                             const tripDetailsMessage = generateTripDetailsMessage();
-                                            
+
                                             // // Add trip details to UI
                                             // setMessages(prev => [
                                             //     ...prev,
                                             //     { role: "user", content: tripDetailsMessage }
                                             // ]);
-                                            
+
                                             // // Add processing indicator
                                             // setMessages(prev => [
                                             //     ...prev,
@@ -309,38 +311,38 @@ Begin by acknowledging that you've received these trip details and are ready to 
                                             setMessages([
                                                 { role: "assistant", content: "Creating your personalized travel itinerary..." }
                                             ]);
-                                            
+
                                             // Send the message directly
                                             console.log(`Sending trip details to run ID: ${data.id}`);
                                             await sendMessageToAgent(apiKey, data.id, tripDetailsMessage);
                                             console.log("Trip details sent successfully");
                                             setSentTripDetails(true);
-                                            
+
                                             // Start regular message polling
                                             const tripPollInterval = setInterval(async () => {
                                                 if (!isMountedRef.current) {
                                                     clearInterval(tripPollInterval);
                                                     return;
                                                 }
-                                                
+
                                                 try {
                                                     const pollData = await getAgentRun(apiKey, data.id);
                                                     console.log("Polling for trip details response...");
-                                                    
+
                                                     // If run completed, process results
                                                     if (pollData.data?.status === "completed") {
                                                         clearInterval(tripPollInterval);
-                                                        
+
                                                         // Check if we have a new response
                                                         if (pollData.data?.results && pollData.data.results.length > 2) {
                                                             const newResponses = pollData.data.results.slice(2);
                                                             const assistantResponses = newResponses.filter(r => r.role === "assistant");
-                                                            
+
                                                             if (assistantResponses.length > 0) {
                                                                 // Get the latest response
                                                                 const latestResponse = assistantResponses[assistantResponses.length - 1];
                                                                 let responseContent = "";
-                                                                
+
                                                                 // Extract text content
                                                                 if (Array.isArray(latestResponse.content) && latestResponse.content.length > 0) {
                                                                     if (latestResponse.content[0].text) {
@@ -349,7 +351,7 @@ Begin by acknowledging that you've received these trip details and are ready to 
                                                                 } else if (typeof latestResponse.content === "string") {
                                                                     responseContent = latestResponse.content;
                                                                 }
-                                                                
+
                                                                 // // Update UI - replace processing message with actual response
                                                                 // if (responseContent && isMountedRef.current) {
                                                                 //     setMessages(prev => {
@@ -411,9 +413,9 @@ Begin by acknowledging that you've received these trip details and are ready to 
             checkInitialResponse();
         } catch (err) {
             console.error("Failed to initialize agent:", err);
-            
+
             if (!isMountedRef.current) return;
-            
+
             setError("Failed to start the travel assistant. Please try again.");
             setLoading(false);
         }
@@ -422,7 +424,7 @@ Begin by acknowledging that you've received these trip details and are ready to 
     // Start or restart polling for responses
     const startPolling = (isFirstMessage = true) => {
         console.log(`Starting polling (isFirstMessage: ${isFirstMessage})`);
-        
+
         // Clear any existing interval
         if (pollingInterval) {
             clearInterval(pollingInterval);
@@ -431,11 +433,11 @@ Begin by acknowledging that you've received these trip details and are ready to 
         // If this is a following message, add a processing indicator if not already present
         if (!isFirstMessage) {
             const hasProcessingMessage = messages.some(
-                msg => msg.role === "assistant" && 
-                (msg.content === "Processing your message..." || 
-                 msg.content === "Processing your trip details...")
+                msg => msg.role === "assistant" &&
+                    (msg.content === "Processing your message..." ||
+                        msg.content === "Processing your trip details...")
             );
-            
+
             if (!hasProcessingMessage && isMountedRef.current) {
                 setMessages(prevMessages => [
                     ...prevMessages,
@@ -452,19 +454,19 @@ Begin by acknowledging that you've received these trip details and are ready to 
                 console.log("Stopping polling: runId missing or component unmounted");
                 return;
             }
-    
+
             try {
                 // Get run status
                 console.log(`Polling for run status: ${runId}`);
                 const runData = await getAgentRun(apiKey, runId);
                 const status = runData.data?.status || "unknown";
-                
+
                 if (!isMountedRef.current) {
                     clearInterval(interval);
                     console.log("Component unmounted during polling, clearing interval");
                     return;
                 }
-                
+
                 setRunStatus(status);
                 console.log("Current run status:", status);
 
@@ -521,15 +523,15 @@ Begin by acknowledging that you've received these trip details and are ready to 
                             // Update the messages array - replace processing message with actual response
                             setMessages(prevMessages => {
                                 const newMessages = [...prevMessages];
-                                
+
                                 // Find if we have a processing message to replace
                                 const processingIndex = newMessages.findIndex(
-                                    msg => msg.role === "assistant" && 
-                                    (msg.content === "Processing your request..." ||
-                                     msg.content === "Processing your message..." ||
-                                     msg.content === "Processing your trip details...")
+                                    msg => msg.role === "assistant" &&
+                                        (msg.content === "Processing your request..." ||
+                                            msg.content === "Processing your message..." ||
+                                            msg.content === "Processing your trip details...")
                                 );
-                                
+
                                 if (processingIndex !== -1) {
                                     // Replace the processing message
                                     newMessages[processingIndex] = {
@@ -543,21 +545,21 @@ Begin by acknowledging that you've received these trip details and are ready to 
                                         content: responseContent
                                     });
                                 }
-                                
+
                                 return newMessages;
                             });
                         } else {
                             // No assistant response found
                             console.error("No assistant responses found in results");
-                            
+
                             if (!isMountedRef.current) return;
-                            
+
                             setError("No response found from the AI assistant. Please try again.");
                         }
                     } else {
                         // No results found
                         if (!isMountedRef.current) return;
-                        
+
                         setError("No response received from the AI assistant. Please try again.");
                     }
 
@@ -568,9 +570,9 @@ Begin by acknowledging that you've received these trip details and are ready to 
                 }
             } catch (err) {
                 console.error("Error polling data:", err);
-                
+
                 if (!isMountedRef.current) return;
-                
+
                 setError("Failed to update conversation. Please try again.");
                 clearInterval(interval);
                 setPollingInterval(null);
@@ -590,7 +592,7 @@ Begin by acknowledging that you've received these trip details and are ready to 
             ...prevMessages,
             { role: "user", content: input }
         ]);
-        
+
         const currentMessage = input;
         setInput("");
         setLoading(true);
@@ -604,7 +606,7 @@ Begin by acknowledging that you've received these trip details and are ready to 
             startPolling(false);
         } catch (err) {
             console.error("Failed to send message:", err);
-            
+
             if (isMountedRef.current) {
                 setError("Failed to send message. Please try again.");
                 setLoading(false);
