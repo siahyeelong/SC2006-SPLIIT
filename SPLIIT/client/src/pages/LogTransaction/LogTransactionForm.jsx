@@ -75,7 +75,7 @@ function LogTransactionForm({ onAdd }) {
         isLocalCurrency: false,
         exchangeRate: parseFloat(
             exchangeRates[trip.foreignCurrency] /
-                exchangeRates[trip.localCurrency]
+            exchangeRates[trip.localCurrency]
         ), // foreign : local exchange rate
         description: "",
         payer: "",
@@ -126,9 +126,9 @@ function LogTransactionForm({ onAdd }) {
         const numericValue = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
         const formattedPrice = !isNaN(numericValue)
             ? numericValue.toLocaleString("en-SG", {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
-              })
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+            })
             : "";
         setFormData((prev) => ({ ...prev, price: formattedPrice }));
     };
@@ -164,12 +164,11 @@ function LogTransactionForm({ onAdd }) {
         const fc = exchangeRates[trip.foreignCurrency];
 
         return lc > fc
-            ? `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${
-                  trip.foreignCurrency
-              } 1`
+            ? `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${trip.foreignCurrency
+            } 1`
             : `${trip.localCurrency} 1 = ${trip.foreignCurrency} ${parseFloat(
-                  fc / lc
-              ).toFixed(2)}`;
+                fc / lc
+            ).toFixed(2)}`;
     };
 
     // Handle all other changes by updating the corresponding values
@@ -251,14 +250,13 @@ function LogTransactionForm({ onAdd }) {
                                 onDelete={
                                     selected
                                         ? () =>
-                                              handleChipSelection(
-                                                  person.username
-                                              )
+                                            handleChipSelection(
+                                                person.username
+                                            )
                                         : undefined
                                 }
-                                className={`chip ${
-                                    selected ? "chip-selected" : ""
-                                }`}
+                                className={`chip ${selected ? "chip-selected" : ""
+                                    }`}
                             />
                         );
                     })}

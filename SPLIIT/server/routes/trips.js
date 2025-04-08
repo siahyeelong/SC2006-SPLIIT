@@ -1,6 +1,5 @@
 import express from "express";
 import db from "../db/connection.js";
-import { ObjectId } from "mongodb"; // This help convert the id from string to ObjectId for the _id.
 
 const router = express.Router();
 const collection = db.collection(process.env.TRIPS_COLLECTION);

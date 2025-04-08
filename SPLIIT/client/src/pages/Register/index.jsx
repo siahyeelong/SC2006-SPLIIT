@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import Header from "../../layouts/Header";
 import RegisterForm from "./RegisterForm";
+import GoogleLoginButton from "../Login/GoogleLoginButton";
 
 function Register() {
     const theme = useTheme();
@@ -78,6 +79,7 @@ function Register() {
                         Login
                     </a>
                 </Typography>
+                <GoogleLoginButton />
             </Box>
         </Box>
     );

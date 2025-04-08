@@ -99,7 +99,7 @@ function GoogleLoginButton() {
             }}
         >
             <Typography variant="body2" sx={{ mb: 1 }}>
-                Or sign in with Google:
+                Register or login in with Google:
             </Typography>
             {loading ? (
                 <Box sx={{ display: "flex", justifyContent: "center", py: 1 }}>
