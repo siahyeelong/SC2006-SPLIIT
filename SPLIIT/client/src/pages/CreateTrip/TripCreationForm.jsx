@@ -71,9 +71,9 @@ function TripCreationForm() {
         const numericValue = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
         const formattedPrice = !isNaN(numericValue)
             ? numericValue.toLocaleString("en-SG", {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
-              })
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+            })
             : "";
         setFormData((prev) => ({ ...prev, budget: formattedPrice }));
     };
@@ -221,9 +221,9 @@ function TripCreationForm() {
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                        {
-                                            borderColor: colours.primary[100],
-                                        },
+                                    {
+                                        borderColor: colours.primary[100],
+                                    },
                                     "& .MuiInputLabel-root": {
                                         color: colours.primary[100],
                                     },
@@ -256,9 +256,9 @@ function TripCreationForm() {
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                        {
-                                            borderColor: colours.primary[100],
-                                        },
+                                    {
+                                        borderColor: colours.primary[100],
+                                    },
                                     "& .MuiInputLabel-root": {
                                         color: colours.primary[100],
                                     },
@@ -291,31 +291,31 @@ function TripCreationForm() {
                                             mt: 2,
                                             "& .MuiOutlinedInput-root": {
                                                 "& .MuiOutlinedInput-notchedOutline":
-                                                    {
-                                                        borderColor:
-                                                            colours
-                                                                .primary[100],
-                                                    },
-                                            },
-                                            "& .Mui-focused .MuiOutlinedInput-notchedOutline":
                                                 {
                                                     borderColor:
-                                                        colours.primary[100],
+                                                        colours
+                                                            .primary[100],
                                                 },
+                                            },
+                                            "& .Mui-focused .MuiOutlinedInput-notchedOutline":
+                                            {
+                                                borderColor:
+                                                    colours.primary[100],
+                                            },
                                             "& .MuiInputLabel-root": {
                                                 color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputLabel-root":
-                                                {
-                                                    color: colours.primary[100],
-                                                },
+                                            {
+                                                color: colours.primary[100],
+                                            },
                                             "& .MuiInputBase-input": {
                                                 color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputBase-input":
-                                                {
-                                                    color: colours.primary[100],
-                                                },
+                                            {
+                                                color: colours.primary[100],
+                                            },
                                         }}
                                     >
                                         {Object.keys(exchangeRates).map(
@@ -340,38 +340,38 @@ function TripCreationForm() {
                                         name="localCurrency"
                                         value={formData.localCurrency}
                                         onChange={handleChange}
-                                        error={!!errors.currency}
-                                        helperText={errors.currency}
+                                        error={errors.localCurrency || errors.currency}
+                                        helperText={errors.localCurrency || errors.currency}
                                         required
                                         sx={{
                                             mt: 2,
                                             "& .MuiOutlinedInput-root": {
                                                 "& .MuiOutlinedInput-notchedOutline":
-                                                    {
-                                                        borderColor:
-                                                            colours
-                                                                .primary[100],
-                                                    },
-                                            },
-                                            "& .Mui-focused .MuiOutlinedInput-notchedOutline":
                                                 {
                                                     borderColor:
-                                                        colours.primary[100],
+                                                        colours
+                                                            .primary[100],
                                                 },
+                                            },
+                                            "& .Mui-focused .MuiOutlinedInput-notchedOutline":
+                                            {
+                                                borderColor:
+                                                    colours.primary[100],
+                                            },
                                             "& .MuiInputLabel-root": {
                                                 color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputLabel-root":
-                                                {
-                                                    color: colours.primary[100],
-                                                },
+                                            {
+                                                color: colours.primary[100],
+                                            },
                                             "& .MuiInputBase-input": {
                                                 color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputBase-input":
-                                                {
-                                                    color: colours.primary[100],
-                                                },
+                                            {
+                                                color: colours.primary[100],
+                                            },
                                         }}
                                     >
                                         {Object.keys(exchangeRates).map(
@@ -406,9 +406,9 @@ function TripCreationForm() {
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                        {
-                                            borderColor: colours.primary[100],
-                                        },
+                                    {
+                                        borderColor: colours.primary[100],
+                                    },
                                     "& .MuiInputLabel-root": {
                                         color: colours.primary[100],
                                     },
@@ -440,9 +440,9 @@ function TripCreationForm() {
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                        {
-                                            borderColor: colours.primary[100],
-                                        },
+                                    {
+                                        borderColor: colours.primary[100],
+                                    },
                                     "& .MuiInputLabel-root": {
                                         color: colours.primary[100],
                                     },
