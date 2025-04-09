@@ -16,6 +16,10 @@ const generateRefreshToken = (user) =>
 router.post("/createuser", async (req, res) => {
     const { email, username, password, displayName, favColour } = req.body;
 
+    const existingEmail = await collection.findOne({ email });
+    if (existingEmail)
+        return res.status(409).json({ message: "Email already in use" });
+
     const existingUser = await collection.findOne({ username });
     if (existingUser)
         return res.status(400).json({ message: "Username already exists" });
