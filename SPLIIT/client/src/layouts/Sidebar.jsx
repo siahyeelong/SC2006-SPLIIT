@@ -154,7 +154,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                             >
                                 {MenuItems.map((item) =>
                                     item.icon === null ||
-                                        item.title === "TripInfo" ? undefined : (
+                                    item.title === "Trip Info" ? undefined : (
                                         <Item
                                             key={item.title}
                                             title={item.title}
@@ -174,7 +174,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                                 onClick={() => navigate("/selecttrip")}
                             />
                             {MenuItems.map((item) => {
-                                if (item.title === "TripInfo") {
+                                if (item.title === "Trip Info") {
                                     return (
                                         <Box
                                             key={item.title}
