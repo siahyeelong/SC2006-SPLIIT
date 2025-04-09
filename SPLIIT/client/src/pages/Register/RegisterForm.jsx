@@ -94,6 +94,11 @@ function RegisterForm() {
                     },
                     body: JSON.stringify(formData),
                 });
+                if (response.status === 409) {
+                    setErrors({ email: "This email is already registered." });
+                    throw new Error("Email already in use");
+                }
+
                 if (response.status === 400) {
                     setErrors({ username: "Please enter a unique username." });
                     throw new Error("Username already exists");
