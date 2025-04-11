@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import Header from "../../layouts/Header";
-import TripSelection from "./TripSelection";
+import TripSelection from "./TripSelectionController/TripSelection";
 
 function SelectTrip() {
     return (

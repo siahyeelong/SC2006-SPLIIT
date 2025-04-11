@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import Header from "../../layouts/Header";
-import RegisterForm from "./RegisterForm";
-import GoogleLoginButton from "../Login/GoogleLoginButton";
+import RegisterForm from "./RegisterController/RegisterForm";
+import GoogleLoginButton from "../Login/LoginController/GoogleLoginButton";
 
 function Register() {
     const theme = useTheme();

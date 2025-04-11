@@ -8,8 +8,8 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
-import { useDashboardData } from "../../hooks/useDashboardData";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useDashboardData } from "../../../hooks/useDashboardData";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function DebtTable({ matrix, ower, formatPrice }) {
     const { people } = useDashboardData();

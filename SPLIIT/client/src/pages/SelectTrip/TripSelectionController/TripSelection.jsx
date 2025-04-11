@@ -8,11 +8,11 @@ import {
     useTheme,
     Box,
 } from "@mui/material";
-import defaultBackground from "../../assets/defaultTripBackground.png";
-import { tokens } from "../../theme";
+import defaultBackground from "../../../assets/defaultTripBackground.png";
+import { tokens } from "../../../theme";
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function TripSelection() {
     const [allTrips, setAllTrips] = useState(null);

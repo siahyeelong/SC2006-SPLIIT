@@ -10,20 +10,18 @@ import {
     IconButton,
     useTheme,
     Typography,
-    Divider,
-    CardHeader,
 } from "@mui/material";
-import { useExchangeRates } from "../../contexts/ExchangeRates";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useExchangeRates } from "../../../contexts/ExchangeRates";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import "./DayPickerStyles.css"; // Import custom styles
 import TripCreatedSuccess from "./TripCreatedSuccess";
-import { Trip } from "../../entities/Trip";
+import { Trip } from "../../../entities/Trip";
 
 function TripCreationForm() {
     const formResetState = {

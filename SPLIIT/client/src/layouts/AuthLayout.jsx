@@ -1,13 +1,25 @@
+import {
+    Drawer,
+    IconButton,
+    useTheme,
+    useMediaQuery,
+    Box,
+} from "@mui/material";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import { useAuth } from "../contexts/AuthContext";
-import { Box } from "@mui/material";
 import { useState } from "react";
+import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 const AuthLayout = () => {
     const location = useLocation();
     const [isCollapsed, setIsCollapsed] = useState(true);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
     const sidebarWidth = isCollapsed ? 80 : 240;
 
     const { user, loading } = useAuth();
@@ -22,54 +34,85 @@ const AuthLayout = () => {
 
     return (
         <Box sx={{ display: "flex", minHeight: "100vh" }}>
-            {/* Fixed Sidebar */}
-            <Box
-                sx={{
-                    width: `${sidebarWidth}px`,
-                    flexShrink: 0,
-                    position: "fixed",
-                    left: 0,
-                    top: 0,
-                    height: "100vh",
-                    zIndex: 1200,
-                    transition: "width 0.3s ease",
-                }}
-            >
-                {localStorage.getItem("trip") && (
-                    <Sidebar // enable sidebar only if trip has been selected before
-                        isCollapsed={isCollapsed}
-                        setIsCollapsed={setIsCollapsed}
+            {/* Sidebar or Drawer */}
+            {isMobile ? (
+                <Drawer
+                    open={drawerOpen}
+                    onClose={() => setDrawerOpen(false)}
+                    PaperProps={{
+                        sx: {
+                            width: 240,
+                            backgroundColor: theme.palette.background.default,
+                        },
+                    }}
+                >
+                    <Sidebar
+                        isCollapsed={false}
+                        setIsCollapsed={() => { }}
+                        isMobile={true}
+                        onCloseDrawer={() => setDrawerOpen(false)}
                     />
-                )}
-            </Box>
+                </Drawer>
+            ) : (
+                <Box
+                    sx={{
+                        width: `${sidebarWidth}px`,
+                        flexShrink: 0,
+                        position: "fixed",
+                        left: 0,
+                        top: 0,
+                        height: "100vh",
+                        zIndex: 1200,
+                        transition: "width 0.3s ease",
+                    }}
+                >
+                    {localStorage.getItem("trip") && (
+                        <Sidebar
+                            isCollapsed={isCollapsed}
+                            setIsCollapsed={setIsCollapsed}
+                        />
+                    )}
+                </Box>
+            )}
 
             {/* Main Content Area */}
             <Box
                 sx={{
                     flexGrow: 1,
-                    marginLeft: `${sidebarWidth + 30}px`,
-                    width: `calc(100% - ${sidebarWidth + 30}px)`,
+                    marginLeft: isMobile ? 0 : `${sidebarWidth + 30}px`,
+                    width: isMobile ? "100%" : `calc(100% - ${sidebarWidth + 30}px)`,
                     transition: "margin-left 0.3s ease, width 0.3s ease",
                 }}
             >
-                {/* Fixed Topbar */}
+                {/* Topbar */}
                 <Box
                     sx={{
                         position: "fixed",
                         top: 0,
                         right: 0,
-                        left: `${sidebarWidth}px`,
+                        left: isMobile ? 0 : `${sidebarWidth}px`,
                         zIndex: 1100,
-                        transition: "left 0.3s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        padding: 1,
+                        backgroundColor: theme.palette.background.default,
                     }}
                 >
+                    {isMobile && (
+                        <Box sx={{ flexGrow: 1 }}>
+                            <IconButton onClick={() => setDrawerOpen(true)}>
+                                <MenuOutlinedIcon />
+                            </IconButton>
+                        </Box>
+                    )}
                     <Topbar />
                 </Box>
 
                 {/* Scrollable Content */}
                 <Box
                     sx={{
-                        marginTop: 8, // Space for topbar
+                        marginTop: 8,
                         padding: 3,
                         maxWidth: { xs: "100%", md: 1200, lg: 1400 },
                         mx: "auto",

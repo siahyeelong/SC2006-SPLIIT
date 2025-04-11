@@ -1,21 +1,17 @@
-import { Box, IconButton, InputBase, useTheme } from "@mui/material";
-import { ColorModeContext, tokens } from "../theme";
+import { Box, IconButton, useTheme } from "@mui/material";
+import { ColorModeContext } from "../theme";
 import { useContext } from "react";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
-import DropdownMenu from "./DropdownMenu";
 import { Refresh } from "@mui/icons-material";
 
 function Topbar() {
     const theme = useTheme();
-    const colours = tokens(theme.palette.mode);
     const colourMode = useContext(ColorModeContext);
 
     return (
-        <Box display="flex" justifyContent="space-between" p={2}>
-            <DropdownMenu />
-            <Box flexGrow={1} />
+        <Box display="flex" justifyContent="flex-end" p={2}>
             <Box display="flex" justifyContent="flex-end">
                 <IconButton onClick={() => window.location.reload()}>
                     <Refresh />

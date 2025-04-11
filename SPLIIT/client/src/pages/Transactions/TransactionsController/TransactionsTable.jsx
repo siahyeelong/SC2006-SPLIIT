@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Typography, useTheme, Stack } from "@mui/material";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import { DataGrid } from "@mui/x-data-grid";
-import ToCSVButton from "../../components/common/ToCSVButton";
+import ToCSVButton from "../../../components/common/ToCSVButton";
 import RecipientsCell from "./RecipientsCell";
 import CurrencySwitch from "./CurrencySwitch";
 import PerTransactionDialog from "./PerTransactionDialog";
 import { ReceiptLong } from "@mui/icons-material";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function TransactionsTable() {
     const theme = useTheme();

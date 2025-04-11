@@ -13,7 +13,7 @@ import {
     Divider,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
     Visibility,
@@ -22,7 +22,7 @@ import {
     Person,
     Lock,
 } from "@mui/icons-material";
-import ColourPicker from "../../components/common/ColourPicker";
+import ColourPicker from "../../../components/common/ColourPicker";
 
 function RegisterForm() {
     const { login } = useContext(AuthContext);

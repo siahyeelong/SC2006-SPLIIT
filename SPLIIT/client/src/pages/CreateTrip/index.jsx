@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, } from "@mui/material";
 import Header from "../../layouts/Header";
-import TripCreationForm from "./TripCreationForm";
+import TripCreationForm from "./CreateTripController/TripCreationForm";
 import JoinTripButton from "../../components/common/JoinTripButton";
 
 function CreateTrip() {

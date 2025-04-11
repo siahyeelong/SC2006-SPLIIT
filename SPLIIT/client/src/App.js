@@ -11,7 +11,7 @@ import TripInfo from "./pages/TripInfo";
 import LogTransaction from "./pages/LogTransaction";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
-import AItinerary from "./pages/AItinirary";
+import AItinerary from "./pages/AItinerary";
 import { ExchangeRatesProvider } from "./contexts/ExchangeRates";
 import { AuthProvider } from "./contexts/AuthContext";
 import PublicLayout from "./layouts/PublicLayout";

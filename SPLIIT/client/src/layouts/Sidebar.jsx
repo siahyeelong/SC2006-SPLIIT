@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
@@ -7,7 +7,6 @@ import {
     IconButton,
     Typography,
     useTheme,
-    useMediaQuery,
 } from "@mui/material";
 import { tokens } from "../theme";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
@@ -17,36 +16,12 @@ import { useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import ShowCurTrip from "../components/common/ShowCurTrip";
 
-const Item = ({ title, to, icon, selected, setSelected }) => {
-    const theme = useTheme();
-    const colours = tokens(theme.palette.mode);
-    return (
-        <MenuItem
-            active={selected === title}
-            style={{ color: colours.grey[100] }}
-            onClick={() => setSelected(title)}
-            icon={icon}
-        >
-            <Typography>{title}</Typography>
-            <Link to={to} />
-        </MenuItem>
-    );
-};
-
-function Sidebar({ isCollapsed, setIsCollapsed }) {
+function Sidebar({ isCollapsed, setIsCollapsed, onCloseDrawer = () => { }, isMobile = false }) {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
     const [selected, setSelected] = useState("logtransaction");
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const navigate = useNavigate();
     const { trip } = useContext(AuthContext);
-
-    // Handle automatic collapse on mobile
-    useEffect(() => {
-        if (isMobile) {
-            setIsCollapsed(true);
-        }
-    }, [isMobile, setIsCollapsed]);
 
     return (
         <Box
@@ -92,7 +67,10 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                     >
                         <Menu iconShape="square">
                             <MenuItem
-                                onClick={() => setIsCollapsed(!isCollapsed)}
+                                onClick={() => {
+                                    setIsCollapsed(!isCollapsed)
+                                    onCloseDrawer()
+                                }}
                                 icon={
                                     isCollapsed ? (
                                         <MenuOutlinedIcon />
@@ -126,21 +104,20 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                                                 />
                                             </a>
                                         </Box>
-                                        {!isMobile && (
-                                            <IconButton
-                                                onClick={() =>
-                                                    setIsCollapsed(!isCollapsed)
-                                                }
-                                                sx={{
-                                                    display: {
-                                                        xs: "none",
-                                                        sm: "flex",
-                                                    },
-                                                }}
-                                            >
-                                                <MenuOutlinedIcon />
-                                            </IconButton>
-                                        )}
+                                        <IconButton
+                                            onClick={() => {
+                                                setIsCollapsed(!isCollapsed)
+                                            }
+                                            }
+                                            sx={{
+                                                display: {
+                                                    xs: "flex", // Always show on mobile
+                                                    sm: isCollapsed ? "none" : "flex", // Show on desktop only when not collapsed
+                                                },
+                                            }}
+                                        >
+                                            <MenuOutlinedIcon />
+                                        </IconButton>
                                     </Box>
                                 )}
                             </MenuItem>
@@ -154,15 +131,19 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                             >
                                 {MenuItems.map((item) =>
                                     item.icon === null ||
-                                    item.title === "Trip Info" ? undefined : (
-                                        <Item
-                                            key={item.title}
-                                            title={item.title}
-                                            to={item.to}
+                                        item.title === "Trip Info" ? undefined : (
+                                        <MenuItem
+                                            active={selected === item.title}
+                                            style={{ color: colours.grey[100] }}
+                                            onClick={() => {
+                                                setSelected(item.title)
+                                                onCloseDrawer()
+                                            }}
                                             icon={item.icon}
-                                            selected={selected}
-                                            setSelected={setSelected}
-                                        />
+                                        >
+                                            <Typography>{item.title}</Typography>
+                                            <Link to={item.to} />
+                                        </MenuItem>
                                     )
                                 )}
                             </Box>
@@ -171,7 +152,10 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                             <ShowCurTrip
                                 displayCondition={!isCollapsed}
                                 curTrip={trip}
-                                onClick={() => navigate("/selecttrip")}
+                                onClick={() => {
+                                    navigate("/selecttrip")
+                                    onCloseDrawer()
+                                }}
                             />
                             {MenuItems.map((item) => {
                                 if (item.title === "Trip Info") {
@@ -191,13 +175,18 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                                                 },
                                             }}
                                         >
-                                            <Item
-                                                title={item.title}
-                                                to={item.to}
+                                            <MenuItem
+                                                active={selected === item.title}
+                                                style={{ color: colours.grey[100] }}
+                                                onClick={() => {
+                                                    setSelected(item.title)
+                                                    onCloseDrawer()
+                                                }}
                                                 icon={item.icon}
-                                                selected={selected}
-                                                setSelected={setSelected}
-                                            />
+                                            >
+                                                <Typography>{item.title}</Typography>
+                                                <Link to={item.to} />
+                                            </MenuItem>
                                         </Box>
                                     );
                                 }
@@ -206,8 +195,9 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                         </Menu>
                     </Box>
                 </ProSidebar>
-            )}
-        </Box>
+            )
+            }
+        </Box >
     );
 }
 

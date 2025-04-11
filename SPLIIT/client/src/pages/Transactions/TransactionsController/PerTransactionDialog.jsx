@@ -8,12 +8,12 @@ import {
     Chip,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
-import { Categories } from "../../constants/Categories";
-import { useExchangeRates } from "../../contexts/ExchangeRates";
+import { Categories } from "../../../constants/Categories";
+import { useExchangeRates } from "../../../contexts/ExchangeRates";
 import DeleteTransactionConfirmationDialog from "./DelTransactionConfirmDialog";
-import SnackbarNotifs from "../../components/common/SnackbarNotifs";
-import { AuthContext } from "../../contexts/AuthContext";
-import MapPreview from "../../components/common/MapPreview";
+import SnackbarNotifs from "../../../components/common/SnackbarNotifs";
+import { AuthContext } from "../../../contexts/AuthContext";
+import MapPreview from "../../../components/common/MapPreview";
 
 function TransactionCard({ transaction, people }) {
     const { exchangeRates } = useExchangeRates();
