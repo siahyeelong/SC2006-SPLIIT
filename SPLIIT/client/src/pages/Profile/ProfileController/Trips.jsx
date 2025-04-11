@@ -195,9 +195,11 @@ const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
                                                 variant="body2"
                                                 fontWeight={"bold"}
                                             >
-                                                {new Date(
-                                                    trip.startDate
-                                                ).toLocaleDateString()}
+                                                {trip.startDate ?
+                                                    new Date(trip.startDate).toLocaleDateString()
+                                                    :
+                                                    undefined
+                                                }
                                             </Typography>
                                         </Stack>
                                     </Paper>
