@@ -3,15 +3,15 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import CardActionArea from "@mui/material/CardActionArea";
-import { TransactionsContext } from ".";
+import { TransactionsContext } from "..";
 import { Box } from "@mui/material";
-import { Categories } from "../../constants/Categories";
+import { Categories } from "../../../constants/Categories";
 import AnalyticsDialog from "./AnalyticsDialog";
-import { createSpendingChart } from "../../components/charts/DoughnutChartUtils";
+import { createSpendingChart } from "../../../components/charts/DoughnutChartUtils";
 import DebtTable from "./DebtTable";
 import { SentimentNeutral } from "@mui/icons-material";
-import { formatPrice } from "../../utils/formatPrice";
-import { AuthContext } from "../../contexts/AuthContext";
+import { formatPrice } from "../../../utils/formatPrice";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function CarouselCard({ ower, matrix }) {
     const transactions = useContext(TransactionsContext);

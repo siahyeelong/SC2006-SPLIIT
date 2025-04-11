@@ -12,9 +12,9 @@ import {
     useTheme,
 } from "@mui/material";
 import React, { useContext } from "react";
-import { formatPrice } from "../../utils/formatPrice";
+import { formatPrice } from "../../../utils/formatPrice";
 import { CheckCircle } from "@mui/icons-material";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 function SimplifiedDebtDialog({ open, onClose, transactions, people }) {
     const theme = useTheme();

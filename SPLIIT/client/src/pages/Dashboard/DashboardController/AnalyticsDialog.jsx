@@ -7,7 +7,7 @@ import {
     Typography,
 } from "@mui/material";
 import React, { useRef } from "react";
-import { createChart } from "../../components/charts/LineChartUtils"; // Ensure this is the correct import path
+import { createChart } from "../../../components/charts/LineChartUtils"; // Ensure this is the correct import path
 
 function AnalyticsDialog({ open, onClose, transactions, userId }) {
     const chartRef = useRef(null);

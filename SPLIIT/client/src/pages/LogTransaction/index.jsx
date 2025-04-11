@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import { Box } from "@mui/material";
 import Header from "../../layouts/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
-import LogTransactionForm from "./LogTransactionForm";
+import LogTransactionForm from "./LogTransactionController/LogTransactionForm";
 import SnackbarNotifs from "../../components/common/SnackbarNotifs";
 
 function LogTransaction() {

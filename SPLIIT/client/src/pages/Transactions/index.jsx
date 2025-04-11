@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box } from "@mui/material";
 import Header from "../../layouts/Header";
-import TransactionsTable from "./TransactionsTable";
+import TransactionsTable from "./TransactionsController/TransactionsTable";
 
 function Transactions() {
     return (

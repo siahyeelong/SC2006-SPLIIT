@@ -19,9 +19,8 @@ import {
     Instagram,
     Email,
     ContentCopy,
-    Check,
 } from "@mui/icons-material";
-import SnackbarNotifs from "../../components/common/SnackbarNotifs";
+import SnackbarNotifs from "../../../components/common/SnackbarNotifs";
 
 function TripCreatedSuccess({ open, handleClose, trip }) {
     const theme = useTheme();

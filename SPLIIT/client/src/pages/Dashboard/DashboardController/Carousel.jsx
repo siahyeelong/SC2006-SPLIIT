@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, useTheme, Typography } from "@mui/material";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CarouselCard from "./CarouselCard";

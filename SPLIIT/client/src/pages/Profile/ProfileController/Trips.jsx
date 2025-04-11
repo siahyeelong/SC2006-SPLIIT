@@ -12,9 +12,9 @@ import {
 import { Delete, Add } from "@mui/icons-material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
-import { AuthContext } from "../../contexts/AuthContext";
-import defaultImage from "../../assets/defaultTripBackground.png";
-import SnackbarNotifs from "../../components/common/SnackbarNotifs";
+import { AuthContext } from "../../../contexts/AuthContext";
+import defaultImage from "../../../assets/defaultTripBackground.png";
+import SnackbarNotifs from "../../../components/common/SnackbarNotifs";
 
 const Trips = ({ trips, onDeleteTrip, onAddTrip }) => {
     const theme = useTheme();

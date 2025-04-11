@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Button, Stack } from "@mui/material";
 import Header from "../../layouts/Header";
-import ProfileInfo from "./ProfileInfo";
+import ProfileInfo from "./ProfileController/ProfileInfo";
 import ColourPicker from "../../components/common/ColourPicker";
-import Trips from "./Trips";
-import DeleteTripConfirmationDialog from "./DelTripConfirmationDialog";
-import AddConfirmationDialog from "./AddConfirmationDialog";
+import Trips from "./ProfileController/Trips";
+import DeleteTripConfirmationDialog from "./ProfileController/DelTripConfirmationDialog";
+import AddConfirmationDialog from "./ProfileController/AddConfirmationDialog";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import SnackbarNotifs from "../../components/common/SnackbarNotifs";

@@ -1,8 +1,8 @@
 import React, { createContext, useState } from "react";
 import { Box, Typography, Button, Stack, useTheme } from "@mui/material";
 import Header from "../../layouts/Header";
-import Carousel from "./Carousel";
-import SimplifiedDebtDialog from "./SimplifiedDebtDialog";
+import Carousel from "./DashboardController/Carousel";
+import SimplifiedDebtDialog from "./DashboardController/SimplifiedDebtDialog";
 import { useDashboardData } from "../../hooks/useDashboardData";
 
 export const TransactionsContext = createContext([]);

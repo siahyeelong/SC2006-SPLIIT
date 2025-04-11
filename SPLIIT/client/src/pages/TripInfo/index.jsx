@@ -6,12 +6,11 @@ import {
     Divider,
     Stack,
     useTheme,
-    Typography,
 } from "@mui/material";
 import Header from "../../layouts/Header";
-import TripGeneral from "./TripGeneral";
-import TripMembersDestination from "./TripMembersDestination";
-import TripDateBudget from "./TripDateBudget";
+import TripGeneral from "./TripInfoController/TripGeneral";
+import TripMembersDestination from "./TripInfoController/TripMembersDestination";
+import TripDateBudget from "./TripInfoController/TripDateBudget";
 import { AuthContext } from "../../contexts/AuthContext";
 
 const TripDetails = () => {

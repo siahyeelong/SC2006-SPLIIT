@@ -2,7 +2,7 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import { Box, Typography, Avatar, useTheme } from "@mui/material";
 import { Person, Assistant } from "@mui/icons-material";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 
 const ChatMessage = ({ message }) => {
     const theme = useTheme();

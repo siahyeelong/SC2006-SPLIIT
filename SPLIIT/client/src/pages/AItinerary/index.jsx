@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Button,
@@ -9,7 +9,7 @@ import {
     useTheme,
 } from "@mui/material";
 import Header from "../../layouts/Header";
-import ChatInterface from "./ChatInterface";
+import ChatInterface from "./AItineraryController/ChatInterface";
 import { tokens } from "../../theme";
 
 function AItinerary() {

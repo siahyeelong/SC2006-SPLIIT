@@ -10,7 +10,7 @@ import {
     useTheme,
     useMediaQuery,
 } from "@mui/material";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 
 const JoinTripDialog = ({ open, onClose, tripId, setTripId, onJoin }) => {
     const theme = useTheme();

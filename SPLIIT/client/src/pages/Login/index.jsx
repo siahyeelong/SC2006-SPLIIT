@@ -1,7 +1,7 @@
 import React from "react";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import Header from "../../layouts/Header";
-import LoginForm from "./LoginForm";
+import LoginForm from "./LoginController/LoginForm";
 
 function Login() {
     const theme = useTheme();

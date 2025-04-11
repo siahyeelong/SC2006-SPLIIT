@@ -13,8 +13,8 @@ import {
     createAgentRun,
     getAgentRun,
     sendMessageToAgent,
-} from "../../services/toolhouseService";
-import { AuthContext } from "../../contexts/AuthContext";
+} from "../../../services/toolhouseService";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const ChatInterface = ({ chatId, subtitleColor }) => {
     const theme = useTheme();

@@ -10,7 +10,7 @@ import Grid2 from "@mui/material/Grid2";
 import { Create, GroupAdd } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import JoinTripDialog from "./JoinTripDialog";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext } from "../../../contexts/AuthContext";
 
 const AddConfirmationDialog = ({
     open,

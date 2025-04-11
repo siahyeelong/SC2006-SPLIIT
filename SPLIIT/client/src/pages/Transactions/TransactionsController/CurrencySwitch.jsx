@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { useTheme, Typography, Stack, Switch } from "@mui/material/";
-import { tokens } from "../../theme";
+import { tokens } from "../../../theme";
 
 function CurrencySwitch({ onToggle }) {
     const theme = useTheme();

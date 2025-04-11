@@ -1,5 +1,5 @@
 import { React, useContext, useEffect, useState } from "react";
-import { Categories } from "../../constants/Categories";
+import { Categories } from "../../../constants/Categories";
 import Chip from "@mui/material/Chip";
 import {
     useTheme,
@@ -8,10 +8,10 @@ import {
     InputBase,
     Typography,
 } from "@mui/material";
-import { tokens } from "../../theme";
-import { useExchangeRates } from "../../contexts/ExchangeRates";
-import { AuthContext } from "../../contexts/AuthContext";
-import { Transaction } from "../../entities/Transaction";
+import { tokens } from "../../../theme";
+import { useExchangeRates } from "../../../contexts/ExchangeRates";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { Transaction } from "../../../entities/Transaction";
 
 function LogTransactionForm({ onAdd }) {
     const theme = useTheme();

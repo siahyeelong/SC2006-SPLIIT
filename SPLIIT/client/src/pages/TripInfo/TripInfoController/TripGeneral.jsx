@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import { ContentCopy, PhotoCamera } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import SnackbarNotifs from "../../components/common/SnackbarNotifs";
-import defaultImage from "../../assets/defaultTripBackground.png";
+import SnackbarNotifs from "../../../components/common/SnackbarNotifs";
+import defaultImage from "../../../assets/defaultTripBackground.png";
 
 const TripGeneral = ({ trip, setTrip }) => {
     const [snackbarState, setSnackbarState] = useState({
