@@ -75,7 +75,7 @@ function TripCreatedSuccess({ open, handleClose, trip }) {
                     }}
                 >
                     <Typography
-                        variant="h6"
+                        variant="h5"
                         sx={{
                             fontSize: { xs: "1.25rem", md: "2.5rem" },
                             fontWeight: 600,
@@ -172,7 +172,7 @@ function TripCreatedSuccess({ open, handleClose, trip }) {
                                     <IconButton
                                         href={
                                             shareLinks[
-                                            Object.keys(shareLinks)[index]
+                                                Object.keys(shareLinks)[index]
                                             ]
                                         }
                                         target="_blank"
