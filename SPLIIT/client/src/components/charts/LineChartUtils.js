@@ -1,5 +1,5 @@
 import Chart from "chart.js/auto";
-import { formatPrice } from "../../utils/formatPrice";
+import { formatPrice } from "../../utils/formatters";
 
 const CHART_CONFIG = {
     type: "line",
@@ -110,7 +110,9 @@ export const createChart = (canvas, transactions, userId) => {
         if (!transaction.recipients.includes(userId)) return acc;
 
         const date = transaction.timestamp.split("T")[0];
-        const totalLocalAmt = transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate
+        const totalLocalAmt = transaction.isLocalCurrency
+            ? transaction.price
+            : transaction.price / transaction.exchangeRate;
         const amount =
             parseFloat(totalLocalAmt) / transaction.recipients.length;
         acc[date] = (acc[date] || 0) + amount;

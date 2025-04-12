@@ -12,6 +12,8 @@ import { tokens } from "../../../theme";
 import { useExchangeRates } from "../../../contexts/ExchangeRates";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { Transaction } from "../../../entities/Transaction";
+import { validateTransactionForm } from "../../../utils/validators";
+import { formatNumberWithCommas } from "../../../utils/formatters";
 
 function LogTransactionForm({ onAdd }) {
     const theme = useTheme();
@@ -75,7 +77,7 @@ function LogTransactionForm({ onAdd }) {
         isLocalCurrency: false,
         exchangeRate: parseFloat(
             exchangeRates[trip.foreignCurrency] /
-            exchangeRates[trip.localCurrency]
+                exchangeRates[trip.localCurrency]
         ), // foreign : local exchange rate
         description: "",
         payer: "",
@@ -126,36 +128,11 @@ function LogTransactionForm({ onAdd }) {
         const numericValue = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
         const formattedPrice = !isNaN(numericValue)
             ? numericValue.toLocaleString("en-SG", {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-            })
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+              })
             : "";
         setFormData((prev) => ({ ...prev, price: formattedPrice }));
-    };
-
-    const formatNumberWithCommas = (value) => {
-        // def can make this optimal but screw this shit man
-        // Remove any non-numeric characters except for the decimal point
-        const numberPart = value.replace(/[^0-9.]/g, "");
-
-        // Separate the integer and decimal parts
-        const [integerPart, decimalPart] = numberPart.split(".");
-
-        // Format the integer part with commas
-        const formattedIntegerPart = integerPart.replace(
-            /\B(?=(\d{3})+(?!\d))/g,
-            ","
-        );
-
-        // If there's a decimal part, ensure it's properly formatted with up to 2 decimal places
-        const formattedDecimalPart = decimalPart
-            ? "." + decimalPart.slice(0, 2) // Limit decimal to 2 places
-            : "";
-
-        // Return the formatted number with or without decimal
-        return numberPart.endsWith(".")
-            ? formattedIntegerPart + "."
-            : formattedIntegerPart + formattedDecimalPart;
     };
 
     // Handle exchange rate hint
@@ -164,11 +141,12 @@ function LogTransactionForm({ onAdd }) {
         const fc = exchangeRates[trip.foreignCurrency];
 
         return lc > fc
-            ? `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${trip.foreignCurrency
-            } 1`
+            ? `${trip.localCurrency} ${parseFloat(lc / fc).toFixed(2)} = ${
+                  trip.foreignCurrency
+              } 1`
             : `${trip.localCurrency} 1 = ${trip.foreignCurrency} ${parseFloat(
-                fc / lc
-            ).toFixed(2)}`;
+                  fc / lc
+              ).toFixed(2)}`;
     };
 
     // Handle all other changes by updating the corresponding values
@@ -178,17 +156,7 @@ function LogTransactionForm({ onAdd }) {
     };
 
     const validate = () => {
-        const newErrors = {};
-        if (!formData.recipients.length)
-            newErrors.recipients = "Please select at least one recipient.";
-        if (!formData.category)
-            newErrors.category = "Please select a category.";
-        if (!formData.price || isNaN(formData.price.replace(/[^0-9.]/g, "")))
-            newErrors.price = "Price must be a valid number.";
-        if (!formData.description)
-            newErrors.description = "Description is required.";
-        if (!formData.payer) newErrors.payer = "Please select who paid.";
-
+        const newErrors = validateTransactionForm(formData);
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -250,13 +218,14 @@ function LogTransactionForm({ onAdd }) {
                                 onDelete={
                                     selected
                                         ? () =>
-                                            handleChipSelection(
-                                                person.username
-                                            )
+                                              handleChipSelection(
+                                                  person.username
+                                              )
                                         : undefined
                                 }
-                                className={`chip ${selected ? "chip-selected" : ""
-                                    }`}
+                                className={`chip ${
+                                    selected ? "chip-selected" : ""
+                                }`}
                             />
                         );
                     })}

@@ -9,7 +9,7 @@ import {
 import Grid2 from "@mui/material/Grid2";
 import { Create, GroupAdd } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import JoinTripDialog from "./JoinTripDialog";
+import JoinTripDialog from "../../../components/common/JoinTripDialog";
 import { AuthContext } from "../../../contexts/AuthContext";
 
 const AddConfirmationDialog = ({
@@ -22,7 +22,7 @@ const AddConfirmationDialog = ({
     const [joinTripDialogOpen, setJoinTripDialogOpen] = useState(false);
     const [tripId, setTripId] = useState("");
     const navigate = useNavigate();
-    const { refresh } = useContext(AuthContext)
+    const { refresh } = useContext(AuthContext);
 
     const handleClickJoinTrip = () => {
         setJoinTripDialogOpen(true);
@@ -34,7 +34,9 @@ const AddConfirmationDialog = ({
         const message = await user.joinTrip(trimmedId); // update the user object
         setProfile((p) => ({
             ...p,
-            trips: p.trips.includes(trimmedId) ? p.trips : [...p.trips, trimmedId]
+            trips: p.trips.includes(trimmedId)
+                ? p.trips
+                : [...p.trips, trimmedId],
         })); // update tempProfile to show live changes
 
         if (message.severity === "success") {

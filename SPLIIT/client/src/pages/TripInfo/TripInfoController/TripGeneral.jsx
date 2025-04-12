@@ -1,4 +1,3 @@
-// components/TripGeneral.jsx
 import React, { useRef, useState } from "react";
 import {
     Box,
@@ -13,6 +12,7 @@ import { ContentCopy, PhotoCamera } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import SnackbarNotifs from "../../../components/common/SnackbarNotifs";
 import defaultImage from "../../../assets/defaultTripBackground.png";
+import { processImageFile } from "../../../utils/imageUtils";
 
 const TripGeneral = ({ trip, setTrip }) => {
     const [snackbarState, setSnackbarState] = useState({
@@ -24,7 +24,7 @@ const TripGeneral = ({ trip, setTrip }) => {
     const theme = useTheme();
 
     const showSnackbar = (message, severity) => {
-        setSnackbarState((s) => ({
+        setSnackbarState(() => ({
             open: true,
             message,
             severity,
@@ -45,70 +45,49 @@ const TripGeneral = ({ trip, setTrip }) => {
         fileInputRef.current.click();
     };
 
+    // Updated handleUploadImage using the utility function
     const handleUploadImage = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Read the image file as a Data URL
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = async () => {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
+        try {
+            const base64String = await processImageFile(file);
+            // Update trip state with the new image
+            setTrip((prev) => ({ ...prev, tripImage: base64String }));
+            showSnackbar("Image uploaded!", "success");
+            setTimeout(() => {
+                window.location.reload();
+            }, 2200);
 
-                // Determine the square crop size (smallest dimension)
-                const size = Math.min(img.width, img.height);
-                const sx = (img.width - size) / 2;
-                const sy = (img.height - size) / 2;
-
-                // Set canvas size to 512x512
-                canvas.width = 512;
-                canvas.height = 512;
-
-                // Draw cropped and resized image
-                ctx.drawImage(img, sx, sy, size, size, 0, 0, 512, 512);
-
-                // Convert canvas to Base64 with JPEG compression (quality: 0.8)
-                const base64String = canvas.toDataURL("image/jpeg", 0.8);
-
-                // Update trip state with the new image
-                setTrip((t) => ({ ...t, tripImage: base64String }));
-                showSnackbar("Image uploaded!", "success");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2200);
-
-                // Update backend (using the correct endpoint and payload)
-                try {
-                    const response = await fetch(
-                        `${process.env.REACT_APP_BACKEND_URL}/trips/edittrip/${trip.tripID}`,
-                        {
-                            method: "PATCH",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                updateField: "tripImage",
-                                value: base64String,
-                            }),
-                        }
-                    );
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(
-                            `Failed to update trip image: ${response.status} ${errorText}`
-                        );
+            // Optionally update the backend with the new image
+            try {
+                const response = await fetch(
+                    `${process.env.REACT_APP_BACKEND_URL}/trips/edittrip/${trip.tripID}`,
+                    {
+                        method: "PATCH",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            updateField: "tripImage",
+                            value: base64String,
+                        }),
                     }
-                    // Optionally handle the response data here
-                } catch (error) {
-                    console.error("Error updating trip image:", error);
-                    showSnackbar("Failed to save image", "error");
+                );
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(
+                        `Failed to update trip image: ${response.status} ${errorText}`
+                    );
                 }
-            };
-        };
+            } catch (error) {
+                console.error("Error updating trip image:", error);
+                showSnackbar("Failed to save image", "error");
+            }
+        } catch (error) {
+            console.error("Error processing image:", error);
+            showSnackbar("Error processing image", "error");
+        }
     };
 
     return (
@@ -130,10 +109,7 @@ const TripGeneral = ({ trip, setTrip }) => {
                         <Chip
                             label={trip.tripID}
                             variant="filled"
-                            sx={{
-                                borderRadius: 2,
-                                border: "1px solid",
-                            }}
+                            sx={{ borderRadius: 2, border: "1px solid" }}
                         />
                         <Tooltip title="Copy Trip ID" arrow>
                             <IconButton

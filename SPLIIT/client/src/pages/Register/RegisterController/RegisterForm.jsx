@@ -23,6 +23,7 @@ import {
     Lock,
 } from "@mui/icons-material";
 import ColourPicker from "../../../components/common/ColourPicker";
+import { validateRegister } from "../../../utils/validators";
 
 function RegisterForm() {
     const { login } = useContext(AuthContext);
@@ -45,46 +46,18 @@ function RegisterForm() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleTogglePassword = () => {
         setShowPassword((s) => !s);
     };
 
-    const validate = () => {
-        const newErrors = {};
-        const passwordLength = 8;
-
-        if (!formData.email.length) newErrors.email = "Please enter an email.";
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-            newErrors.email = "Please enter a valid email address.";
-
-        if (!formData.username.length)
-            newErrors.username = "Please enter a unique username.";
-        else if (/\s/.test(formData.username))
-            newErrors.username = "Username should not contain whitespaces.";
-
-        if (!formData.password.length)
-            newErrors.password = "Please enter a password.";
-        else if (formData.password.length < passwordLength)
-            newErrors.password = `Password must have at least ${passwordLength} characters`;
-        else if (/\s/.test(formData.password))
-            newErrors.password = "Password should not contain whitespaces.";
-
-        if (!formData.displayName.length)
-            newErrors.displayName = "Please enter a display name.";
-
-        if (!formData.favColour.length)
-            newErrors.favColour = "Please select a favourite colour.";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validate()) {
+        const validationErrors = validateRegister(formData);
+        setErrors(validationErrors);
+        if (Object.keys(validationErrors).length === 0) {
             try {
                 const backendURL = process.env.REACT_APP_BACKEND_URL;
                 const response = await fetch(`${backendURL}/users/createuser`, {
