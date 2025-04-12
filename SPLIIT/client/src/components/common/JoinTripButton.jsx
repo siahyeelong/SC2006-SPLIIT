@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import React, { useContext, useState } from "react";
 import { tokens } from "../../theme";
 import { Box, Button, Typography } from "@mui/material";
-import JoinTripDialog from "../../pages/Profile/ProfileController/JoinTripDialog";
+import JoinTripDialog from "./JoinTripDialog";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import SnackbarNotifs from "../../components/common/SnackbarNotifs";
@@ -33,7 +33,7 @@ function JoinTripButton() {
             refresh();
             navigate("/");
         }
-        showSnackbar(message.message, message.severity)
+        showSnackbar(message.message, message.severity);
     };
     const showSnackbar = (message, severity) => {
         setSnackbarState((s) => ({ ...s, open: false }));

@@ -1,5 +1,5 @@
 import Chart from "chart.js/auto";
-import { formatPrice } from "../../utils/formatPrice";
+import { formatPrice } from "../../utils/formatters";
 
 export const CATEGORY_COLORS = {
     Food: "hsl(38, 85%, 55%)",
@@ -47,7 +47,9 @@ export const calculateCategorySpending = (transactions, userId) => {
     const spending = {};
     transactions.forEach((transaction) => {
         if (transaction.recipients.includes(userId)) {
-            const totalLocalAmt = transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate
+            const totalLocalAmt = transaction.isLocalCurrency
+                ? transaction.price
+                : transaction.price / transaction.exchangeRate;
             const amount =
                 parseFloat(totalLocalAmt) / transaction.recipients.length;
             spending[transaction.category] =

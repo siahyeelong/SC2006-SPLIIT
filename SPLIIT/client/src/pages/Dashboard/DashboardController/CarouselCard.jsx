@@ -10,7 +10,7 @@ import AnalyticsDialog from "./AnalyticsDialog";
 import { createSpendingChart } from "../../../components/charts/DoughnutChartUtils";
 import DebtTable from "./DebtTable";
 import { SentimentNeutral } from "@mui/icons-material";
-import { formatPrice } from "../../../utils/formatPrice";
+import { formatPrice } from "../../../utils/formatters";
 import { AuthContext } from "../../../contexts/AuthContext";
 
 function CarouselCard({ ower, matrix }) {

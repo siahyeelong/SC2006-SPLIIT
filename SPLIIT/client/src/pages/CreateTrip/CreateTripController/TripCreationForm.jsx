@@ -22,6 +22,9 @@ import "react-day-picker/style.css";
 import "./DayPickerStyles.css"; // Import custom styles
 import TripCreatedSuccess from "./TripCreatedSuccess";
 import { Trip } from "../../../entities/Trip";
+import { processImageFile } from "../../../utils/imageUtils";
+import { validateTripCreationForm } from "../../../utils/validators";
+import { formatNumberWithCommas } from "../../../utils/formatters";
 
 function TripCreationForm() {
     const formResetState = {
@@ -54,11 +57,9 @@ function TripCreationForm() {
 
     const handleBudgetChange = (e) => {
         const rawValue = e.target.value.replace(/[^0-9.]/g, ""); // Allow only digits and a period
-        if (!/^(\d+(\.\d{0,2})?)?$/.test(rawValue)) return; // Prevents invalid decimal formats
+        if (!/^(\d+(\.\d{0,2})?)?$/.test(rawValue)) return;
 
-        // Delay or blur event to format the displayed value
-        const formattedValue = formatNumberWithCommas(rawValue); // Keep raw input for better typing experience
-
+        const formattedValue = formatNumberWithCommas(rawValue);
         setFormData((prev) => ({
             ...prev,
             budget: formattedValue,
@@ -69,36 +70,11 @@ function TripCreationForm() {
         const numericValue = parseFloat(e.target.value.replace(/[^0-9.]/g, ""));
         const formattedPrice = !isNaN(numericValue)
             ? numericValue.toLocaleString("en-SG", {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-            })
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+              })
             : "";
         setFormData((prev) => ({ ...prev, budget: formattedPrice }));
-    };
-
-    const formatNumberWithCommas = (value) => {
-        // def can make this optimal but screw this shit man
-        // Remove any non-numeric characters except for the decimal point
-        const numberPart = value.replace(/[^0-9.]/g, "");
-
-        // Separate the integer and decimal parts
-        const [integerPart, decimalPart] = numberPart.split(".");
-
-        // Format the integer part with commas
-        const formattedIntegerPart = integerPart.replace(
-            /\B(?=(\d{3})+(?!\d))/g,
-            ","
-        );
-
-        // If there's a decimal part, ensure it's properly formatted with up to 2 decimal places
-        const formattedDecimalPart = decimalPart
-            ? "." + decimalPart.slice(0, 2) // Limit decimal to 2 places
-            : "";
-
-        // Return the formatted number with or without decimal
-        return numberPart.endsWith(".")
-            ? formattedIntegerPart + "."
-            : formattedIntegerPart + formattedDecimalPart;
     };
 
     const handleDateChange = (selectedRange) => {
@@ -112,50 +88,21 @@ function TripCreationForm() {
         }
     };
 
-    const handleUploadImage = (e) => {
+    // Updated handleUploadImage using the utility function
+    const handleUploadImage = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
-                const size = Math.min(img.width, img.height);
-                const sx = (img.width - size) / 2;
-                const sy = (img.height - size) / 2;
-                canvas.width = 512;
-                canvas.height = 512;
-                ctx.drawImage(img, sx, sy, size, size, 0, 0, 512, 512);
-                const base64String = canvas.toDataURL("image/jpeg", 0.8);
-                setFormData({ ...formData, tripImage: base64String });
-            };
-        };
+        try {
+            const base64String = await processImageFile(file);
+            setFormData({ ...formData, tripImage: base64String });
+        } catch (error) {
+            console.error("Error processing image:", error);
+        }
     };
 
     const validate = () => {
-        const newErrors = {};
-        if (!formData.tripName.trim())
-            newErrors.tripName = "Please enter a trip name.";
-        if (!formData.foreignCurrency)
-            newErrors.foreignCurrency = "Please select a foreign currency.";
-        if (!formData.localCurrency)
-            newErrors.localCurrency = "Please select a local currency.";
-        if (formData.foreignCurrency === formData.localCurrency)
-            newErrors.currency =
-                "Foreign and local currency cannot be the same.";
-        if (formData.budget && isNaN(formData.budget.replace(/[^0-9.]/g, "")))
-            newErrors.budget = "Budget must be a valid number.";
-        if (
-            formData.startDate &&
-            formData.endDate &&
-            formData.startDate > formData.endDate
-        )
-            newErrors.date = "End date must be later than start date.";
-
+        const newErrors = validateTripCreationForm(formData);
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -170,7 +117,7 @@ function TripCreationForm() {
             const { generatedTripID } = await newTrip.createTrip();
 
             formData["tripID"] = generatedTripID;
-            setSessionTrip(formData); // create the trip object and set it as the current session's context
+            setSessionTrip(formData); // create the trip object and set it as the current session context
 
             // Show trip creation success page and bring user back to home when they close the dialog
             setCreatedDialogOpen(true);
@@ -219,9 +166,9 @@ function TripCreationForm() {
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                    {
-                                        borderColor: colours.primary[100],
-                                    },
+                                        {
+                                            borderColor: colours.primary[100],
+                                        },
                                     "& .MuiInputLabel-root": {
                                         color: colours.primary[100],
                                     },
@@ -254,9 +201,9 @@ function TripCreationForm() {
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                    {
-                                        borderColor: colours.primary[100],
-                                    },
+                                        {
+                                            borderColor: colours.primary[100],
+                                        },
                                     "& .MuiInputLabel-root": {
                                         color: colours.primary[100],
                                     },
@@ -289,31 +236,31 @@ function TripCreationForm() {
                                             mt: 2,
                                             "& .MuiOutlinedInput-root": {
                                                 "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                    borderColor:
-                                                        colours
-                                                            .primary[100],
-                                                },
+                                                    {
+                                                        borderColor:
+                                                            colours
+                                                                .primary[100],
+                                                    },
                                             },
                                             "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                            {
-                                                borderColor:
-                                                    colours.primary[100],
-                                            },
+                                                {
+                                                    borderColor:
+                                                        colours.primary[100],
+                                                },
                                             "& .MuiInputLabel-root": {
                                                 color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputLabel-root":
-                                            {
-                                                color: colours.primary[100],
-                                            },
+                                                {
+                                                    color: colours.primary[100],
+                                                },
                                             "& .MuiInputBase-input": {
                                                 color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputBase-input":
-                                            {
-                                                color: colours.primary[100],
-                                            },
+                                                {
+                                                    color: colours.primary[100],
+                                                },
                                         }}
                                     >
                                         {Object.keys(exchangeRates).map(
@@ -338,38 +285,44 @@ function TripCreationForm() {
                                         name="localCurrency"
                                         value={formData.localCurrency}
                                         onChange={handleChange}
-                                        error={errors.localCurrency || errors.currency}
-                                        helperText={errors.localCurrency || errors.currency}
+                                        error={
+                                            errors.localCurrency ||
+                                            errors.currency
+                                        }
+                                        helperText={
+                                            errors.localCurrency ||
+                                            errors.currency
+                                        }
                                         required
                                         sx={{
                                             mt: 2,
                                             "& .MuiOutlinedInput-root": {
                                                 "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                    borderColor:
-                                                        colours
-                                                            .primary[100],
-                                                },
+                                                    {
+                                                        borderColor:
+                                                            colours
+                                                                .primary[100],
+                                                    },
                                             },
                                             "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                            {
-                                                borderColor:
-                                                    colours.primary[100],
-                                            },
+                                                {
+                                                    borderColor:
+                                                        colours.primary[100],
+                                                },
                                             "& .MuiInputLabel-root": {
                                                 color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputLabel-root":
-                                            {
-                                                color: colours.primary[100],
-                                            },
+                                                {
+                                                    color: colours.primary[100],
+                                                },
                                             "& .MuiInputBase-input": {
                                                 color: colours.primary[100],
                                             },
                                             "& .Mui-focused .MuiInputBase-input":
-                                            {
-                                                color: colours.primary[100],
-                                            },
+                                                {
+                                                    color: colours.primary[100],
+                                                },
                                         }}
                                     >
                                         {Object.keys(exchangeRates).map(
@@ -404,9 +357,9 @@ function TripCreationForm() {
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                    {
-                                        borderColor: colours.primary[100],
-                                    },
+                                        {
+                                            borderColor: colours.primary[100],
+                                        },
                                     "& .MuiInputLabel-root": {
                                         color: colours.primary[100],
                                     },
@@ -438,9 +391,9 @@ function TripCreationForm() {
                                         },
                                     },
                                     "& .Mui-focused .MuiOutlinedInput-notchedOutline":
-                                    {
-                                        borderColor: colours.primary[100],
-                                    },
+                                        {
+                                            borderColor: colours.primary[100],
+                                        },
                                     "& .MuiInputLabel-root": {
                                         color: colours.primary[100],
                                     },

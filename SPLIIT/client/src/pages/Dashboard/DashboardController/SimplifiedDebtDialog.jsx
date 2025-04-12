@@ -12,7 +12,7 @@ import {
     useTheme,
 } from "@mui/material";
 import React, { useContext } from "react";
-import { formatPrice } from "../../../utils/formatPrice";
+import { formatPrice } from "../../../utils/formatters";
 import { CheckCircle } from "@mui/icons-material";
 import { AuthContext } from "../../../contexts/AuthContext";
 

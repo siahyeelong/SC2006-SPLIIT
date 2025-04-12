@@ -20,6 +20,7 @@ import {
     Lock,
 } from "@mui/icons-material";
 import GoogleLoginButton from "./GoogleLoginButton";
+import { validateLogin } from "../../../utils/validators";
 
 function LoginForm() {
     const { login, user } = useContext(AuthContext);
@@ -49,29 +50,11 @@ function LoginForm() {
         setShowPassword((s) => !s);
     };
 
-    const validate = () => {
-        const newErrors = {};
-        const passwordLength = 8;
-
-        if (!formData.username.length)
-            newErrors.username = "Please enter a username.";
-        else if (/\s/.test(formData.username))
-            newErrors.username = "Username should not contain whitespaces";
-
-        if (!formData.password.length)
-            newErrors.password = "Please enter a password.";
-        else if (formData.password.length < passwordLength)
-            newErrors.password = `Password should contain at least ${passwordLength} characters.`;
-        else if (/\s/.test(formData.password))
-            newErrors.password = "Password should not contain whitespaces.";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validate()) {
+        const validationErrors = validateLogin(formData);
+        setErrors(validationErrors);
+        if (Object.keys(validationErrors).length === 0) {
             try {
                 await login(formData.username, formData.password);
                 navigate("/selecttrip");
