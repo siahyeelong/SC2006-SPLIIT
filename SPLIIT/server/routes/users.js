@@ -50,9 +50,10 @@ router.post("/login", async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-        maxAge: 34 * 24 * 60 * 60 * 1000,
+        secure: process.env.NODE_ENV !== "dev",
+        sameSite: process.env.NODE_ENV !== "dev" ? "None" : "Lax",
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     user.password = "";
@@ -101,9 +102,10 @@ router.post("/googlelogin", async (req, res) => {
         // Set cookie
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: "strict",
-            maxAge: 34 * 24 * 60 * 60 * 1000,
+            secure: process.env.NODE_ENV !== "dev",
+            sameSite: process.env.NODE_ENV !== "dev" ? "None" : "Lax",
+            path: "/",
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
         // Return user data and token
