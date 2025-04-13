@@ -17,9 +17,7 @@ function AItinerary() {
     const isDarkMode = theme.palette.mode === "dark";
     const colors = tokens(theme.palette.mode);
 
-    const subtitleColor = isDarkMode
-        ? colors.greenAccent[400]
-        : colors.greenAccent[400];
+    const subtitleColor = colors.greenAccent[400];
 
     const [loading, setLoading] = useState(false);
     const [showChat, setShowChat] = useState(false);

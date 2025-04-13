@@ -214,10 +214,11 @@ function TransactionCard({ transaction, people }) {
                         lng={transaction.geolocation.long}
                     />
                 ) : (
-                    <Typography color="error">
-                        Geolocation data is unavailable or invalid. Please try
-                        turning on your location services.
-                    </Typography>
+                    // <Typography color="error">
+                    //     Geolocation data is unavailable or invalid. Please try
+                    //     turning on your location services.
+                    // </Typography>
+                    undefined
                 )}
             </Box>
 
@@ -295,9 +296,6 @@ function PerTransactionDialog({ showDialog, transaction, people, onClose }) {
                     <Button
                         variant="outlined"
                         color="error"
-                        // onClick={() => {
-                        //     deleteTransaction(transaction).then(onClose);
-                        // }}
                         onClick={() => setDialogOpen(true)}
                     >
                         DELETE

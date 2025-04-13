@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { Box, Button, Stack } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import Header from "../../layouts/Header";
 import ProfileInfo from "./ProfileController/ProfileInfo";
 import ColourPicker from "../../components/common/ColourPicker";
@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import SnackbarNotifs from "../../components/common/SnackbarNotifs";
 
 function Profile() {
-    const { logout, user } = useContext(AuthContext);
+    const { logout, user, refresh } = useContext(AuthContext);
     const [tempProfile, setTempProfile] = useState(user);
     const [tempName, setTempName] = useState(user.displayName);
     const [isEditingName, setIsEditingName] = useState(false);
@@ -26,6 +26,11 @@ function Profile() {
     });
     const navigate = useNavigate();
     const [updating, setUpdating] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        refresh().then(setLoading(false))
+    }, [])
 
     // Every time something updated, close current snackbar immediately and open new one after delay
     const showSnackbar = (message, severity) => {
@@ -89,6 +94,7 @@ function Profile() {
         setSnackbarState((s) => ({ ...s, open: false }));
     };
 
+    if (loading) return <Typography>Loading...</Typography>;
     return (
         <>
             <Box>
