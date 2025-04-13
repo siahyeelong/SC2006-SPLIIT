@@ -140,6 +140,7 @@ function Sidebar({ isCollapsed, setIsCollapsed, onCloseDrawer = () => { }, isMob
                                                 onCloseDrawer()
                                             }}
                                             icon={item.icon}
+                                            key={item.title}
                                         >
                                             <Typography>{item.title}</Typography>
                                             <Link to={item.to} />
