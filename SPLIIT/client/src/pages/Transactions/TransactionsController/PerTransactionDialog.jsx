@@ -41,7 +41,7 @@ function TransactionCard({ transaction, people }) {
                 <Box display={"flex"} alignItems={"center"}>
                     <Box p={"10px"}>
                         {/* Display category icon in the same line */}
-                        {Categories[transaction.category].icon}
+                        {Categories[transaction.category]?.icon || undefined}
                     </Box>
                     <Box p={"10px"}>
                         {/* Display price large */}
