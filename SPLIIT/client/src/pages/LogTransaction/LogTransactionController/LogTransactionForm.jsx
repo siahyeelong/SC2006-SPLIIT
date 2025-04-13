@@ -12,7 +12,10 @@ import { tokens } from "../../../theme";
 import { useExchangeRates } from "../../../contexts/ExchangeRates";
 import { AuthContext } from "../../../contexts/AuthContext";
 import { Transaction } from "../../../entities/Transaction";
-import { validateTransactionForm } from "../../../utils/validators";
+import {
+    validateTransactionForm,
+    validateGeolocation,
+} from "../../../utils/validators";
 import { formatNumberWithCommas } from "../../../utils/formatters";
 
 function LogTransactionForm({ onAdd }) {
@@ -20,7 +23,8 @@ function LogTransactionForm({ onAdd }) {
     const colours = tokens(theme.palette.mode);
     const { exchangeRates } = useExchangeRates();
     const { trip } = useContext(AuthContext);
-    const [locationStatus, setLocationStatus] = useState("");
+    // locationStatus is either an object with (lat, long) or a string for errors/status
+    const [locationStatus, setLocationStatus] = useState(null);
     const [people, setPeople] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -42,10 +46,14 @@ function LogTransactionForm({ onAdd }) {
             (error) => {
                 if (error.code === error.PERMISSION_DENIED) {
                     console.log("User denied the request for Geolocation.");
-                    setLocationStatus("denied");
+                    setLocationStatus({ error: "denied", code: error.code });
                 } else {
                     console.log("Error getting location:", error.message);
-                    setLocationStatus("error");
+                    setLocationStatus({
+                        error: "error",
+                        message: error.message,
+                        code: error.code,
+                    });
                 }
             }
         );
@@ -68,6 +76,9 @@ function LogTransactionForm({ onAdd }) {
         getPeople();
     }, []);
 
+    // If the geolocation is valid, return true
+    const isValidGeolocation = validateGeolocation(locationStatus);
+
     // default form state
     const formResetState = {
         recipients: [],
@@ -82,7 +93,7 @@ function LogTransactionForm({ onAdd }) {
         description: "",
         payer: "",
         tripID: trip.tripID,
-        geolocation: "",
+        geolocation: isValidGeolocation ? locationStatus : null,
     };
 
     const [formData, setFormData] = useState(formResetState);
@@ -168,7 +179,9 @@ function LogTransactionForm({ onAdd }) {
             try {
                 // Adjust price back to number format
                 formData.price = formData.price.replace(/[^0-9.]/g, "");
-                formData.geolocation = locationStatus;
+                formData.geolocation = isValidGeolocation
+                    ? locationStatus
+                    : null; // Only set if valid
                 const newTransaction = new Transaction(formData);
                 const response = await newTransaction.submit(); // submit transaction record
 

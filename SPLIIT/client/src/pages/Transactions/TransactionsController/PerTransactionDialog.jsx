@@ -14,6 +14,7 @@ import DeleteTransactionConfirmationDialog from "./DelTransactionConfirmDialog";
 import SnackbarNotifs from "../../../components/common/SnackbarNotifs";
 import { AuthContext } from "../../../contexts/AuthContext";
 import MapPreview from "../../../components/common/MapPreview";
+import { validateGeolocation } from "../../../utils/validators";
 
 function TransactionCard({ transaction, people }) {
     const { exchangeRates } = useExchangeRates();
@@ -207,11 +208,16 @@ function TransactionCard({ transaction, people }) {
             </Box>
             {/* Display location */}
             <Box display={"flex"} justifyContent={"center"} m={2}>
-                {transaction.geolocation && (
+                {validateGeolocation(transaction.geolocation) ? (
                     <MapPreview
                         lat={transaction.geolocation.lat}
                         lng={transaction.geolocation.long}
                     />
+                ) : (
+                    <Typography color="error">
+                        Geolocation data is unavailable or invalid. Please try
+                        turning on your location services.
+                    </Typography>
                 )}
             </Box>
 

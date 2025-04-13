@@ -82,3 +82,11 @@ export const validateTripCreationForm = (formData) => {
 
     return newErrors;
 };
+
+// validate if geolocation is enabled
+// returns true if valid, false otherwise
+export const validateGeolocation = (locationStatus) => {
+    if (!locationStatus || typeof locationStatus !== "object") return false; // In javascript, null is an object, so we need to check if it's null or not
+    const { lat, long } = locationStatus;
+    return typeof lat === "number" && typeof long === "number";
+};
