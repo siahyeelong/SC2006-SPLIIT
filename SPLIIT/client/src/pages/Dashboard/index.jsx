@@ -37,7 +37,7 @@ function Dashboard() {
                             boxShadow: 3,
                         }}
                     >
-                        Simplify debts
+                        Simplify debt
                     </Button>
                 </Stack>
             </Box>

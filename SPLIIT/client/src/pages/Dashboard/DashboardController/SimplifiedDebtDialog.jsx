@@ -61,7 +61,7 @@ function SimplifiedDebtDialog({ open, onClose, transactions, people }) {
                 </Typography>
                 <Divider sx={{ mb: 3, border: "0.5px solid" }} />
 
-                {/* List of simplified debts */}
+                {/* List of simplified debt */}
                 <List
                     dense
                     sx={{
