@@ -5,6 +5,7 @@ import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import logo from "../../assets/SPLIIT_logo.jpg";
 import { useLocation, useNavigate } from "react-router-dom";
+import SafariTrackingWarning from "../../components/common/SafariTrackingWarning";
 
 const LandingPage = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -96,6 +97,7 @@ const LandingPage = () => {
             </Box>
             <HeroSection />
             <AboutSection />
+            <SafariTrackingWarning />
         </Box>
     );
 };

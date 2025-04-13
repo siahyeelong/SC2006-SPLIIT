@@ -7,6 +7,7 @@ import KingBedRoundedIcon from "@mui/icons-material/KingBedRounded";
 import SellRoundedIcon from "@mui/icons-material/SellRounded";
 import HealthAndSafetyRoundedIcon from "@mui/icons-material/HealthAndSafetyRounded";
 import DirectionsBoatFilledRoundedIcon from "@mui/icons-material/DirectionsBoatFilledRounded";
+import FlightIcon from '@mui/icons-material/Flight';
 
 const BackgroundBox = ({ colour, icon }) => {
     return (
@@ -70,9 +71,14 @@ Categories["Insurance"] = new Category(
     <HealthAndSafetyRoundedIcon style={{ color: "#f8f9fa" }} />,
     "#f26a8d"
 );
-Categories["Ferry"] = new Category(
-    "Ferry",
-    <DirectionsBoatFilledRoundedIcon style={{ color: "#f8f9fa" }} />,
+// Categories["Ferry"] = new Category(
+//     "Ferry",
+//     <DirectionsBoatFilledRoundedIcon style={{ color: "#f8f9fa" }} />,
+//     "#94d2bd"
+// );
+Categories["Flight"] = new Category(
+    "Flight",
+    <FlightIcon style={{ color: "#f8f9fa" }} />,
     "#94d2bd"
 );
 // append more as needed
