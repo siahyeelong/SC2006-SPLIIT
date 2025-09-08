@@ -18,12 +18,14 @@ function ToCSVButton({ data, colours, tripName }) {
         };
 
         const csvContent = [
-            ['Index', 'Date', 'Time', 'Price', 'Category', 'Recipients', 'Description', 'Payer'],
+            ['Index', 'Date', 'Time', 'Price', 'Currency', 'Price (Local Currency)', 'Category', 'Recipients', 'Description', 'Payer'],
             ...data.map((transaction, index) => [
                 index + 1,
                 new Date(transaction.timestamp).toLocaleDateString(),
                 new Date(transaction.timestamp).toLocaleTimeString(),
                 transaction.price,
+                transaction.currency,
+                transaction.isLocalCurrency ? transaction.price : transaction.price / transaction.exchangeRate,
                 transaction.category,
                 (transaction.recipients || []).join('; '),
                 escapeCSV(transaction.description || ''),
