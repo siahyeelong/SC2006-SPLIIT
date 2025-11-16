@@ -12,7 +12,37 @@ SPLIIT allows you to enjoy your trip, so leave the convoluted expense tracking t
 
 View SPLIIT live at https://sc2006-spliit.vercel.app
 
-<!-- ## Features -->
+## Features
+
+### 1. Expense logging
+
+Log expenses with ease from a simple form layout. You may specify the currency, select the relevant recipients, and geolocation will be automatically logged!
+
+<img src="./SPLIIT/images/home_logtransaction.png" alt="expense logging" width="400"/>
+
+### 2. Transaction summary
+
+View all transactions in the _Transactions_ page. Click on a line item to view its details. The map indicates where you made the expense, taking you back to the time you made that purchase!
+
+<img src="./SPLIIT/images/home_transaction.png" alt="expense logging" width="400"/>
+
+### 3. Insighful dashboard
+
+View insights into your group's expense habits in the _Dashboard_ page. You may also check how much you owe one another, or click on the `Simplify debt` button to settle all debt in the group.
+
+<img src="./SPLIIT/images/home_dashboard.png" alt="expense logging" width="400"/>
+
+### 4. Simple debt settlement strategy
+
+Upon clicking `Simplify debt`, you will be recommended an optimal debt settlement strategy that allows all debt within the group to be settled with the least amount of transactions. Read more on how the algorithm works below!
+
+<img src="./SPLIIT/images/home_simplifieddebt.png" alt="expense logging" width="400"/>
+
+### 5. Trip management
+
+Love using SPLIIT? Start a new trip and start SPLIIT-ing your expenses with your friends!
+
+<img src="./SPLIIT/images/home_tripselection.png" alt="expense logging" width="400"/>
 
 ## The debt settlement algorithm in SPLIIT
 Suppose there are _n_ people in a group, where some money is owed between them. The debt settlement algorithm solves for the minimum transactions required to settle all debts between owers and the owed. 
