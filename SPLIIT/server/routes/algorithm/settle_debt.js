@@ -121,7 +121,6 @@ function simplify_debts(debt_matrix, people) {
         // - scenario 2: receiver has not received all their money yet
         // - in either case, update their amount correspondingly
         // - loop again until everyone has been satisfied
-        // (not sure if this is optimal, but from my few tests, it seems like it. is the alg efficient? hell no LOL)
 
         let max_giver = max(givers)
         let max_receiver = max(receivers)

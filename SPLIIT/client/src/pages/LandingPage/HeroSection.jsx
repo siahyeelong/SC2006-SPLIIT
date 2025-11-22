@@ -9,20 +9,27 @@ const HeroSection = () => {
     return (
         <Box
             sx={{
-                backgroundImage: `url(${landingBackground})`,
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    inset: 0,
+                    backgroundImage: `url(${landingBackground})`,
+                    opacity: 0.6,
+                    zIndex: -1,
+                },
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "cover",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "flex-start",
-                color: "white",
+                color: "#f5fff6ff",
                 padding: {
                     xs: "60px 20px",
                     sm: "80px 40px",
                     xl: "100px 60px",
                 },
-                minHeight: "100vh",
+                minHeight: "70vh",
                 position: "relative",
             }}
         >
@@ -54,7 +61,7 @@ const HeroSection = () => {
                         md: "1.2rem",
                     },
                     margin: "20px",
-                    color: "#cbd5e1",
+                    color: "#f7fff1ff",
                     textAlign: "left",
                     maxWidth: "600px",
                 }}
@@ -74,7 +81,10 @@ const HeroSection = () => {
                     text="Register"
                     onClick={() => navigate("/register")}
                 />
-                <ActionButton text="Login" onClick={() => navigate("/login")} />
+                <ActionButton
+                    text="Login"
+                    onClick={() => navigate("/login")}
+                />
             </Box>
         </Box>
     );
